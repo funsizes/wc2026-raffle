@@ -378,6 +378,9 @@
       margin-left: 0.3rem;
       vertical-align: middle;
     }
+    .flag-img { height: 1.1em; vertical-align: middle; border-radius: 2px; }
+    .pick-flag .flag-img { height: 1.8rem; display: block; margin: 0 auto; }
+
     .rankings-source {
       font-size: 0.72rem;
       color: var(--muted);
@@ -507,7 +510,7 @@
 const RAFFLE_LABEL = "Main Group (30)";
 const RAFFLE = [
   { pick: 1,  name: 'Oscar',     team: 'Croatia',     flag: '🇭🇷', api: 'Croatia' },
-  { pick: 2,  name: 'Krystie',   team: 'England',     flag: '🏴󠁧󠁢󠁥󠁮󠁧󠁿', api: 'England' },
+  { pick: 2,  name: 'Krystie',   team: 'England',     flag: '🏴󠁧󠁢󠁥󠁮󠁧󠁿', flagUrl: 'https://flagcdn.com/gb-eng.svg', api: 'England' },
   { pick: 3,  name: 'Andrea',    team: 'Belgium',     flag: '🇧🇪', api: 'Belgium' },
   { pick: 4,  name: 'Celine',    team: 'Mexico',      flag: '🇲🇽', api: 'Mexico' },
   { pick: 5,  name: 'Gerardo',   team: 'Germany',     flag: '🇩🇪', api: 'Germany' },
@@ -522,7 +525,7 @@ const RAFFLE = [
   { pick: 14, name: 'David',     team: 'Uruguay',     flag: '🇺🇾', api: 'Uruguay' },
   { pick: 15, name: 'Gaby',      team: 'Argentina',   flag: '🇦🇷', api: 'Argentina' },
   { pick: 16, name: 'Pocho',     team: 'Switzerland', flag: '🇨🇭', api: 'Switzerland' },
-  { pick: 17, name: 'Anderson',  team: 'Scotland',    flag: '🏴󠁧󠁢󠁳󠁣󠁴󠁿', api: 'Scotland' },
+  { pick: 17, name: 'Anderson',  team: 'Scotland',    flag: '🏴󠁧󠁢󠁳󠁣󠁴󠁿', flagUrl: 'https://flagcdn.com/gb-sct.svg', api: 'Scotland' },
   { pick: 18, name: 'Mariale',   team: 'Netherlands', flag: '🇳🇱', api: 'Netherlands' },
   { pick: 19, name: 'Abraham',   team: 'Canada',      flag: '🇨🇦', api: 'Canada' },
   { pick: 20, name: 'Luis M',    team: 'Turkey',      flag: '🇹🇷', api: 'Türkiye' },
@@ -558,7 +561,7 @@ const RAFFLE2 = [
   { pick: 16, name: 'Camila',     team: 'Colombia',     flag: '🇨🇴', api: 'Colombia' },
   { pick: 17, name: 'Mariangel',  team: 'Netherlands',  flag: '🇳🇱', api: 'Netherlands' },
   { pick: 18, name: 'Pilar',      team: 'Paraguay',     flag: '🇵🇾', api: 'Paraguay' },
-  { pick: 19, name: 'Raquel',     team: 'England',      flag: '🏴󠁧󠁢󠁥󠁮󠁧󠁿', api: 'England' },
+  { pick: 19, name: 'Raquel',     team: 'England',      flag: '🏴󠁧󠁢󠁥󠁮󠁧󠁿', flagUrl: 'https://flagcdn.com/gb-eng.svg', api: 'England' },
   { pick: 20, name: 'Alicia',     team: 'Algeria',      flag: '🇩🇿', api: 'Algeria' },
   { pick: 21, name: 'Carlos',     team: 'Norway',       flag: '🇳🇴', api: 'Norway' },
 ];
@@ -579,6 +582,11 @@ const STAGE_LABEL = {
 };
 
 // ── HELPERS ──────────────────────────────────────────────
+function flagHtml(entry) {
+  if (entry && entry.flagUrl)
+    return `<img src="${entry.flagUrl}" alt="${entry.team}" class="flag-img">`;
+  return entry ? entry.flag : '🏳️';
+}
 
 function sameTeam(apiName, raffleApi) {
   if (!apiName || !raffleApi) return false;
@@ -696,8 +704,8 @@ function renderMatches(all) {
   grid.innerHTML = show.map(m => {
     const hp = findParticipant(m.homeTeam.name);
     const ap = findParticipant(m.awayTeam.name);
-    const hf = hp ? hp.flag : '🏳️';
-    const af = ap ? ap.flag : '🏳️';
+    const hf = flagHtml(hp || { flag: '🏳️' });
+    const af = flagHtml(ap || { flag: '🏳️' });
     const hOwner = hp ? `<div class="mowner">${hp.name}</div>` : '';
     const aOwner = ap ? `<div class="mowner">${ap.name}</div>` : '';
 
@@ -777,7 +785,7 @@ function renderLeaderboard(raffle, all, containerId) {
     return `
       <div class="lb-row ${rankCls} ${stateCls}">
         <div class="lb-rank">${rankDisplay}</div>
-        <div class="lb-flag">${e.flag}</div>
+        <div class="lb-flag">${flagHtml(e)}</div>
         <div class="lb-info">
           <div class="lb-name">${e.name}</div>
           <div class="lb-team">${e.team}</div>
@@ -797,7 +805,7 @@ function renderPicks() {
   const card = r => `
     <div class="pick-card">
       <div class="pick-num">Pick #${r.pick}</div>
-      <span class="pick-flag">${r.flag}</span>
+      <span class="pick-flag">${flagHtml(r)}</span>
       <div class="pick-name">${r.name}</div>
       <div class="pick-team">${r.team}</div>
     </div>`;
@@ -811,7 +819,7 @@ const RANKINGS = [
   { rank:1,  team:'Spain',        flag:'🇪🇸', s:[2,1,1,2,2,2,1,1,1,2,1,2,1,1],   avg:1.43  },
   { rank:2,  team:'France',       flag:'🇫🇷', s:[1,2,2,1,1,1,3,2,3,3,2,1,2,3],   avg:1.93  },
   { rank:3,  team:'Argentina',    flag:'🇦🇷', s:[7,3,3,3,3,5,2,3,2,1,3,3,3,2],   avg:3.07  },
-  { rank:4,  team:'England',      flag:'🏴󠁧󠁢󠁥󠁮󠁧󠁿', s:[3,6,4,4,12,3,6,4,4,4,4,4,4,5],  avg:4.79  },
+  { rank:4,  team:'England',      flag:'🏴󠁧󠁢󠁥󠁮󠁧󠁿', flagUrl:'https://flagcdn.com/gb-eng.svg', s:[3,6,4,4,12,3,6,4,4,4,4,4,4,5],  avg:4.79  },
   { rank:5,  team:'Portugal',     flag:'🇵🇹', s:[4,4,8,5,5,6,7,7,6,5,9,5,5,4],   avg:5.71  },
   { rank:6,  team:'Brazil',       flag:'🇧🇷', s:[6,5,7,6,4,7,4,11,5,6,5,6,8,7],  avg:6.21  },
   { rank:7,  team:'Netherlands',  flag:'🇳🇱', s:[8,7,5,8,13,8,5,6,8,8,7,8,6,9],  avg:7.57  },
@@ -839,7 +847,7 @@ const RANKINGS = [
   { rank:29, team:'Algeria',      flag:'🇩🇿', s:[26,37,33,32,22,33,27,38,27,25,26,30,25,27], avg:29.14 },
   { rank:30, team:'Iran',         flag:'🇮🇷', s:[35,23,36,23,38,30,28,29,26,19,21,33,29,41], avg:29.36 },
   { rank:31, team:'Australia',    flag:'🇦🇺', s:[32,38,27,34,28,36,25,36,25,24,23,34,33,33], avg:30.57 },
-  { rank:32, team:'Scotland',     flag:'🏴󠁧󠁢󠁳󠁣󠁴󠁿', s:[28,27,30,40,39,27,35,33,24,34,30,26,31,28], avg:30.86 },
+  { rank:32, team:'Scotland',     flag:'🏴󠁧󠁢󠁳󠁣󠁴󠁿', flagUrl:'https://flagcdn.com/gb-sct.svg', s:[28,27,30,40,39,27,35,33,24,34,30,26,31,28], avg:30.86 },
   { rank:33, team:'Czechia',      flag:'🇨🇿', s:[29,30,40,28,35,29,39,26,29,32,31,32,34,31], avg:31.79 },
   { rank:34, team:'Ghana',        flag:'🇬🇭', s:[36,32,26,24,37,28,26,37,46,45,44,29,42,36], avg:34.86 },
   { rank:35, team:'Tunisia',      flag:'🇹🇳', s:[39,31,39,35,27,38,36,30,38,36,37,38,30,38], avg:35.14 },
@@ -884,7 +892,7 @@ function renderRankings() {
     const avgClass = rkClass(Math.round(r.avg));
     return `<tr>
       <td class="col-rk">${r.rank}</td>
-      <td class="col-team">${r.flag} ${r.team}${ownerHtml}</td>
+      <td class="col-team">${flagHtml(r)} ${r.team}${ownerHtml}</td>
       <td class="col-avg"><span class="rk-cell ${avgClass}">${r.avg}</span></td>
       ${cells}
     </tr>`;
