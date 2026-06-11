@@ -332,10 +332,16 @@
     <div id="matchesGrid" class="matches-grid"></div>
   </section>
 
-  <!-- Leaderboard -->
+  <!-- Leaderboard 1 -->
   <section>
-    <div class="sec-title">🏆 Leaderboard</div>
+    <div class="sec-title">🏆 Leaderboard — <span id="lb1Label"></span></div>
     <div id="leaderboard"></div>
+  </section>
+
+  <!-- Leaderboard 2 -->
+  <section>
+    <div class="sec-title">🏆 Leaderboard — <span id="lb2Label"></span></div>
+    <div id="leaderboard2"></div>
   </section>
 
   <!-- Participants -->
@@ -365,6 +371,7 @@
      ──────────────────────────────────────────────────── -->
 <script>
 // ── RAFFLE DATA ──────────────────────────────────────────
+const RAFFLE_LABEL = "Main Group (30)";
 const RAFFLE = [
   { pick: 1,  name: 'Oscar',     team: 'Croatia',     flag: '🇭🇷', api: 'Croatia' },
   { pick: 2,  name: 'Krystie',   team: 'England',     flag: '🏴󠁧󠁢󠁥󠁮󠁧󠁿', api: 'England' },
@@ -396,6 +403,31 @@ const RAFFLE = [
   { pick: 28, name: 'Betty',     team: 'France',      flag: '🇫🇷', api: 'France' },
   { pick: 29, name: 'Andres',    team: 'Ecuador',     flag: '🇪🇨', api: 'Ecuador' },
   { pick: 30, name: 'Ivan',      team: 'Spain',       flag: '🇪🇸', api: 'Spain' },
+];
+
+const RAFFLE2_LABEL = "Gaby's Group (21)";
+const RAFFLE2 = [
+  { pick: 1,  name: 'Gaby',       team: 'France',       flag: '🇫🇷', api: 'France' },
+  { pick: 2,  name: 'Marianna',   team: 'Brazil',       flag: '🇧🇷', api: 'Brazil' },
+  { pick: 3,  name: 'Sosciore',   team: 'Ivory Coast',  flag: '🇨🇮', api: "Côte d'Ivoire" },
+  { pick: 4,  name: 'Mateo',      team: 'Iran',         flag: '🇮🇷', api: 'Iran' },
+  { pick: 5,  name: 'Andres',     team: 'Portugal',     flag: '🇵🇹', api: 'Portugal' },
+  { pick: 6,  name: 'Daniela',    team: 'Uruguay',      flag: '🇺🇾', api: 'Uruguay' },
+  { pick: 7,  name: 'Andrea',     team: 'Morocco',      flag: '🇲🇦', api: 'Morocco' },
+  { pick: 8,  name: 'Luis',       team: 'Argentina',    flag: '🇦🇷', api: 'Argentina' },
+  { pick: 9,  name: 'David',      team: 'Switzerland',  flag: '🇨🇭', api: 'Switzerland' },
+  { pick: 10, name: 'Joseph',     team: 'Germany',      flag: '🇩🇪', api: 'Germany' },
+  { pick: 11, name: 'Antonieta',  team: 'USA',          flag: '🇺🇸', api: 'United States' },
+  { pick: 12, name: 'Aquiles',    team: 'Mexico',       flag: '🇲🇽', api: 'Mexico' },
+  { pick: 13, name: 'Ramon',      team: 'Canada',       flag: '🇨🇦', api: 'Canada' },
+  { pick: 14, name: 'Vanessa',    team: 'S. Korea',     flag: '🇰🇷', api: 'Korea Republic' },
+  { pick: 15, name: 'Teresa',     team: 'Turkey',       flag: '🇹🇷', api: 'Türkiye' },
+  { pick: 16, name: 'Camila',     team: 'Colombia',     flag: '🇨🇴', api: 'Colombia' },
+  { pick: 17, name: 'Mariangel',  team: 'Netherlands',  flag: '🇳🇱', api: 'Netherlands' },
+  { pick: 18, name: 'Pilar',      team: 'Paraguay',     flag: '🇵🇾', api: 'Paraguay' },
+  { pick: 19, name: 'Raquel',     team: 'England',      flag: '🏴󠁧󠁢󠁥󠁮󠁧󠁿', api: 'England' },
+  { pick: 20, name: 'Alicia',     team: 'Algeria',      flag: '🇩🇿', api: 'Algeria' },
+  { pick: 21, name: 'Carlos',     team: 'Norway',       flag: '🇳🇴', api: 'Norway' },
 ];
 
 // ── STAGE CONFIG ─────────────────────────────────────────
@@ -580,11 +612,11 @@ function renderMatches(all) {
 }
 
 // ── RENDER LEADERBOARD ───────────────────────────────────
-function renderLeaderboard(all) {
-  const lb = document.getElementById('leaderboard');
+function renderLeaderboard(raffle, all, containerId) {
+  const lb = document.getElementById(containerId);
   const MEDALS = { 1: '🥇', 2: '🥈', 3: '🥉' };
 
-  const entries = RAFFLE.map(r => ({
+  const entries = raffle.map(r => ({
     ...r,
     p: all ? calcProgress(r, all) : { score: 0, label: 'Pending', gs: 0, gd: 0, active: false }
   }));
@@ -646,15 +678,19 @@ async function refresh() {
   document.getElementById('statusBar').innerHTML = '<span class="dot"></span>Refreshing…';
   allMatches = await fetchMatches();
   renderMatches(allMatches);
-  renderLeaderboard(allMatches);
+  renderLeaderboard(RAFFLE,  allMatches, 'leaderboard');
+  renderLeaderboard(RAFFLE2, allMatches, 'leaderboard2');
   const t = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
   document.getElementById('statusBar').innerHTML =
     `<span class="dot"></span>Last updated ${t} · auto-refreshes every 90 s`;
 }
 
 // ── INIT ─────────────────────────────────────────────────
+document.getElementById('lb1Label').textContent = RAFFLE_LABEL;
+document.getElementById('lb2Label').textContent = RAFFLE2_LABEL;
 renderPicks();
-renderLeaderboard(null);
+renderLeaderboard(RAFFLE,  null, 'leaderboard');
+renderLeaderboard(RAFFLE2, null, 'leaderboard2');
 refresh();
 
 // Auto-refresh every 90 seconds
