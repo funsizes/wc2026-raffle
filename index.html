@@ -379,7 +379,9 @@
       vertical-align: middle;
     }
     .flag-img { height: 1.1em; vertical-align: middle; border-radius: 2px; }
-    .pick-flag .flag-img { height: 1.8rem; display: block; margin: 0 auto; }
+    .pick-flag .flag-img { height: 1.9rem; display: block; margin: 0 auto; }
+    .mflag     .flag-img { height: 1.6rem; display: block; margin: 0 auto; }
+    .lb-flag   .flag-img { height: 1.3rem; display: block; margin: 0 auto; }
 
     .rankings-source {
       font-size: 0.72rem;
@@ -581,11 +583,36 @@ const STAGE_LABEL = {
   FINAL:          'Final',
 };
 
+// ── FLAG IMAGE MAP (flagcdn.com ISO codes) ───────────────
+const FLAG_CODES = {
+  'algeria':        'dz', 'argentina':      'ar', 'australia':      'au',
+  'austria':        'at', 'belgium':        'be', 'bosnia/herz':    'ba',
+  'brazil':         'br', 'canada':         'ca', 'cape verde':     'cv',
+  'colombia':       'co', 'croatia':        'hr', 'czechia':        'cz',
+  "côte d'ivoire":  'ci', 'ivory coast':    'ci', 'curaçao':        'cw',
+  'dr congo':       'cd', 'ecuador':        'ec', 'egypt':          'eg',
+  'england':        'gb-eng', 'france':     'fr', 'germany':        'de',
+  'ghana':          'gh', 'haiti':          'ht', 'iran':           'ir',
+  'iraq':           'iq', 'japan':          'jp', 'jordan':         'jo',
+  'korea republic': 'kr', 'south korea':   'kr', 'mexico':         'mx',
+  'morocco':        'ma', 'netherlands':   'nl', 'new zealand':    'nz',
+  'norway':         'no', 'panama':        'pa', 'paraguay':       'py',
+  'portugal':       'pt', 'qatar':         'qa', 'saudi arabia':   'sa',
+  'scotland':       'gb-sct', 'senegal':   'sn', 'south africa':   'za',
+  'spain':          'es', 'sweden':        'se', 'switzerland':    'ch',
+  'tunisia':        'tn', 'turkey':        'tr', 'türkiye':        'tr',
+  'united states':  'us', 'usa':           'us', 'uruguay':        'uy',
+  'uzbekistan':     'uz',
+};
+
 // ── HELPERS ──────────────────────────────────────────────
 function flagHtml(entry) {
-  if (entry && entry.flagUrl)
-    return `<img src="${entry.flagUrl}" alt="${entry.team}" class="flag-img">`;
-  return entry ? entry.flag : '🏳️';
+  if (!entry) return '🏳️';
+  const key = (entry.api || entry.team || '').toLowerCase();
+  const code = FLAG_CODES[key];
+  if (code)
+    return `<img src="https://flagcdn.com/${code}.svg" alt="${entry.team || entry.api}" class="flag-img">`;
+  return entry.flag || '🏳️';
 }
 
 function sameTeam(apiName, raffleApi) {
