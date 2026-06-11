@@ -304,6 +304,68 @@
       animation: blink 2s step-start infinite;
     }
 
+    /* ── RANKINGS TABLE ────────────────────────────── */
+    .rankings-wrap {
+      overflow-x: auto;
+      border-radius: 0.75rem;
+      border: 1px solid var(--border);
+    }
+    .rankings-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.72rem;
+      white-space: nowrap;
+    }
+    .rankings-table th {
+      background: #0d1a2e;
+      color: var(--muted);
+      font-weight: 700;
+      padding: 0.55rem 0.6rem;
+      text-align: center;
+      border-bottom: 2px solid var(--border);
+      position: sticky;
+      top: 0;
+    }
+    .rankings-table th.col-team { text-align: left; }
+    .rankings-table td {
+      padding: 0.45rem 0.6rem;
+      text-align: center;
+      border-bottom: 1px solid var(--border);
+    }
+    .rankings-table td.col-team { text-align: left; }
+    .rankings-table tr:last-child td { border-bottom: none; }
+    .rankings-table tr:hover td { background: rgba(255,255,255,.03); }
+    .rankings-table td.col-rk {
+      font-weight: 800;
+      font-size: 0.9rem;
+      color: var(--muted);
+      min-width: 2rem;
+    }
+    .rankings-table td.col-avg {
+      font-weight: 700;
+      font-size: 0.8rem;
+      color: var(--text);
+      min-width: 3rem;
+    }
+    .rk-cell { border-radius: 0.3rem; padding: 0.15rem 0.4rem; }
+    .rk-s1  { background: rgba(34,197,94,.25);  color: #4ade80; }
+    .rk-s2  { background: rgba(245,197,24,.2);  color: var(--gold); }
+    .rk-s3  { background: rgba(239,68,68,.15);  color: #f87171; }
+    .raffle-owner {
+      display: inline-block;
+      font-size: 0.58rem;
+      color: var(--gold);
+      font-weight: 600;
+      margin-left: 0.3rem;
+      vertical-align: middle;
+    }
+    .rankings-source {
+      font-size: 0.72rem;
+      color: var(--muted);
+      margin-bottom: 1rem;
+    }
+    .rankings-source a { color: var(--gold); }
+
     /* ── TABS ──────────────────────────────────────── */
     .tab-bar {
       display: flex;
@@ -565,7 +627,7 @@ function calcProgress(entry, all) {
 // ── DATA FETCH (reads local file updated by GitHub Action) ──
 async function fetchMatches() {
   try {
-    const res = await fetch('./data/matches.json?t=' + Date.now());
+    const res = await fetch('./data/matches.json?t=' + Date.now(), { cache: 'no-store' });
     if (!res.ok) throw new Error(res.status);
     const data = await res.json();
     return data.matches || [];
