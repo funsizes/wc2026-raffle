@@ -304,6 +304,36 @@
       animation: blink 2s step-start infinite;
     }
 
+    /* ── TABS ──────────────────────────────────────── */
+    .tab-bar {
+      display: flex;
+      gap: 0.25rem;
+      border-bottom: 2px solid var(--border);
+      margin-bottom: 1.5rem;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+    .tab-bar::-webkit-scrollbar { display: none; }
+
+    .tab-btn {
+      background: transparent;
+      border: none;
+      border-bottom: 3px solid transparent;
+      margin-bottom: -2px;
+      padding: 0.6rem 1.1rem;
+      color: var(--muted);
+      font-size: 0.82rem;
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: color .15s, border-color .15s;
+    }
+    .tab-btn:hover { color: var(--text); }
+    .tab-btn.active { color: var(--gold); border-bottom-color: var(--gold); }
+
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+
     /* ── RESPONSIVE ────────────────────────────────── */
     @media (max-width: 600px) {
       .lb-row { grid-template-columns: 2rem 1.5rem 1fr auto; }
@@ -317,7 +347,7 @@
 <header>
   <div class="logo">
     <h1>⚽ World Cup 2026 Raffle</h1>
-    <p>Winner-take-all · 30 participants</p>
+    <p>Winner-take-all · two groups</p>
   </div>
   <div class="header-right">
     <span id="liveChip">● LIVE</span>
@@ -326,32 +356,42 @@
 
 <main>
 
-  <!-- Live / recent matches -->
+  <!-- Always-visible matches strip -->
   <section>
     <div class="sec-title">🔴 Live &amp; Recent Matches</div>
     <div id="matchesGrid" class="matches-grid"></div>
   </section>
 
-  <!-- Leaderboard 1 -->
-  <section>
-    <div class="sec-title">🏆 Leaderboard — <span id="lb1Label"></span></div>
+  <!-- Tab bar -->
+  <nav class="tab-bar">
+    <button class="tab-btn active" data-tab="tab-main">🏆 Main Group</button>
+    <button class="tab-btn"        data-tab="tab-gaby">🏆 Gaby's Group</button>
+    <button class="tab-btn"        data-tab="tab-raffle">🎟 Raffle Draw</button>
+    <button class="tab-btn"        data-tab="tab-rules">📋 Rules</button>
+  </nav>
+
+  <!-- Tab: Main Group -->
+  <div id="tab-main" class="tab-panel active">
+    <div class="sec-title" id="lb1Label"></div>
     <div id="leaderboard"></div>
-  </section>
+  </div>
 
-  <!-- Leaderboard 2 -->
-  <section>
-    <div class="sec-title">🏆 Leaderboard — <span id="lb2Label"></span></div>
+  <!-- Tab: Gaby's Group -->
+  <div id="tab-gaby" class="tab-panel">
+    <div class="sec-title" id="lb2Label"></div>
     <div id="leaderboard2"></div>
-  </section>
+  </div>
 
-  <!-- Participants -->
-  <section>
-    <div class="sec-title">🎟 Raffle Draw</div>
-    <div id="picksGrid" class="picks-grid"></div>
-  </section>
+  <!-- Tab: Raffle Draw -->
+  <div id="tab-raffle" class="tab-panel">
+    <div class="sec-title">Main Group (30 participants)</div>
+    <div id="picksGrid" class="picks-grid" style="margin-bottom:2rem"></div>
+    <div class="sec-title">Gaby's Group (21 participants)</div>
+    <div id="picksGrid2" class="picks-grid"></div>
+  </div>
 
-  <!-- Tiebreaker -->
-  <section>
+  <!-- Tab: Rules -->
+  <div id="tab-rules" class="tab-panel">
     <div class="tb-box">
       <h3>📋 Tiebreaker Rules</h3>
       <ol>
@@ -360,7 +400,7 @@
         <li><strong>Goals Scored</strong> — most total goals scored across ALL matches.</li>
       </ol>
     </div>
-  </section>
+  </div>
 
 </main>
 
@@ -661,15 +701,26 @@ function renderLeaderboard(raffle, all, containerId) {
 
 // ── RENDER PICKS ─────────────────────────────────────────
 function renderPicks() {
-  document.getElementById('picksGrid').innerHTML = RAFFLE.map(r => `
+  const card = r => `
     <div class="pick-card">
       <div class="pick-num">Pick #${r.pick}</div>
       <span class="pick-flag">${r.flag}</span>
       <div class="pick-name">${r.name}</div>
       <div class="pick-team">${r.team}</div>
-    </div>
-  `).join('');
+    </div>`;
+  document.getElementById('picksGrid').innerHTML  = RAFFLE.map(card).join('');
+  document.getElementById('picksGrid2').innerHTML = RAFFLE2.map(card).join('');
 }
+
+// ── TAB SWITCHING ─────────────────────────────────────────
+document.querySelector('.tab-bar').addEventListener('click', e => {
+  const btn = e.target.closest('.tab-btn');
+  if (!btn) return;
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById(btn.dataset.tab).classList.add('active');
+});
 
 // ── MAIN REFRESH ─────────────────────────────────────────
 let allMatches = null;
@@ -686,8 +737,8 @@ async function refresh() {
 }
 
 // ── INIT ─────────────────────────────────────────────────
-document.getElementById('lb1Label').textContent = RAFFLE_LABEL;
-document.getElementById('lb2Label').textContent = RAFFLE2_LABEL;
+document.getElementById('lb1Label').textContent = '🏆 ' + RAFFLE_LABEL;
+document.getElementById('lb2Label').textContent = '🏆 ' + RAFFLE2_LABEL;
 renderPicks();
 renderLeaderboard(RAFFLE,  null, 'leaderboard');
 renderLeaderboard(RAFFLE2, null, 'leaderboard2');
