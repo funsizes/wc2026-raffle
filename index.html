@@ -416,8 +416,9 @@ const STAGE_LABEL = {
 // ── HELPERS ──────────────────────────────────────────────
 
 function sameTeam(apiName, raffleApi) {
-  const a = (apiName || '').toLowerCase().trim();
-  const b = (raffleApi || '').toLowerCase().trim();
+  if (!apiName || !raffleApi) return false;
+  const a = apiName.toLowerCase().trim();
+  const b = raffleApi.toLowerCase().trim();
   return a === b || a.includes(b) || b.includes(a);
 }
 
