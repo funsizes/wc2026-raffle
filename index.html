@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>WC 2026 Raffle 🏆</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:      #09101f;
+      --surface: #111827;
+      --card:    #1a2540;
+      --border:  #2d3a52;
+      --gold:    #f5c518;
+      --green:   #22c55e;
+      --red:     #ef4444;
+      --blue:    #3b82f6;
+      --text:    #f1f5f9;
+      --muted:   #94a3b8;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      min-height: 100vh;
+      line-height: 1.4;
+    }
+
+    /* ── HEADER ────────────────────────────────────── */
+    header {
+      background: linear-gradient(135deg, #0d2045 0%, #0a1628 100%);
+      border-bottom: 2px solid var(--gold);
+      padding: 1rem 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+
+    .logo h1 { font-size: 1.25rem; font-weight: 800; color: var(--gold); letter-spacing: -0.02em; }
+    .logo p  { font-size: 0.7rem; color: var(--muted); margin-top: 2px; }
+
+    .header-right { display: flex; align-items: center; gap: 0.75rem; }
+
+    #liveChip {
+      display: none;
+      background: var(--red);
+      color: #fff;
+      font-size: 0.65rem;
+      font-weight: 700;
+      padding: 0.2rem 0.5rem;
+      border-radius: 999px;
+      letter-spacing: 0.05em;
+      animation: blink 1.5s step-start infinite;
+    }
+    @keyframes blink { 50% { opacity: 0.4; } }
+
+    .btn-icon {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      padding: 0.35rem 0.7rem;
+      border-radius: 0.4rem;
+      cursor: pointer;
+      font-size: 0.8rem;
+      transition: border-color .15s, color .15s;
+    }
+    .btn-icon:hover { border-color: var(--gold); color: var(--gold); }
+
+    /* ── LAYOUT ────────────────────────────────────── */
+    main { max-width: 1100px; margin: 0 auto; padding: 1.25rem 1rem 3rem; }
+
+    section { margin-bottom: 2.5rem; }
+
+    .sec-title {
+      font-size: 1rem;
+      font-weight: 700;
+      margin-bottom: 0.875rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    /* ── BANNER (no API key) ───────────────────────── */
+    #noBanner {
+      background: rgba(245,197,24,0.08);
+      border: 1px solid rgba(245,197,24,0.25);
+      border-radius: 0.75rem;
+      padding: 1.25rem;
+      text-align: center;
+      margin-bottom: 1.5rem;
+    }
+    #noBanner p { font-size: 0.85rem; color: var(--muted); margin-bottom: 0.75rem; }
+    #noBanner a { color: var(--gold); }
+
+    /* ── MATCH CARDS ───────────────────────────────── */
+    .matches-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+      gap: 0.75rem;
+    }
+
+    .match-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 0.75rem;
+      padding: 0.875rem 1rem;
+      transition: border-color .2s;
+    }
+    .match-card:hover { border-color: var(--gold); }
+    .match-card.live  { border-color: var(--green); }
+
+    .match-meta {
+      font-size: 0.6rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      margin-bottom: 0.625rem;
+      display: flex;
+      justify-content: space-between;
+    }
+    .match-meta .status-live { color: var(--green); font-weight: 700; }
+    .match-meta .status-done { color: var(--muted); }
+    .match-meta .status-upcoming { color: var(--gold); }
+
+    .match-body {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .match-team { text-align: center; }
+    .match-team .mflag { font-size: 1.75rem; display: block; line-height: 1; }
+    .match-team .mname { font-size: 0.7rem; color: var(--muted); margin-top: 0.2rem; }
+    .match-team .mowner { font-size: 0.6rem; color: var(--gold); margin-top: 0.1rem; font-weight: 600; }
+
+    .match-score {
+      text-align: center;
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: var(--text);
+      min-width: 3.5rem;
+    }
+    .match-score.live-score { color: var(--green); }
+
+    /* ── LEADERBOARD ───────────────────────────────── */
+    .lb-row {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-left: 3px solid transparent;
+      border-radius: 0.75rem;
+      padding: 0.75rem 1rem;
+      display: grid;
+      grid-template-columns: 2.25rem 1.75rem 1fr auto auto;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 0.4rem;
+      transition: border-color .15s;
+    }
+    .lb-row:hover { border-color: var(--gold); }
+    .lb-row.still-in  { border-left-color: var(--green); }
+    .lb-row.out       { opacity: 0.55; }
+    .lb-row.rank-1    { border-color: #ffd700; background: rgba(255,215,0,.05); }
+    .lb-row.rank-2    { border-color: #c0c0c0; background: rgba(192,192,192,.03); }
+    .lb-row.rank-3    { border-color: #cd7f32; background: rgba(205,127,50,.03); }
+
+    .lb-rank {
+      font-size: 1.1rem;
+      font-weight: 800;
+      text-align: center;
+      color: var(--muted);
+    }
+    .lb-row.rank-1 .lb-rank { color: #ffd700; }
+    .lb-row.rank-2 .lb-rank { color: #c0c0c0; }
+    .lb-row.rank-3 .lb-rank { color: #cd7f32; }
+
+    .lb-flag { font-size: 1.4rem; text-align: center; }
+
+    .lb-info .lb-name { font-weight: 600; font-size: 0.9rem; }
+    .lb-info .lb-team { font-size: 0.7rem; color: var(--muted); margin-top: 1px; }
+
+    .lb-stage {
+      font-size: 0.7rem;
+      font-weight: 600;
+      padding: 0.2rem 0.55rem;
+      border-radius: 999px;
+      text-align: center;
+      white-space: nowrap;
+    }
+    .lb-stage.s-champion { background: rgba(245,197,24,.2); color: var(--gold); }
+    .lb-stage.s-active   { background: rgba(34,197,94,.12); color: var(--green); }
+    .lb-stage.s-out      { background: rgba(239,68,68,.1);  color: var(--red);  }
+    .lb-stage.s-pending  { background: rgba(148,163,184,.1); color: var(--muted); }
+
+    .lb-stats { text-align: right; font-size: 0.7rem; white-space: nowrap; }
+    .lb-stats .gd-pos { color: var(--green); }
+    .lb-stats .gd-neg { color: var(--red); }
+    .lb-stats .gs-val  { color: var(--muted); }
+
+    /* ── PARTICIPANTS GRID ─────────────────────────── */
+    .picks-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+      gap: 0.6rem;
+    }
+
+    .pick-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 0.7rem;
+      padding: 0.875rem 0.75rem;
+      text-align: center;
+      transition: border-color .15s, transform .15s;
+    }
+    .pick-card:hover { border-color: var(--gold); transform: translateY(-2px); }
+    .pick-card .pick-num { font-size: 0.6rem; color: var(--muted); margin-bottom: 0.2rem; }
+    .pick-card .pick-flag { font-size: 2rem; display: block; line-height: 1.2; }
+    .pick-card .pick-name { font-weight: 700; font-size: 0.85rem; margin-top: 0.25rem; }
+    .pick-card .pick-team { font-size: 0.7rem; color: var(--muted); margin-top: 1px; }
+
+    /* ── TIEBREAKER ────────────────────────────────── */
+    .tb-box {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 0.75rem;
+      padding: 1.25rem 1.5rem;
+    }
+    .tb-box h3 { font-size: 0.875rem; font-weight: 700; color: var(--gold); margin-bottom: 0.75rem; }
+    .tb-box ol { padding-left: 1.25rem; }
+    .tb-box li { font-size: 0.8rem; color: var(--muted); margin-bottom: 0.4rem; line-height: 1.5; }
+    .tb-box li strong { color: var(--text); }
+
+    /* ── MODAL ─────────────────────────────────────── */
+    .overlay {
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,.7);
+      display: flex; align-items: center; justify-content: center;
+      z-index: 100; padding: 1rem;
+    }
+    .overlay.hidden { display: none; }
+
+    .modal {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 1rem;
+      padding: 1.5rem;
+      width: 100%;
+      max-width: 460px;
+    }
+    .modal h2 { font-size: 1.1rem; font-weight: 700; margin-bottom: 0.75rem; }
+    .modal p  { font-size: 0.8rem; color: var(--muted); line-height: 1.6; margin-bottom: 1rem; }
+    .modal a  { color: var(--gold); }
+    .modal label { display: block; font-size: 0.8rem; font-weight: 600; margin-bottom: 0.3rem; }
+    .modal input {
+      width: 100%;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 0.5rem;
+      padding: 0.6rem 0.875rem;
+      color: var(--text);
+      font-size: 0.875rem;
+      outline: none;
+      margin-bottom: 1rem;
+    }
+    .modal input:focus { border-color: var(--gold); }
+    .modal-btns { display: flex; gap: 0.75rem; justify-content: flex-end; }
+
+    .btn-primary {
+      background: var(--gold); color: #000;
+      border: none; padding: 0.5rem 1.25rem;
+      border-radius: 0.45rem; font-weight: 700;
+      font-size: 0.85rem; cursor: pointer;
+    }
+    .btn-secondary {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      padding: 0.5rem 1.25rem;
+      border-radius: 0.45rem;
+      font-size: 0.85rem;
+      cursor: pointer;
+    }
+
+    /* ── STATUS BAR ────────────────────────────────── */
+    #statusBar {
+      text-align: center;
+      font-size: 0.7rem;
+      color: var(--muted);
+      padding: 1rem;
+      border-top: 1px solid var(--border);
+    }
+    .dot {
+      display: inline-block;
+      width: 6px; height: 6px;
+      background: var(--green);
+      border-radius: 50%;
+      margin-right: 4px;
+      animation: blink 2s step-start infinite;
+    }
+
+    /* ── RESPONSIVE ────────────────────────────────── */
+    @media (max-width: 600px) {
+      .lb-row { grid-template-columns: 2rem 1.5rem 1fr auto; }
+      .lb-stage { display: none; }
+      .lb-stats { font-size: 0.65rem; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="logo">
+    <h1>⚽ World Cup 2026 Raffle</h1>
+    <p>Winner-take-all · 30 participants</p>
+  </div>
+  <div class="header-right">
+    <span id="liveChip">● LIVE</span>
+    <button class="btn-icon" onclick="openSettings()">⚙ Settings</button>
+  </div>
+</header>
+
+<!-- Settings modal -->
+<div id="settingsOverlay" class="overlay hidden" onclick="overlayClick(event)">
+  <div class="modal">
+    <h2>⚙ Live Data Setup</h2>
+    <p>
+      This app uses <a href="https://www.football-data.org/" target="_blank">football-data.org</a>
+      for live scores. Sign up free at <strong>football-data.org</strong> — they'll email you a key instantly.
+      The free tier is enough for this app (10 req/min).
+    </p>
+    <label for="apiInput">API Key</label>
+    <input id="apiInput" type="text" placeholder="Paste your key here…" autocomplete="off" />
+    <div class="modal-btns">
+      <button class="btn-secondary" onclick="closeSettings()">Cancel</button>
+      <button class="btn-primary" onclick="saveSettings()">Save & Refresh</button>
+    </div>
+  </div>
+</div>
+
+<main>
+
+  <!-- No-API-key banner -->
+  <div id="noBanner" class="hidden">
+    <p>
+      Add your free <a href="https://www.football-data.org/" target="_blank">football-data.org</a>
+      API key to see live scores, match results, and auto-updating standings.
+    </p>
+    <button class="btn-primary" onclick="openSettings()">⚙ Add API Key</button>
+  </div>
+
+  <!-- Live / recent matches -->
+  <section>
+    <div class="sec-title">🔴 Live &amp; Recent Matches</div>
+    <div id="matchesGrid" class="matches-grid"></div>
+  </section>
+
+  <!-- Leaderboard -->
+  <section>
+    <div class="sec-title">🏆 Leaderboard</div>
+    <div id="leaderboard"></div>
+  </section>
+
+  <!-- Participants -->
+  <section>
+    <div class="sec-title">🎟 Raffle Draw</div>
+    <div id="picksGrid" class="picks-grid"></div>
+  </section>
+
+  <!-- Tiebreaker -->
+  <section>
+    <div class="tb-box">
+      <h3>📋 Tiebreaker Rules</h3>
+      <ol>
+        <li><strong>Round Reached</strong> — whoever's team advances furthest wins outright.</li>
+        <li><strong>Goal Difference</strong> — best combined goal difference across ALL matches (Group Stage + all Knockout rounds).</li>
+        <li><strong>Goals Scored</strong> — most total goals scored across ALL matches.</li>
+      </ol>
+    </div>
+  </section>
+
+</main>
+
+<div id="statusBar"><span class="dot"></span>Auto-refreshes every 90 seconds</div>
+
+<!-- ──────────────────────────────────────────────────────
+     SCRIPT
+     ──────────────────────────────────────────────────── -->
+<script>
+// ── API KEY — paste yours between the quotes below ───────
+const HARDCODED_KEY = '';   // <-- put your key here if Settings modal doesn't work
+
+// ── RAFFLE DATA ──────────────────────────────────────────
+const RAFFLE = [
+  { pick: 1,  name: 'Oscar',     team: 'Croatia',     flag: '🇭🇷', api: 'Croatia' },
+  { pick: 2,  name: 'Krystie',   team: 'England',     flag: '🏴󠁧󠁢󠁥󠁮󠁧󠁿', api: 'England' },
+  { pick: 3,  name: 'Andrea',    team: 'Belgium',     flag: '🇧🇪', api: 'Belgium' },
+  { pick: 4,  name: 'Celine',    team: 'Mexico',      flag: '🇲🇽', api: 'Mexico' },
+  { pick: 5,  name: 'Gerardo',   team: 'Germany',     flag: '🇩🇪', api: 'Germany' },
+  { pick: 6,  name: 'Carlos',    team: 'Senegal',     flag: '🇸🇳', api: 'Senegal' },
+  { pick: 7,  name: 'Wesley V',  team: 'USA',         flag: '🇺🇸', api: 'United States' },
+  { pick: 8,  name: 'Sofia',     team: 'Japan',       flag: '🇯🇵', api: 'Japan' },
+  { pick: 9,  name: 'Valentina', team: 'Australia',   flag: '🇦🇺', api: 'Australia' },
+  { pick: 10, name: 'Anthony',   team: 'Morocco',     flag: '🇲🇦', api: 'Morocco' },
+  { pick: 11, name: 'Fernando',  team: 'Austria',     flag: '🇦🇹', api: 'Austria' },
+  { pick: 12, name: 'Guillermo', team: 'Portugal',    flag: '🇵🇹', api: 'Portugal' },
+  { pick: 13, name: 'Berto',     team: 'Algeria',     flag: '🇩🇿', api: 'Algeria' },
+  { pick: 14, name: 'David',     team: 'Uruguay',     flag: '🇺🇾', api: 'Uruguay' },
+  { pick: 15, name: 'Gaby',      team: 'Argentina',   flag: '🇦🇷', api: 'Argentina' },
+  { pick: 16, name: 'Pocho',     team: 'Switzerland', flag: '🇨🇭', api: 'Switzerland' },
+  { pick: 17, name: 'Anderson',  team: 'Scotland',    flag: '🏴󠁧󠁢󠁳󠁣󠁴󠁿', api: 'Scotland' },
+  { pick: 18, name: 'Mariale',   team: 'Netherlands', flag: '🇳🇱', api: 'Netherlands' },
+  { pick: 19, name: 'Abraham',   team: 'Canada',      flag: '🇨🇦', api: 'Canada' },
+  { pick: 20, name: 'Luis M',    team: 'Turkey',      flag: '🇹🇷', api: 'Türkiye' },
+  { pick: 21, name: 'Angela',    team: 'Colombia',    flag: '🇨🇴', api: 'Colombia' },
+  { pick: 22, name: 'Jacky',     team: 'Paraguay',    flag: '🇵🇾', api: 'Paraguay' },
+  { pick: 23, name: 'Edwin',     team: 'Norway',      flag: '🇳🇴', api: 'Norway' },
+  { pick: 24, name: 'Wesley C',  team: 'Iran',        flag: '🇮🇷', api: 'Iran' },
+  { pick: 25, name: 'Pacho',     team: 'S. Korea',    flag: '🇰🇷', api: 'Korea Republic' },
+  { pick: 26, name: 'Mauro',     team: 'Egypt',       flag: '🇪🇬', api: 'Egypt' },
+  { pick: 27, name: 'Diana',     team: 'Brazil',      flag: '🇧🇷', api: 'Brazil' },
+  { pick: 28, name: 'Betty',     team: 'France',      flag: '🇫🇷', api: 'France' },
+  { pick: 29, name: 'Andres',    team: 'Ecuador',     flag: '🇪🇨', api: 'Ecuador' },
+  { pick: 30, name: 'Ivan',      team: 'Spain',       flag: '🇪🇸', api: 'Spain' },
+];
+
+// ── STAGE CONFIG ─────────────────────────────────────────
+const STAGE_ORDER = [
+  'GROUP_STAGE','LAST_32','LAST_16',
+  'QUARTER_FINALS','SEMI_FINALS','THIRD_PLACE','FINAL'
+];
+const STAGE_LABEL = {
+  GROUP_STAGE:    'Group Stage',
+  LAST_32:        'Round of 32',
+  LAST_16:        'Round of 16',
+  QUARTER_FINALS: 'Quarterfinals',
+  SEMI_FINALS:    'Semifinals',
+  THIRD_PLACE:    '3rd Place',
+  FINAL:          'Final',
+};
+
+// ── HELPERS ──────────────────────────────────────────────
+const apiKey = () => localStorage.getItem('wc26_key') || HARDCODED_KEY || '';
+
+function sameTeam(apiName, raffleApi) {
+  const a = (apiName || '').toLowerCase().trim();
+  const b = (raffleApi || '').toLowerCase().trim();
+  return a === b || a.includes(b) || b.includes(a);
+}
+
+function findParticipant(teamName) {
+  return RAFFLE.find(r => sameTeam(teamName, r.api));
+}
+
+function didWin(rafApi, match) {
+  if (match.score.winner === 'DRAW') return false;
+  const isHome = sameTeam(match.homeTeam.name, rafApi);
+  return (isHome && match.score.winner === 'HOME_TEAM') ||
+         (!isHome && match.score.winner === 'AWAY_TEAM');
+}
+
+// ── PROGRESS CALCULATION ─────────────────────────────────
+// Returns: { score (0-8), label, gs, gd, active }
+function calcProgress(entry, all) {
+  const mine = all.filter(m =>
+    sameTeam(m.homeTeam.name, entry.api) || sameTeam(m.awayTeam.name, entry.api)
+  );
+  const done = mine.filter(m => m.status === 'FINISHED');
+
+  // Tally goals (fullTime only — official score)
+  let gs = 0, gc = 0;
+  for (const m of done) {
+    const isHome = sameTeam(m.homeTeam.name, entry.api);
+    const ft = m.score.fullTime;
+    gs += isHome ? ft.home : ft.away;
+    gc += isHome ? ft.away : ft.home;
+  }
+  const gd = gs - gc;
+
+  if (done.length === 0) {
+    return { score: 0, label: 'Not started', gs, gd, active: false };
+  }
+
+  // Scan from highest stage down to find where team currently stands
+  for (let i = STAGE_ORDER.length - 1; i >= 0; i--) {
+    const stage = STAGE_ORDER[i];
+    const stageDone = done.filter(m => m.stage === stage);
+    if (stageDone.length === 0) continue;
+
+    if (stage === 'GROUP_STAGE') {
+      // Did they show up in any knockout fixtures (even scheduled)?
+      const inKO = mine.some(m => m.stage !== 'GROUP_STAGE');
+      return { score: inKO ? 2 : 1, label: inKO ? 'Round of 32' : 'Group Stage', gs, gd, active: inKO };
+    }
+
+    const last = stageDone.sort((a, b) => new Date(b.utcDate) - new Date(a.utcDate))[0];
+    const won  = didWin(entry.api, last);
+
+    switch (stage) {
+      case 'FINAL':
+        return { score: won ? 8 : 7, label: won ? '🏆 Champion!' : '🥈 Runner-Up', gs, gd, active: false };
+      case 'THIRD_PLACE':
+        return { score: won ? 6 : 5, label: won ? '🥉 3rd Place' : '4th Place', gs, gd, active: false };
+      case 'SEMI_FINALS':
+        // won → going to Final; lost → going to 3rd place match
+        return { score: won ? 7 : 5, label: won ? 'In Final' : '3rd Place Match', gs, gd, active: true };
+      case 'QUARTER_FINALS':
+        return { score: won ? 5 : 4, label: won ? 'In Semifinals' : 'QF Exit', gs, gd, active: won };
+      case 'LAST_16':
+        return { score: won ? 4 : 3, label: won ? 'In Quarterfinals' : 'R16 Exit', gs, gd, active: won };
+      case 'LAST_32':
+        return { score: won ? 3 : 2, label: won ? 'In Round of 16' : 'R32 Exit', gs, gd, active: won };
+    }
+  }
+
+  return { score: 1, label: 'Group Stage', gs, gd, active: true };
+}
+
+// ── API FETCH ─────────────────────────────────────────────
+async function fetchMatches() {
+  if (!apiKey()) return null;
+  try {
+    const res = await fetch('https://api.football-data.org/v4/competitions/WC/matches', {
+      headers: { 'X-Auth-Token': apiKey() }
+    });
+    if (res.status === 400 || res.status === 404) {
+      // Competition code might differ — try by competition ID search
+      return null;
+    }
+    if (!res.ok) throw new Error(res.status);
+    const data = await res.json();
+    return data.matches || [];
+  } catch (e) {
+    console.error('API error', e);
+    return null;
+  }
+}
+
+// ── RENDER MATCHES ───────────────────────────────────────
+function renderMatches(all) {
+  const grid = document.getElementById('matchesGrid');
+  const chip = document.getElementById('liveChip');
+
+  if (!all) {
+    grid.innerHTML = '<p style="font-size:.8rem;color:var(--muted)">Enter your API key to see live match data.</p>';
+    chip.style.display = 'none';
+    return;
+  }
+
+  const now  = Date.now();
+  const show = all.filter(m => {
+    const diff = (now - new Date(m.utcDate)) / 3600000; // hours ago
+    return diff > -6 && diff < 30; // -6h to +30h window
+  }).sort((a, b) => new Date(a.utcDate) - new Date(b.utcDate));
+
+  const live = all.filter(m => m.status === 'IN_PLAY' || m.status === 'PAUSED');
+  chip.style.display = live.length ? 'inline' : 'none';
+
+  if (show.length === 0) {
+    grid.innerHTML = '<p style="font-size:.8rem;color:var(--muted)">No matches right now — check back soon!</p>';
+    return;
+  }
+
+  grid.innerHTML = show.map(m => {
+    const hp = findParticipant(m.homeTeam.name);
+    const ap = findParticipant(m.awayTeam.name);
+    const hf = hp ? hp.flag : '🏳️';
+    const af = ap ? ap.flag : '🏳️';
+    const hOwner = hp ? `<div class="mowner">${hp.name}</div>` : '';
+    const aOwner = ap ? `<div class="mowner">${ap.name}</div>` : '';
+
+    const isLive = m.status === 'IN_PLAY' || m.status === 'PAUSED';
+    const isDone = m.status === 'FINISHED';
+
+    let scoreHtml = '';
+    let statusLabel = '';
+    if (isDone) {
+      scoreHtml = `<div class="match-score">${m.score.fullTime.home} – ${m.score.fullTime.away}</div>`;
+      statusLabel = '<span class="status-done">FT</span>';
+    } else if (isLive) {
+      const h = m.score.fullTime.home ?? 0;
+      const a = m.score.fullTime.away ?? 0;
+      scoreHtml = `<div class="match-score live-score">${h} – ${a}</div>`;
+      statusLabel = '<span class="status-live">● LIVE</span>';
+    } else {
+      const t = new Date(m.utcDate).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      scoreHtml = `<div class="match-score" style="font-size:1rem;color:var(--gold)">${t}</div>`;
+      statusLabel = '<span class="status-upcoming">UPCOMING</span>';
+    }
+
+    return `
+      <div class="match-card ${isLive ? 'live' : ''}">
+        <div class="match-meta">
+          <span>${STAGE_LABEL[m.stage] || m.stage}</span>
+          ${statusLabel}
+        </div>
+        <div class="match-body">
+          <div class="match-team">
+            <span class="mflag">${hf}</span>
+            <div class="mname">${m.homeTeam.shortName || m.homeTeam.name}</div>
+            ${hOwner}
+          </div>
+          ${scoreHtml}
+          <div class="match-team">
+            <span class="mflag">${af}</span>
+            <div class="mname">${m.awayTeam.shortName || m.awayTeam.name}</div>
+            ${aOwner}
+          </div>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+// ── RENDER LEADERBOARD ───────────────────────────────────
+function renderLeaderboard(all) {
+  const lb = document.getElementById('leaderboard');
+  const MEDALS = { 1: '🥇', 2: '🥈', 3: '🥉' };
+
+  const entries = RAFFLE.map(r => ({
+    ...r,
+    p: all ? calcProgress(r, all) : { score: 0, label: 'Pending', gs: 0, gd: 0, active: false }
+  }));
+
+  entries.sort((a, b) => {
+    if (b.p.score !== a.p.score) return b.p.score - a.p.score;
+    if (b.p.gd    !== a.p.gd)    return b.p.gd - a.p.gd;
+    if (b.p.gs    !== a.p.gs)    return b.p.gs - a.p.gs;
+    return a.name.localeCompare(b.name);
+  });
+
+  lb.innerHTML = entries.map((e, i) => {
+    const rank = i + 1;
+    const p = e.p;
+    const rankCls  = rank <= 3 ? `rank-${rank}` : '';
+    const stateCls = p.score === 0 ? '' : p.active ? 'still-in' : 'out';
+    const stageCls = p.score === 8 ? 's-champion'
+                   : p.active      ? 's-active'
+                   : p.score === 0 ? 's-pending'
+                   : 's-out';
+    const gdStr  = p.gd >= 0 ? `+${p.gd}` : `${p.gd}`;
+    const gdCls  = p.gd >= 0 ? 'gd-pos' : 'gd-neg';
+    const rankDisplay = MEDALS[rank] || rank;
+
+    return `
+      <div class="lb-row ${rankCls} ${stateCls}">
+        <div class="lb-rank">${rankDisplay}</div>
+        <div class="lb-flag">${e.flag}</div>
+        <div class="lb-info">
+          <div class="lb-name">${e.name}</div>
+          <div class="lb-team">${e.team}</div>
+        </div>
+        <div class="lb-stage ${stageCls}">${p.label}</div>
+        <div class="lb-stats">
+          <div class="${gdCls}">GD ${gdStr}</div>
+          <div class="gs-val">${p.gs} goals</div>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+// ── RENDER PICKS ─────────────────────────────────────────
+function renderPicks() {
+  document.getElementById('picksGrid').innerHTML = RAFFLE.map(r => `
+    <div class="pick-card">
+      <div class="pick-num">Pick #${r.pick}</div>
+      <span class="pick-flag">${r.flag}</span>
+      <div class="pick-name">${r.name}</div>
+      <div class="pick-team">${r.team}</div>
+    </div>
+  `).join('');
+}
+
+// ── MAIN REFRESH ─────────────────────────────────────────
+let allMatches = null;
+
+async function refresh() {
+  document.getElementById('statusBar').innerHTML = '<span class="dot"></span>Refreshing…';
+  allMatches = await fetchMatches();
+  renderMatches(allMatches);
+  renderLeaderboard(allMatches);
+  const t = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  document.getElementById('statusBar').innerHTML =
+    `<span class="dot"></span>Last updated ${t} · auto-refreshes every 90 s`;
+}
+
+// ── SETTINGS ─────────────────────────────────────────────
+function openSettings() {
+  document.getElementById('apiInput').value = apiKey();
+  document.getElementById('settingsOverlay').classList.remove('hidden');
+}
+function closeSettings() {
+  document.getElementById('settingsOverlay').classList.add('hidden');
+}
+function saveSettings() {
+  const v = document.getElementById('apiInput').value.trim();
+  if (v) localStorage.setItem('wc26_key', v);
+  else   localStorage.removeItem('wc26_key');
+  closeSettings();
+  refresh();
+}
+function overlayClick(e) {
+  if (e.target === document.getElementById('settingsOverlay')) closeSettings();
+}
+
+// ── INIT ─────────────────────────────────────────────────
+renderPicks();
+renderLeaderboard(null); // initial skeleton
+
+if (!apiKey()) {
+  document.getElementById('noBanner').classList.remove('hidden');
+  document.getElementById('matchesGrid').innerHTML =
+    '<p style="font-size:.8rem;color:var(--muted)">Enter your API key above to see live match data.</p>';
+  document.getElementById('statusBar').innerHTML = '⚙ Add API key in Settings to enable live data';
+} else {
+  document.getElementById('noBanner').classList.add('hidden');
+  refresh();
+}
+
+// Auto-refresh every 90 seconds
+setInterval(() => { if (apiKey()) refresh(); }, 90_000);
+</script>
+</body>
+</html>
