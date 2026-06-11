@@ -1,0 +1,27 @@
+name: Fetch WC 2026 Match Data
+
+on:
+  schedule:
+    - cron: '*/5 * * * *'   # every 5 minutes
+  workflow_dispatch:          # allow manual trigger from GitHub UI
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Fetch match data from football-data.org
+        run: |
+          curl -s \
+            -H "X-Auth-Token: ${{ secrets.FOOTBALL_API_KEY }}" \
+            "https://api.football-data.org/v4/competitions/WC/matches" \
+            -o data/matches.json
+
+      - name: Commit and push if data changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/matches.json
+          git diff --staged --quiet || git commit -m "chore: update match data [skip ci]"
+          git push

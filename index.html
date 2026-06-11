@@ -321,38 +321,10 @@
   </div>
   <div class="header-right">
     <span id="liveChip">● LIVE</span>
-    <button class="btn-icon" onclick="openSettings()">⚙ Settings</button>
   </div>
 </header>
 
-<!-- Settings modal -->
-<div id="settingsOverlay" class="overlay hidden" onclick="overlayClick(event)">
-  <div class="modal">
-    <h2>⚙ Live Data Setup</h2>
-    <p>
-      This app uses <a href="https://www.football-data.org/" target="_blank">football-data.org</a>
-      for live scores. Sign up free at <strong>football-data.org</strong> — they'll email you a key instantly.
-      The free tier is enough for this app (10 req/min).
-    </p>
-    <label for="apiInput">API Key</label>
-    <input id="apiInput" type="text" placeholder="Paste your key here…" autocomplete="off" />
-    <div class="modal-btns">
-      <button class="btn-secondary" onclick="closeSettings()">Cancel</button>
-      <button class="btn-primary" onclick="saveSettings()">Save & Refresh</button>
-    </div>
-  </div>
-</div>
-
 <main>
-
-  <!-- No-API-key banner -->
-  <div id="noBanner" class="hidden">
-    <p>
-      Add your free <a href="https://www.football-data.org/" target="_blank">football-data.org</a>
-      API key to see live scores, match results, and auto-updating standings.
-    </p>
-    <button class="btn-primary" onclick="openSettings()">⚙ Add API Key</button>
-  </div>
 
   <!-- Live / recent matches -->
   <section>
@@ -392,9 +364,6 @@
      SCRIPT
      ──────────────────────────────────────────────────── -->
 <script>
-// ── API KEY — paste yours between the quotes below ───────
-const HARDCODED_KEY = '';   // <-- put your key here if Settings modal doesn't work
-
 // ── RAFFLE DATA ──────────────────────────────────────────
 const RAFFLE = [
   { pick: 1,  name: 'Oscar',     team: 'Croatia',     flag: '🇭🇷', api: 'Croatia' },
@@ -445,7 +414,6 @@ const STAGE_LABEL = {
 };
 
 // ── HELPERS ──────────────────────────────────────────────
-const apiKey = () => localStorage.getItem('wc26_key') || HARDCODED_KEY || '';
 
 function sameTeam(apiName, raffleApi) {
   const a = (apiName || '').toLowerCase().trim();
@@ -521,22 +489,15 @@ function calcProgress(entry, all) {
   return { score: 1, label: 'Group Stage', gs, gd, active: true };
 }
 
-// ── API FETCH ─────────────────────────────────────────────
+// ── DATA FETCH (reads local file updated by GitHub Action) ──
 async function fetchMatches() {
-  if (!apiKey()) return null;
   try {
-    const res = await fetch('https://api.football-data.org/v4/competitions/WC/matches', {
-      headers: { 'X-Auth-Token': apiKey() }
-    });
-    if (res.status === 400 || res.status === 404) {
-      // Competition code might differ — try by competition ID search
-      return null;
-    }
+    const res = await fetch('./data/matches.json?t=' + Date.now());
     if (!res.ok) throw new Error(res.status);
     const data = await res.json();
     return data.matches || [];
   } catch (e) {
-    console.error('API error', e);
+    console.error('Error loading match data', e);
     return null;
   }
 }
@@ -547,7 +508,7 @@ function renderMatches(all) {
   const chip = document.getElementById('liveChip');
 
   if (!all) {
-    grid.innerHTML = '<p style="font-size:.8rem;color:var(--muted)">Enter your API key to see live match data.</p>';
+    grid.innerHTML = '<p style="font-size:.8rem;color:var(--muted)">Match data loading — check back shortly.</p>';
     chip.style.display = 'none';
     return;
   }
@@ -690,41 +651,13 @@ async function refresh() {
     `<span class="dot"></span>Last updated ${t} · auto-refreshes every 90 s`;
 }
 
-// ── SETTINGS ─────────────────────────────────────────────
-function openSettings() {
-  document.getElementById('apiInput').value = apiKey();
-  document.getElementById('settingsOverlay').classList.remove('hidden');
-}
-function closeSettings() {
-  document.getElementById('settingsOverlay').classList.add('hidden');
-}
-function saveSettings() {
-  const v = document.getElementById('apiInput').value.trim();
-  if (v) localStorage.setItem('wc26_key', v);
-  else   localStorage.removeItem('wc26_key');
-  closeSettings();
-  refresh();
-}
-function overlayClick(e) {
-  if (e.target === document.getElementById('settingsOverlay')) closeSettings();
-}
-
 // ── INIT ─────────────────────────────────────────────────
 renderPicks();
-renderLeaderboard(null); // initial skeleton
-
-if (!apiKey()) {
-  document.getElementById('noBanner').classList.remove('hidden');
-  document.getElementById('matchesGrid').innerHTML =
-    '<p style="font-size:.8rem;color:var(--muted)">Enter your API key above to see live match data.</p>';
-  document.getElementById('statusBar').innerHTML = '⚙ Add API key in Settings to enable live data';
-} else {
-  document.getElementById('noBanner').classList.add('hidden');
-  refresh();
-}
+renderLeaderboard(null);
+refresh();
 
 // Auto-refresh every 90 seconds
-setInterval(() => { if (apiKey()) refresh(); }, 90_000);
+setInterval(refresh, 90_000);
 </script>
 </body>
 </html>
