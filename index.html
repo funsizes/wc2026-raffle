@@ -1082,7 +1082,8 @@ function renderDailySummary(label, sortedEntries, summaryId) {
     const pillCls = rankDelta > 0 ? 'mp-up' : rankDelta < 0 ? 'mp-down' : '';
     const rankStr = rankDelta > 0 ? `▲${rankDelta}` : rankDelta < 0 ? `▼${Math.abs(rankDelta)}` : '=';
     const rankCls = rankDelta > 0 ? 'rd-up' : rankDelta < 0 ? 'rd-down' : 'rd-same';
-    const gdStr   = gdDelta > 0 ? `GD +${gdDelta}` : gdDelta < 0 ? `GD ${gdDelta}` : 'GD ±0';
+    const gd = e.p.gd;
+    const gdStr   = gd > 0 ? `GD +${gd}` : gd < 0 ? `GD ${gd}` : 'GD 0';
     return `
       <div class="mover-pill ${pillCls}">
         <span class="mflag-sm">${flagHtml(e)}</span>
