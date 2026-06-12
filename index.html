@@ -369,6 +369,32 @@
     .tab-panel { display: none; }
     .tab-panel.active { display: block; }
 
+    /* ── RANK DELTA (daily movement) ─────────────────── */
+    .rank-delta { display: block; font-family: var(--pixel); font-size: 0.38rem; margin-top: 3px; }
+    .rd-up   { color: var(--green); }
+    .rd-down { color: var(--red); }
+    .rd-same { color: var(--muted); opacity: 0.45; }
+
+    /* ── DAILY SUMMARY BAR ────────────────────────────── */
+    .daily-summary {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem 1.25rem;
+      align-items: center;
+      padding: 0.6rem 0.875rem;
+      background: var(--surface);
+      border: 2px solid var(--border);
+      box-shadow: 3px 3px 0 rgba(0,0,0,.4);
+      margin-bottom: 0.875rem;
+      font-size: 0.72rem;
+    }
+    .daily-summary:empty { display: none; }
+    .ds-label { font-family: var(--pixel); font-size: 0.4rem; color: var(--muted); margin-right: 0.3rem; letter-spacing: 0.05em; }
+    .ds-divider { color: var(--border); }
+    .ds-up   { color: var(--green); }
+    .ds-down { color: var(--red); }
+    .ds-same { color: var(--muted); }
+
     /* ── RESPONSIVE ───────────────────────────────────── */
     @media (max-width: 600px) {
       .lb-row { grid-template-columns: 2rem 1.5rem 1fr auto auto; }
@@ -432,12 +458,14 @@
   <!-- Tab: Main Group -->
   <div id="tab-main" class="tab-panel active">
     <div class="sec-title" id="lb1Label"></div>
+    <div class="daily-summary" id="leaderboard-summary"></div>
     <div id="leaderboard"></div>
   </div>
 
   <!-- Tab: Gaby's Group -->
   <div id="tab-gaby" class="tab-panel">
     <div class="sec-title" id="lb2Label"></div>
+    <div class="daily-summary" id="leaderboard2-summary"></div>
     <div id="leaderboard2"></div>
   </div>
 
@@ -608,8 +636,8 @@ function sameTeam(apiName, raffleApi) {
   return a === b || a.includes(b) || b.includes(a);
 }
 
-function findParticipant(teamName) {
-  return RAFFLE.find(r => sameTeam(teamName, r.api));
+function findParticipant(teamName, raffle = RAFFLE) {
+  return raffle.find(r => sameTeam(teamName, r.api));
 }
 
 function didWin(rafApi, match) {
@@ -690,7 +718,7 @@ async function fetchMatches() {
 }
 
 // ── RENDER MATCHES ───────────────────────────────────────
-function renderMatches(all) {
+function renderMatches(all, raffle = RAFFLE) {
   const grid = document.getElementById('matchesGrid');
   const chip = document.getElementById('liveChip');
 
@@ -715,8 +743,8 @@ function renderMatches(all) {
   }
 
   grid.innerHTML = show.map(m => {
-    const hp = findParticipant(m.homeTeam.name);
-    const ap = findParticipant(m.awayTeam.name);
+    const hp = findParticipant(m.homeTeam.name, raffle);
+    const ap = findParticipant(m.awayTeam.name, raffle);
     const hf = flagHtml(hp || { flag: '🏳️' });
     const af = flagHtml(ap || { flag: '🏳️' });
     const hOwner = hp ? `<div class="mowner">${hp.name}</div>` : '';
@@ -766,7 +794,7 @@ function renderMatches(all) {
 }
 
 // ── RENDER LEADERBOARD ───────────────────────────────────
-function renderLeaderboard(raffle, all, containerId) {
+function renderLeaderboard(raffle, all, containerId, snapLabel) {
   const lb = document.getElementById(containerId);
   const MEDALS = { 1: '🥇', 2: '🥈', 3: '🥉' };
 
@@ -782,6 +810,8 @@ function renderLeaderboard(raffle, all, containerId) {
     return a.name.localeCompare(b.name);
   });
 
+  if (snapLabel && all) saveSnapshotIfNew(snapLabel, entries);
+
   lb.innerHTML = entries.map((e, i) => {
     const rank = i + 1;
     const p = e.p;
@@ -795,7 +825,19 @@ function renderLeaderboard(raffle, all, containerId) {
     const gdCls  = p.gd >= 0 ? 'gd-pos' : 'gd-neg';
     const rankDisplay = MEDALS[rank] || rank;
 
-    const prData  = getPrData(e);
+    // Daily rank delta
+    let rankDeltaHtml = '';
+    if (snapLabel) {
+      const d = getEntryDelta(snapLabel, e, rank);
+      if (d) {
+        if (d.rank > 0)      rankDeltaHtml = `<span class="rank-delta rd-up">▲${d.rank}</span>`;
+        else if (d.rank < 0) rankDeltaHtml = `<span class="rank-delta rd-down">▼${Math.abs(d.rank)}</span>`;
+        else                 rankDeltaHtml = `<span class="rank-delta rd-same">=</span>`;
+      }
+    }
+
+    // PR delta vs selected source
+    const prData = getPrData(e);
     let prHtml = '<div class="lb-pr"><span class="pr-badge">—</span></div>';
     if (prData) {
       const delta = Math.round(prData.display) - rank;
@@ -809,7 +851,7 @@ function renderLeaderboard(raffle, all, containerId) {
 
     return `
       <div class="lb-row ${rankCls} ${stateCls}">
-        <div class="lb-rank">${rankDisplay}</div>
+        <div class="lb-rank">${rankDisplay}${rankDeltaHtml}</div>
         <div class="lb-flag">${flagHtml(e)}</div>
         <div class="lb-info">
           <div class="lb-name">${e.name}</div>
@@ -824,6 +866,8 @@ function renderLeaderboard(raffle, all, containerId) {
       </div>
     `;
   }).join('');
+
+  if (snapLabel) renderDailySummary(snapLabel, entries, containerId + '-summary');
 }
 
 // ── RENDER PICKS ─────────────────────────────────────────
@@ -927,14 +971,82 @@ function renderRankings() {
   document.getElementById('rankingsTable').innerHTML = thead + `<tbody>${rows}</tbody>`;
 }
 
+// ── DAILY SNAPSHOT SYSTEM ────────────────────────────────
+function dateStr(offsetDays = 0) {
+  return new Date(Date.now() + offsetDays * 864e5).toISOString().slice(0, 10);
+}
+
+function saveSnapshotIfNew(label, sortedEntries) {
+  const key = `wc2026_${label}_${dateStr()}`;
+  if (localStorage.getItem(key)) return;
+  const snap = {};
+  sortedEntries.forEach((e, i) => {
+    snap[e.name + '|' + e.team] = { rank: i + 1, gd: e.p.gd, gs: e.p.gs };
+  });
+  try { localStorage.setItem(key, JSON.stringify(snap)); } catch(_) {}
+}
+
+function loadSnapshot(label, offset = -1) {
+  const raw = localStorage.getItem(`wc2026_${label}_${dateStr(offset)}`);
+  return raw ? JSON.parse(raw) : null;
+}
+
+function getEntryDelta(label, entry, currentRank) {
+  const snap = loadSnapshot(label, -1) || loadSnapshot(label, 0);
+  if (!snap) return null;
+  const prev = snap[entry.name + '|' + entry.team];
+  if (!prev) return null;
+  return {
+    rank: prev.rank - currentRank,
+    gd:   entry.p.gd - prev.gd,
+    gs:   entry.p.gs - prev.gs,
+  };
+}
+
+function renderDailySummary(label, sortedEntries, summaryId) {
+  const el = document.getElementById(summaryId);
+  if (!el) return;
+  const snap = loadSnapshot(label, -1) || loadSnapshot(label, 0);
+  if (!snap) { el.innerHTML = ''; return; }
+
+  let up = 0, down = 0, same = 0, gdPos = 0, gdNeg = 0, gdSame = 0;
+  sortedEntries.forEach((e, i) => {
+    const prev = snap[e.name + '|' + e.team];
+    if (!prev) return;
+    const rd = prev.rank - (i + 1);
+    if (rd > 0) up++; else if (rd < 0) down++; else same++;
+    const gdd = e.p.gd - prev.gd;
+    if (gdd > 0) gdPos++; else if (gdd < 0) gdNeg++; else gdSame++;
+  });
+
+  const label2 = loadSnapshot(label, -1) ? 'vs yesterday' : 'vs today\'s start';
+  el.innerHTML = `
+    <span class="ds-label">TODAY (${label2}):</span>
+    <span class="ds-up">▲ ${up} up</span>
+    <span class="ds-divider">·</span>
+    <span class="ds-down">▼ ${down} down</span>
+    <span class="ds-divider">·</span>
+    <span class="ds-same">= ${same} steady</span>
+    <span class="ds-divider">|</span>
+    <span class="ds-label">GD:</span>
+    <span class="ds-up">+${gdPos} gained</span>
+    <span class="ds-divider">·</span>
+    <span class="ds-down">${gdNeg} lost</span>
+    <span class="ds-divider">·</span>
+    <span class="ds-same">${gdSame} stale</span>
+  `;
+}
+
 // ── PR SOURCE SELECTOR ────────────────────────────────────
 document.getElementById('prSourceSelect').addEventListener('change', e => {
   prSourceIdx = parseInt(e.target.value);
-  renderLeaderboard(RAFFLE,  allMatches, 'leaderboard');
-  renderLeaderboard(RAFFLE2, allMatches, 'leaderboard2');
+  renderLeaderboard(RAFFLE,  allMatches, 'leaderboard',  'g1');
+  renderLeaderboard(RAFFLE2, allMatches, 'leaderboard2', 'g2');
 });
 
 // ── TAB SWITCHING ─────────────────────────────────────────
+let activeRaffle = RAFFLE;
+
 document.querySelector('.tab-bar').addEventListener('click', e => {
   const btn = e.target.closest('.tab-btn');
   if (!btn) return;
@@ -942,6 +1054,9 @@ document.querySelector('.tab-bar').addEventListener('click', e => {
   document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
   btn.classList.add('active');
   document.getElementById(btn.dataset.tab).classList.add('active');
+  if (btn.dataset.tab === 'tab-main')  activeRaffle = RAFFLE;
+  if (btn.dataset.tab === 'tab-gaby') activeRaffle = RAFFLE2;
+  renderMatches(allMatches, activeRaffle);
 });
 
 // ── MAIN REFRESH ─────────────────────────────────────────
@@ -950,9 +1065,9 @@ let allMatches = null;
 async function refresh() {
   document.getElementById('statusBar').innerHTML = '<span class="dot"></span>Refreshing…';
   allMatches = await fetchMatches();
-  renderMatches(allMatches);
-  renderLeaderboard(RAFFLE,  allMatches, 'leaderboard');
-  renderLeaderboard(RAFFLE2, allMatches, 'leaderboard2');
+  renderMatches(allMatches, activeRaffle);
+  renderLeaderboard(RAFFLE,  allMatches, 'leaderboard',  'g1');
+  renderLeaderboard(RAFFLE2, allMatches, 'leaderboard2', 'g2');
   const t = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
   document.getElementById('statusBar').innerHTML =
     `<span class="dot"></span>Last updated ${t} · auto-refreshes every 90 s`;
@@ -963,8 +1078,8 @@ document.getElementById('lb1Label').textContent = '🏆 ' + RAFFLE_LABEL;
 document.getElementById('lb2Label').textContent = '🏆 ' + RAFFLE2_LABEL;
 renderPicks();
 renderRankings();
-renderLeaderboard(RAFFLE,  null, 'leaderboard');
-renderLeaderboard(RAFFLE2, null, 'leaderboard2');
+renderLeaderboard(RAFFLE,  null, 'leaderboard',  'g1');
+renderLeaderboard(RAFFLE2, null, 'leaderboard2', 'g2');
 refresh();
 
 // Auto-refresh every 90 seconds
