@@ -526,7 +526,7 @@
 
   <!-- Always-visible matches strip -->
   <section>
-    <div class="sec-title">🔴 Live &amp; Recent Matches</div>
+    <div class="sec-title" id="matchesSectionTitle">📅 Today's Matches</div>
     <div id="matchesGrid" class="matches-grid"></div>
   </section>
 
@@ -875,14 +875,20 @@ function renderMatches(all, raffle = RAFFLE) {
     return;
   }
 
-  const now  = Date.now();
+  const todayLocal = new Date().toLocaleDateString('en-CA');
+  const now        = Date.now();
   const show = all.filter(m => {
-    const diff = (now - new Date(m.utcDate)) / 3600000; // hours ago
-    return diff > -6 && diff < 30; // -6h to +30h window
+    const gameDate = new Date(m.utcDate).toLocaleDateString('en-CA');
+    const hoursAgo = (now - new Date(m.utcDate)) / 3_600_000;
+    // Always show every game on today's local date (any status / any time),
+    // plus finished games from the last 30 h so yesterday's results stay visible.
+    return gameDate === todayLocal || (hoursAgo >= 0 && hoursAgo < 30);
   }).sort((a, b) => new Date(a.utcDate) - new Date(b.utcDate));
 
   const live = all.filter(m => m.status === 'IN_PLAY' || m.status === 'PAUSED');
   chip.style.display = live.length ? 'inline' : 'none';
+  const titleEl = document.getElementById('matchesSectionTitle');
+  if (titleEl) titleEl.textContent = live.length ? '🔴 Live & Today\'s Matches' : '📅 Today\'s Matches';
 
   if (show.length === 0) {
     grid.innerHTML = '<p style="font-size:.8rem;color:var(--muted)">No matches right now — check back soon!</p>';
