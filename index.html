@@ -418,6 +418,89 @@
     .mover-rank.rd-down { color: var(--red); }
     .mover-gd   { font-size: 0.65rem; color: var(--muted); }
 
+    /* ── DAILY HISTORY TAB ───────────────────────────── */
+    .hist-controls {
+      display: flex; align-items: center; justify-content: space-between;
+      flex-wrap: wrap; gap: 0.75rem; margin-bottom: 1.25rem;
+    }
+    .hist-group-toggle { display: flex; gap: 0.4rem; }
+    .hist-group-btn {
+      font-family: var(--pixel); font-size: 0.42rem;
+      background: var(--surface); border: 2px solid var(--border);
+      color: var(--muted); padding: 0.4rem 0.65rem; cursor: pointer;
+    }
+    .hist-group-btn.active { background: var(--card); border-color: var(--gold); color: var(--gold); }
+    .hist-group-btn:hover:not(.active) { border-color: var(--amber); color: var(--text); }
+    .hist-date-nav { display: flex; align-items: center; gap: 0.6rem; }
+    .hist-nav-btn {
+      font-family: var(--pixel); font-size: 0.65rem;
+      background: var(--surface); border: 2px solid var(--border);
+      color: var(--text); padding: 0.35rem 0.8rem; cursor: pointer;
+    }
+    .hist-nav-btn:hover:not(:disabled) { border-color: var(--gold); color: var(--gold); }
+    .hist-nav-btn:disabled { opacity: 0.3; cursor: default; }
+    .hist-date-label {
+      font-family: var(--pixel); font-size: 0.58rem; color: var(--gold);
+      min-width: 9rem; text-align: center;
+    }
+    .sc-card {
+      background: var(--surface); border: 2px solid var(--border);
+      max-width: 700px; margin: 0 auto;
+      box-shadow: 5px 5px 0 rgba(0,0,0,.55);
+    }
+    .sc-head {
+      text-align: center; padding: 1rem 1.25rem 0.8rem;
+      border-bottom: 2px solid var(--border);
+      background: linear-gradient(180deg, #271808 0%, #1c1208 100%);
+    }
+    .sc-title { font-family: var(--pixel); font-size: 0.7rem; color: var(--gold); letter-spacing: 0.1em; }
+    .sc-sub   { font-size: 0.68rem; color: var(--text); margin-top: 0.3rem; }
+    .sc-meta  { font-size: 0.5rem; color: var(--muted); margin-top: 0.2rem; }
+    .sc-col-heads {
+      display: grid;
+      grid-template-columns: 2.2rem 1.6rem 1fr 2.8rem auto 3.8rem;
+      gap: 0.4rem; padding: 0.3rem 0.8rem;
+      background: var(--card); border-bottom: 1px solid var(--border);
+      font-family: var(--pixel); font-size: 0.36rem; color: var(--muted);
+      letter-spacing: 0.07em; text-transform: uppercase; text-align: center;
+    }
+    .sc-col-heads span:nth-child(3) { text-align: left; }
+    .sc-row {
+      display: grid;
+      grid-template-columns: 2.2rem 1.6rem 1fr 2.8rem auto 3.8rem;
+      align-items: center; gap: 0.4rem;
+      padding: 0.38rem 0.8rem;
+      border-bottom: 1px solid rgba(107,67,24,0.2);
+    }
+    .sc-row:last-child { border-bottom: none; }
+    .sc-row:nth-child(odd) { background: rgba(255,255,255,0.018); }
+    .sc-rank-cell {
+      text-align: center; font-family: var(--pixel);
+      font-size: 0.5rem; color: var(--muted);
+    }
+    .sc-rank-cell.r1 { font-size: 1.1rem; line-height: 1; }
+    .sc-rank-cell.r2 { font-size: 0.95rem; line-height: 1; }
+    .sc-rank-cell.r3 { font-size: 0.85rem; line-height: 1; }
+    .sc-flag-cell { text-align: center; }
+    .sc-flag-cell .flag-img { height: 1rem; display: block; margin: 0 auto; }
+    .sc-info-cell { display: flex; flex-direction: column; min-width: 0; }
+    .sc-owner { font-size: 0.68rem; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .sc-team  { font-size: 0.52rem; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .sc-move-cell { text-align: center; font-family: var(--pixel); font-size: 0.44rem; white-space: nowrap; }
+    .sc-up   { color: var(--green); }
+    .sc-down { color: var(--red); }
+    .sc-same { color: var(--muted); }
+    .sc-stats-cell { font-size: 0.58rem; white-space: nowrap; }
+    .sc-stats-cell .sc-gd-pos { color: var(--green); }
+    .sc-stats-cell .sc-gd-neg { color: var(--red); }
+    .sc-stats-cell .sc-goals  { color: var(--muted); }
+    .sc-pr-cell { text-align: right; font-size: 0.52rem; color: var(--muted); white-space: nowrap; }
+    .sc-pr-num { color: var(--gold); font-family: var(--pixel); font-size: 0.44rem; }
+    .sc-empty {
+      text-align: center; padding: 3rem 1rem;
+      font-size: 0.68rem; color: var(--muted); line-height: 2.2;
+    }
+
     /* ── RESPONSIVE ───────────────────────────────────── */
     @media (max-width: 600px) {
       .lb-row { grid-template-columns: 2rem 1.5rem 1fr auto auto; }
@@ -479,6 +562,7 @@
     <button class="tab-btn"        data-tab="tab-raffle">🎟 Raffle Draw</button>
     <button class="tab-btn"        data-tab="tab-rankings">📊 Power Rankings</button>
     <button class="tab-btn"        data-tab="tab-rules">📋 Rules</button>
+    <button class="tab-btn"        data-tab="tab-history">📅 Daily History</button>
   </nav>
 
   <!-- Tab: Main Group -->
@@ -542,6 +626,22 @@
         not from someone else's team losing.
       </p>
     </div>
+  </div>
+
+  <!-- Tab: Daily History -->
+  <div id="tab-history" class="tab-panel">
+    <div class="hist-controls">
+      <div class="hist-group-toggle">
+        <button class="hist-group-btn active" data-hgroup="g1">🏆 Main Group</button>
+        <button class="hist-group-btn"        data-hgroup="g2">🏆 Gaby's Group</button>
+      </div>
+      <div class="hist-date-nav">
+        <button class="hist-nav-btn" id="hist-prev" disabled>◀</button>
+        <span class="hist-date-label" id="hist-date-label">—</span>
+        <button class="hist-nav-btn" id="hist-next" disabled>▶</button>
+      </div>
+    </div>
+    <div id="hist-card"></div>
   </div>
 
 </main>
@@ -1121,18 +1221,146 @@ function renderDailySummary(label, sortedEntries, summaryId) {
     <div class="mover-list">${pills}</div>`;
 }
 
+// ── DAILY HISTORY ─────────────────────────────────────────
+let histGroup   = 'g1';
+let histRaffle  = RAFFLE;
+let histDateIdx = 9999;
+
+const HIST_MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const HIST_DAYS   = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+const HIST_SRC_LABELS = ['ESPN','CBS','USAT','Yahoo','Guardian','Fox','Athletic','BR','Elo','FIFA','Opta','Score','PrizePicks','Goal'];
+
+function getSnapshotDates(label) {
+  const prefix = `wc2026_${label}_`;
+  const dates = [];
+  for (let i = 0; i < localStorage.length; i++) {
+    const k = localStorage.key(i);
+    if (k && k.startsWith(prefix)) dates.push(k.slice(prefix.length));
+  }
+  return dates.sort();
+}
+
+function renderHistoryTab() {
+  const dates   = getSnapshotDates(histGroup);
+  const cardEl  = document.getElementById('hist-card');
+  const prevBtn = document.getElementById('hist-prev');
+  const nextBtn = document.getElementById('hist-next');
+  const dateLbl = document.getElementById('hist-date-label');
+
+  if (!dates.length) {
+    cardEl.innerHTML = '<div class="sc-empty">No history saved yet.<br>The page saves a snapshot each day you visit.<br>Check back tomorrow!</div>';
+    dateLbl.textContent = '—';
+    prevBtn.disabled = nextBtn.disabled = true;
+    return;
+  }
+
+  histDateIdx   = Math.max(0, Math.min(histDateIdx, dates.length - 1));
+  const date    = dates[histDateIdx];
+  prevBtn.disabled = histDateIdx === 0;
+  nextBtn.disabled = histDateIdx === dates.length - 1;
+
+  const [y, m, d] = date.split('-');
+  dateLbl.textContent = `${HIST_MONTHS[+m-1]} ${+d}, ${y}`;
+
+  const snap     = JSON.parse(localStorage.getItem(`wc2026_${histGroup}_${date}`) || 'null');
+  const prevDate = dates[histDateIdx - 1];
+  const prev     = prevDate ? JSON.parse(localStorage.getItem(`wc2026_${histGroup}_${prevDate}`) || 'null') : null;
+
+  if (!snap) { cardEl.innerHTML = '<div class="sc-empty">No data for this date.</div>'; return; }
+
+  const MEDALS = { 1:'🥇', 2:'🥈', 3:'🥉' };
+
+  const entries = Object.entries(snap).map(([key, val]) => {
+    const sep  = key.indexOf('|');
+    const name = key.slice(0, sep);
+    const team = key.slice(sep + 1);
+    const raf  = histRaffle.find(r => r.name === name && r.team === team);
+    return { name, team, raf, rank: val.rank, gd: val.gd, gs: val.gs };
+  }).sort((a, b) => a.rank - b.rank);
+
+  const dateObj   = new Date(date + 'T12:00:00');
+  const fullDate  = `${HIST_DAYS[dateObj.getDay()]}, ${HIST_MONTHS[+m-1]} ${+d}, ${y}`;
+  const groupLbl  = histGroup === 'g1' ? 'Main Group (30)' : "Gaby's Group (21)";
+  const srcLbl    = prSourceIdx === -1 ? 'Avg (14 sources)' : HIST_SRC_LABELS[prSourceIdx];
+  const vsLbl     = prev
+    ? `vs ${HIST_MONTHS[+prevDate.split('-')[1]-1]} ${+prevDate.split('-')[2]}`
+    : 'Day 1 — no prior snapshot';
+
+  const rows = entries.map(e => {
+    const prData   = getPrData(e.raf || { api: e.team, team: e.team });
+    const prevSnap = prev ? prev[e.name + '|' + e.team] : null;
+
+    const delta   = prevSnap != null ? prevSnap.rank - e.rank : null;
+    const moveCls = delta === null ? 'sc-same' : delta > 0 ? 'sc-up' : delta < 0 ? 'sc-down' : 'sc-same';
+    const moveStr = delta === null ? '—' : delta > 0 ? `▲${delta}` : delta < 0 ? `▼${Math.abs(delta)}` : '=';
+
+    const gdStr    = e.gd > 0 ? `+${e.gd}` : `${e.gd}`;
+    const gdCls    = e.gd >= 0 ? 'sc-gd-pos' : 'sc-gd-neg';
+    const medal    = MEDALS[e.rank];
+    const rankCls  = medal ? `r${e.rank}` : '';
+    const rankDisp = medal || `#${e.rank}`;
+    const flagImg  = flagHtml(e.raf || { api: e.team, team: e.team });
+    const dispTeam = e.raf ? e.raf.team : e.team;
+    const prNum    = prData ? `#${Math.round(prData.display)}` : '—';
+
+    return `<div class="sc-row">
+      <div class="sc-rank-cell ${rankCls}">${rankDisp}</div>
+      <div class="sc-flag-cell">${flagImg}</div>
+      <div class="sc-info-cell">
+        <span class="sc-owner">${e.name}</span>
+        <span class="sc-team">${dispTeam}</span>
+      </div>
+      <div class="sc-move-cell ${moveCls}">${moveStr}</div>
+      <div class="sc-stats-cell">
+        <span class="${gdCls}">GD ${gdStr}</span><span class="sc-goals"> · ${e.gs}⚽</span>
+      </div>
+      <div class="sc-pr-cell">PR <span class="sc-pr-num">${prNum}</span></div>
+    </div>`;
+  }).join('');
+
+  cardEl.innerHTML = `
+    <div class="sc-card">
+      <div class="sc-head">
+        <div class="sc-title">⚔ WC 2026 DAILY RECAP ⚔</div>
+        <div class="sc-sub">${fullDate} · ${groupLbl}</div>
+        <div class="sc-meta">Position change ${vsLbl} · PR: ${srcLbl}</div>
+      </div>
+      <div class="sc-col-heads">
+        <span>#</span><span></span><span>PLAYER</span>
+        <span>MOVE</span><span>GD · GOALS</span><span>PR RANK</span>
+      </div>
+      ${rows}
+    </div>`;
+}
+
 // ── PR SOURCE SELECTOR ────────────────────────────────────
 document.getElementById('prSourceSelect').addEventListener('change', e => {
   prSourceIdx = parseInt(e.target.value);
   renderLeaderboard(RAFFLE,  allMatches, 'leaderboard',  'g1');
   renderLeaderboard(RAFFLE2, allMatches, 'leaderboard2', 'g2');
   if (showMatchPR) renderMatches(allMatches, activeRaffle);
+  renderHistoryTab();
 });
 
 document.getElementById('matchPRToggle').addEventListener('change', e => {
   showMatchPR = e.target.checked;
   renderMatches(allMatches, activeRaffle);
 });
+
+// ── HISTORY GROUP + DATE NAV ──────────────────────────────
+document.querySelectorAll('.hist-group-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.hist-group-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    histGroup  = btn.dataset.hgroup;
+    histRaffle = histGroup === 'g1' ? RAFFLE : RAFFLE2;
+    histDateIdx = 9999;
+    renderHistoryTab();
+  });
+});
+
+document.getElementById('hist-prev').addEventListener('click', () => { histDateIdx--; renderHistoryTab(); });
+document.getElementById('hist-next').addEventListener('click', () => { histDateIdx++; renderHistoryTab(); });
 
 // ── TAB SWITCHING ─────────────────────────────────────────
 let activeRaffle = RAFFLE;
@@ -1144,8 +1372,9 @@ document.querySelector('.tab-bar').addEventListener('click', e => {
   document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
   btn.classList.add('active');
   document.getElementById(btn.dataset.tab).classList.add('active');
-  if (btn.dataset.tab === 'tab-main')  activeRaffle = RAFFLE;
-  if (btn.dataset.tab === 'tab-gaby') activeRaffle = RAFFLE2;
+  if (btn.dataset.tab === 'tab-main')    activeRaffle = RAFFLE;
+  if (btn.dataset.tab === 'tab-gaby')   activeRaffle = RAFFLE2;
+  if (btn.dataset.tab === 'tab-history') renderHistoryTab();
   renderMatches(allMatches, activeRaffle);
 });
 
@@ -1183,6 +1412,7 @@ renderPicks();
 renderRankings();
 renderLeaderboard(RAFFLE,  null, 'leaderboard',  'g1');
 renderLeaderboard(RAFFLE2, null, 'leaderboard2', 'g2');
+renderHistoryTab();
 refresh();
 
 // Auto-refresh every 90 seconds
