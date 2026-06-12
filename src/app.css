@@ -44,7 +44,10 @@ header {
   text-shadow: 2px 2px 0 var(--amber), 0 0 24px rgba(232,160,32,.45);
   line-height: 1.7;
 }
-.logo p { font-size: 0.62rem; color: var(--muted); margin-top: 4px; letter-spacing: 0.06em; }
+.logo .group-selector {
+  margin-top: 1rem;
+}
+
 .header-right { display: flex; align-items: center; gap: 0.75rem; }
 
 .live-chip {

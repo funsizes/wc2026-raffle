@@ -1,7 +1,14 @@
 import type { RaffleEntry } from '$lib/types';
 
+export type RaffleGroup = 'g1' | 'g2';
+
 export const RAFFLE_LABEL = 'Main Group (30)';
 export const RAFFLE2_LABEL = "Gaby's Group (21)";
+
+export const RAFFLE_GROUP_OPTIONS: { id: RaffleGroup; label: string }[] = [
+  { id: 'g1', label: '🏆 Main Group' },
+  { id: 'g2', label: "🏆 Gaby's Group" }
+];
 
 export const RAFFLE: RaffleEntry[] = [
   { pick: 1, name: 'Oscar', team: 'Croatia', flag: '🇭🇷', api: 'Croatia' },

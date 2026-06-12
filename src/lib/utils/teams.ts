@@ -12,9 +12,3 @@ export function findParticipant(teamName: string, raffle: RaffleEntry[] = RAFFLE
   return raffle.find((r) => sameTeam(teamName, r.api));
 }
 
-export function findOwners(teamName: string): string[] {
-  const owners: string[] = [];
-  for (const r of RAFFLE) if (sameTeam(teamName, r.api)) owners.push(r.name + ' (G1)');
-  for (const r of RAFFLE2) if (sameTeam(teamName, r.api)) owners.push(r.name + ' (G2)');
-  return owners;
-}
