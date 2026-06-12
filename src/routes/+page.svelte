@@ -8,6 +8,7 @@
   import RankingsTable from '$lib/components/RankingsTable.svelte';
   import RulesTab from '$lib/components/RulesTab.svelte';
   import { RAFFLE, RAFFLE2, RAFFLE2_LABEL, RAFFLE_LABEL } from '$lib/data/raffle';
+  import { PR_SOURCE_LABELS, RANK_SOURCES } from '$lib/data/rankings';
   import type { Match } from '$lib/types';
   import { persistLeaderboard, sortLeaderboard } from '$lib/utils/leaderboard';
   import {
@@ -86,6 +87,11 @@
   <section>
     <div class="sec-title">{matchesTitle}</div>
     <div class="matches-grid">
+      <label class="pr-match-toggle">
+        <input type="checkbox" bind:checked={showMatchPR} />
+        Show Power Rankings
+      </label>
+
       {#if allMatches === null}
         <p style="font-size:.8rem;color:var(--muted)">Match data loading — check back shortly.</p>
       {:else if allMatches && todayMatches.length === 0}
@@ -104,25 +110,11 @@
   <div class="pr-selector-bar">
     <label for="prSourceSelect">⚔ Power Ranking Source:</label>
     <select id="prSourceSelect" bind:value={prSourceIdx}>
-      <option value={-1}>Avg — All 14 Sources</option>
-      <option value={0}>ESPN</option>
-      <option value={1}>CBS Sports</option>
-      <option value={2}>USA Today</option>
-      <option value={3}>Yahoo Sports</option>
-      <option value={4}>The Guardian</option>
-      <option value={5}>Fox Sports</option>
-      <option value={6}>The Athletic</option>
-      <option value={7}>Bleacher Report</option>
-      <option value={8}>Elo Ratings</option>
-      <option value={9}>FIFA Rankings</option>
-      <option value={10}>Opta</option>
-      <option value={11}>Score</option>
-      <option value={12}>PrizePicks</option>
-      <option value={13}>Goal</option>
+      <option value={-1}>Avg — All {RANK_SOURCES.length} Sources</option>
+      {#each PR_SOURCE_LABELS as label, idx (idx)}
+        <option value={idx}>{label}</option>
+      {/each}
     </select>
-    <label class="pr-match-toggle">
-      <input type="checkbox" bind:checked={showMatchPR} /> Show PR in Matches
-    </label>
   </div>
 
   <nav class="tab-bar">
