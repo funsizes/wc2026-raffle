@@ -1303,12 +1303,25 @@ function renderHistoryTab() {
     return { name, team, raf, rank: val.rank, gd: val.gd, gs: val.gs };
   });
 
-  // Find which teams played on this date
+  // Find which teams played on this date.
+  // Include the calendar day before the snapshot date as a fallback — snapshots saved
+  // at midnight (UTC) can be keyed one day ahead of when the local games actually ran.
+  const dayBefore = new Date(new Date(date + 'T12:00:00').getTime() - 864e5)
+                      .toLocaleDateString('en-CA');
   const playedOnDate = new Set();
   if (allMatches) {
-    allMatches.forEach(m => {
-      if (m.status !== 'FINISHED') return;
-      if (new Date(m.utcDate).toLocaleDateString('en-CA') !== date) return;
+    // Prefer games on the snapshot date; if none found, fall back to the day before.
+    const gamesOnDate = allMatches.filter(m =>
+      m.status === 'FINISHED' &&
+      new Date(m.utcDate).toLocaleDateString('en-CA') === date
+    );
+    const gamesToUse = gamesOnDate.length > 0
+      ? gamesOnDate
+      : allMatches.filter(m =>
+          m.status === 'FINISHED' &&
+          new Date(m.utcDate).toLocaleDateString('en-CA') === dayBefore
+        );
+    gamesToUse.forEach(m => {
       if (m.homeTeam.name) playedOnDate.add(m.homeTeam.name);
       if (m.awayTeam.name) playedOnDate.add(m.awayTeam.name);
     });
