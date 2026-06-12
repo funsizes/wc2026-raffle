@@ -1,0 +1,5 @@
+# See https://kit.svelte.dev/docs/adapter-static
+# for more information about using the adapter-static adapter
+node_modules
+/build
+/.svelte-kit
