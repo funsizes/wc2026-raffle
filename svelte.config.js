@@ -8,7 +8,10 @@ const config = {
       assets: 'build',
       fallback: undefined,
       precompress: false,
-      strict: true
+      strict: true,
+      paths: {
+        base: process.env.NODE_ENV === 'production' ? '/wc2026-raffle' : '',
+      }
     })
   }
 };
