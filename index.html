@@ -854,7 +854,7 @@ function calcProgress(entry, all) {
 // ── DATA FETCH (reads local file updated by GitHub Action) ──
 async function fetchMatches() {
   try {
-    const res = await fetch('./data/matches.json?t=' + Date.now(), { cache: 'no-store' });
+    const res = await fetch('https://wc2026-raffle-assets.s3.us-east-1.amazonaws.com/matches.json', { cache: 'no-store' });
     if (!res.ok) throw new Error(res.status);
     const data = await res.json();
     return data.matches || [];
