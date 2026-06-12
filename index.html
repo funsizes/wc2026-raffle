@@ -514,27 +514,21 @@
         </li>
         <li>
           <strong>Goal Difference</strong> —
-          If eliminated at the same stage, best combined GD across every single match (Groups + all Knockout rounds) wins.
+          Eliminated at the same stage? Best combined GD across every match (Groups + all Knockouts) wins.
         </li>
         <li>
           <strong>Goals Scored</strong> —
           Still tied? Most total goals scored across all matches breaks it.
         </li>
         <li>
-          <strong>Draft Pick Order</strong> —
-          If goals scored are also equal, lower draft pick number wins. Pick #1 beats Pick #30.
-          Your pick was random — this is purely a deterministic final answer, not a reward for picking early.
-        </li>
-        <li>
           <strong>🎲 Coin Toss</strong> —
-          If two people somehow have the same team result, same GD, same goals, AND the same pick number
-          (impossible unless we messed up the draw), we flip a coin. Contact the organizer.
+          If everything above is completely dead even, we flip a coin. Contact the organizer.
         </li>
       </ol>
       <p style="margin-top:1.25rem;font-size:0.75rem;color:var(--muted);line-height:1.7">
-        <strong style="color:var(--gold)">Day 1 leaderboard</strong> starts everyone in draft pick order —
-        Pick #1 at the top, Pick #30 at the bottom. Every position change you see after that
-        is real tournament movement. Use the daily delta arrows (▲▼) next to your rank to track your climb.
+        The <strong style="color:var(--gold)">Today's Movers</strong> section only shows participants
+        whose team actually played that day — so every movement you see is from real results,
+        not from someone else's team losing.
       </p>
     </div>
   </div>
@@ -846,7 +840,6 @@ function renderLeaderboard(raffle, all, containerId, snapLabel) {
     if (b.p.score !== a.p.score) return b.p.score - a.p.score;
     if (b.p.gd    !== a.p.gd)    return b.p.gd - a.p.gd;
     if (b.p.gs    !== a.p.gs)    return b.p.gs - a.p.gs;
-    if (a.pick    !== b.pick)    return a.pick  - b.pick;   // lower draft pick wins
     return a.name.localeCompare(b.name);
   });
 
@@ -1048,21 +1041,34 @@ function renderDailySummary(label, sortedEntries, summaryId) {
   if (!el) return;
 
   const snap = loadSnapshot(label, -1) || loadSnapshot(label, 0);
-  if (!snap) { el.innerHTML = ''; return; }
+  if (!snap) {
+    el.innerHTML = '<p class="ds-heading">DAY 1 — NO PRIOR RANKINGS TO COMPARE YET</p>';
+    return;
+  }
+
+  // Build set of API team names that had a FINISHED match today (local date)
+  const todayLocal = new Date().toLocaleDateString('en-CA'); // YYYY-MM-DD
+  const playedToday = new Set();
+  if (allMatches) {
+    allMatches.forEach(m => {
+      if (m.status !== 'FINISHED') return;
+      if (new Date(m.utcDate).toLocaleDateString('en-CA') !== todayLocal) return;
+      if (m.homeTeam.name) playedToday.add(m.homeTeam.name);
+      if (m.awayTeam.name) playedToday.add(m.awayTeam.name);
+    });
+  }
 
   const movers = [];
   sortedEntries.forEach((e, i) => {
+    const teamPlayed = [...playedToday].some(t => sameTeam(t, e.api));
+    if (!teamPlayed) return;
     const prev = snap[e.name + '|' + e.team];
     if (!prev) return;
-    const rankDelta = prev.rank - (i + 1); // positive = climbed
-    const gdDelta   = e.p.gd - prev.gd;
-    if (rankDelta !== 0 || gdDelta !== 0) {
-      movers.push({ e, rankDelta, gdDelta });
-    }
+    movers.push({ e, rankDelta: prev.rank - (i + 1), gdDelta: e.p.gd - prev.gd });
   });
 
   if (movers.length === 0) {
-    el.innerHTML = '<p class="ds-heading">NO MOVEMENT YET TODAY</p>';
+    el.innerHTML = '<p class="ds-heading">NO GAMES TODAY YET</p>';
     return;
   }
 
@@ -1073,17 +1079,17 @@ function renderDailySummary(label, sortedEntries, summaryId) {
 
   const since = loadSnapshot(label, -1) ? 'vs yesterday' : 'since first load today';
   const pills = movers.map(({ e, rankDelta, gdDelta }) => {
-    const pillCls  = rankDelta > 0 ? 'mp-up' : rankDelta < 0 ? 'mp-down' : '';
-    const rankStr  = rankDelta > 0 ? `▲${rankDelta}` : rankDelta < 0 ? `▼${Math.abs(rankDelta)}` : '';
-    const rankCls  = rankDelta > 0 ? 'rd-up' : 'rd-down';
-    const gdStr    = gdDelta > 0 ? `GD +${gdDelta}` : gdDelta < 0 ? `GD ${gdDelta}` : '';
+    const pillCls = rankDelta > 0 ? 'mp-up' : rankDelta < 0 ? 'mp-down' : '';
+    const rankStr = rankDelta > 0 ? `▲${rankDelta}` : rankDelta < 0 ? `▼${Math.abs(rankDelta)}` : '=';
+    const rankCls = rankDelta > 0 ? 'rd-up' : rankDelta < 0 ? 'rd-down' : 'rd-same';
+    const gdStr   = gdDelta > 0 ? `GD +${gdDelta}` : gdDelta < 0 ? `GD ${gdDelta}` : 'GD ±0';
     return `
       <div class="mover-pill ${pillCls}">
         <span class="mflag-sm">${flagHtml(e)}</span>
         <strong>${e.name}</strong>
         <span style="color:var(--muted);font-size:.65rem">${e.team}</span>
-        ${rankStr ? `<span class="mover-rank ${rankCls}">${rankStr}</span>` : ''}
-        ${gdStr   ? `<span class="mover-gd">${gdStr}</span>` : ''}
+        <span class="mover-rank ${rankCls}">${rankStr}</span>
+        <span class="mover-gd">${gdStr}</span>
       </div>`;
   }).join('');
 
