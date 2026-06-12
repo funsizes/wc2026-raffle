@@ -491,12 +491,36 @@
   <!-- Tab: Rules -->
   <div id="tab-rules" class="tab-panel">
     <div class="tb-box">
-      <h3>📋 Tiebreaker Rules</h3>
+      <h3>⚔️ How to Win</h3>
       <ol>
-        <li><strong>Round Reached</strong> — whoever's team advances furthest wins outright.</li>
-        <li><strong>Goal Difference</strong> — best combined goal difference across ALL matches (Group Stage + all Knockout rounds).</li>
-        <li><strong>Goals Scored</strong> — most total goals scored across ALL matches.</li>
+        <li>
+          <strong>Round Reached</strong> —
+          Whoever's team survives the longest wins outright. Champion takes the gold.
+        </li>
+        <li>
+          <strong>Goal Difference</strong> —
+          If eliminated at the same stage, best combined GD across every single match (Groups + all Knockout rounds) wins.
+        </li>
+        <li>
+          <strong>Goals Scored</strong> —
+          Still tied? Most total goals scored across all matches breaks it.
+        </li>
+        <li>
+          <strong>Draft Pick Order</strong> —
+          If goals scored are also equal, lower draft pick number wins. Pick #1 beats Pick #30.
+          Your pick was random — this is purely a deterministic final answer, not a reward for picking early.
+        </li>
+        <li>
+          <strong>🎲 Coin Toss</strong> —
+          If two people somehow have the same team result, same GD, same goals, AND the same pick number
+          (impossible unless we messed up the draw), we flip a coin. Contact the organizer.
+        </li>
       </ol>
+      <p style="margin-top:1.25rem;font-size:0.75rem;color:var(--muted);line-height:1.7">
+        <strong style="color:var(--gold)">Day 1 leaderboard</strong> starts everyone in draft pick order —
+        Pick #1 at the top, Pick #30 at the bottom. Every position change you see after that
+        is real tournament movement. Use the daily delta arrows (▲▼) next to your rank to track your climb.
+      </p>
     </div>
   </div>
 
@@ -807,6 +831,7 @@ function renderLeaderboard(raffle, all, containerId, snapLabel) {
     if (b.p.score !== a.p.score) return b.p.score - a.p.score;
     if (b.p.gd    !== a.p.gd)    return b.p.gd - a.p.gd;
     if (b.p.gs    !== a.p.gs)    return b.p.gs - a.p.gs;
+    if (a.pick    !== b.pick)    return a.pick  - b.pick;   // lower draft pick wins
     return a.name.localeCompare(b.name);
   });
 
@@ -1074,6 +1099,19 @@ async function refresh() {
 }
 
 // ── INIT ─────────────────────────────────────────────────
+// Clear any snapshot saved before pick-order sort was added (v2 migration)
+['g1','g2'].forEach(lbl => {
+  const k = `wc2026_${lbl}_${dateStr()}`;
+  const raw = localStorage.getItem(k);
+  if (raw) {
+    try {
+      const snap = JSON.parse(raw);
+      const keys = Object.keys(snap);
+      if (keys.length && snap[keys[0]].rank === undefined) localStorage.removeItem(k);
+    } catch(_) { localStorage.removeItem(k); }
+  }
+});
+
 document.getElementById('lb1Label').textContent = '🏆 ' + RAFFLE_LABEL;
 document.getElementById('lb2Label').textContent = '🏆 ' + RAFFLE2_LABEL;
 renderPicks();
