@@ -965,7 +965,10 @@ function renderLeaderboard(raffle, all, containerId, snapLabel) {
     return a.name.localeCompare(b.name);
   });
 
-  if (snapLabel && all) saveSnapshotIfNew(snapLabel, entries);
+  if (snapLabel && all) {
+    saveSnapshotIfNew(snapLabel, entries);
+    saveDailyHistory(snapLabel, entries);
+  }
 
   lb.innerHTML = entries.map((e, i) => {
     const rank = i + 1;
@@ -1128,7 +1131,7 @@ function renderRankings() {
 
 // ── DAILY SNAPSHOT SYSTEM ────────────────────────────────
 function dateStr(offsetDays = 0) {
-  return new Date(Date.now() + offsetDays * 864e5).toISOString().slice(0, 10);
+  return new Date(Date.now() + offsetDays * 864e5).toLocaleDateString('en-CA');
 }
 
 function saveSnapshotIfNew(label, sortedEntries) {
@@ -1141,8 +1144,22 @@ function saveSnapshotIfNew(label, sortedEntries) {
   try { localStorage.setItem(key, JSON.stringify(snap)); } catch(_) {}
 }
 
+function saveDailyHistory(label, sortedEntries) {
+  const snap = {};
+  sortedEntries.forEach((e, i) => {
+    snap[e.name + '|' + e.team] = { rank: i + 1, gd: e.p.gd, gs: e.p.gs };
+  });
+  try { localStorage.setItem(`wc2026_hist_${label}_${dateStr()}`, JSON.stringify(snap)); } catch(_) {}
+}
+
 function loadSnapshot(label, offset = -1) {
   const raw = localStorage.getItem(`wc2026_${label}_${dateStr(offset)}`);
+  return raw ? JSON.parse(raw) : null;
+}
+
+function loadHistSnap(label, date) {
+  const raw = localStorage.getItem(`wc2026_hist_${label}_${date}`)
+           || localStorage.getItem(`wc2026_${label}_${date}`);
   return raw ? JSON.parse(raw) : null;
 }
 
@@ -1231,13 +1248,20 @@ const HIST_DAYS   = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday'
 const HIST_SRC_LABELS = ['ESPN','CBS','USAT','Yahoo','Guardian','Fox','Athletic','BR','Elo','FIFA','Opta','Score','PrizePicks','Goal'];
 
 function getSnapshotDates(label) {
-  const prefix = `wc2026_${label}_`;
-  const dates = [];
+  const histPfx = `wc2026_hist_${label}_`;
+  const oldPfx  = `wc2026_${label}_`;
+  const dateRe  = /^\d{4}-\d{2}-\d{2}$/;
+  const dates   = new Set();
   for (let i = 0; i < localStorage.length; i++) {
     const k = localStorage.key(i);
-    if (k && k.startsWith(prefix)) dates.push(k.slice(prefix.length));
+    if (!k) continue;
+    if (k.startsWith(histPfx)) dates.add(k.slice(histPfx.length));
+    else if (k.startsWith(oldPfx)) {
+      const d = k.slice(oldPfx.length);
+      if (dateRe.test(d)) dates.add(d);
+    }
   }
-  return dates.sort();
+  return [...dates].filter(d => dateRe.test(d)).sort();
 }
 
 function renderHistoryTab() {
@@ -1262,9 +1286,9 @@ function renderHistoryTab() {
   const [y, m, d] = date.split('-');
   dateLbl.textContent = `${HIST_MONTHS[+m-1]} ${+d}, ${y}`;
 
-  const snap     = JSON.parse(localStorage.getItem(`wc2026_${histGroup}_${date}`) || 'null');
+  const snap     = loadHistSnap(histGroup, date);
   const prevDate = dates[histDateIdx - 1];
-  const prev     = prevDate ? JSON.parse(localStorage.getItem(`wc2026_${histGroup}_${prevDate}`) || 'null') : null;
+  const prev     = prevDate ? loadHistSnap(histGroup, prevDate) : null;
 
   if (!snap) { cardEl.innerHTML = '<div class="sc-empty">No data for this date.</div>'; return; }
 
