@@ -375,25 +375,40 @@
     .rd-down { color: var(--red); }
     .rd-same { color: var(--muted); opacity: 0.45; }
 
-    /* ── DAILY SUMMARY BAR ────────────────────────────── */
-    .daily-summary {
+    /* ── DAILY MOVERS SUMMARY ─────────────────────────── */
+    .daily-summary { margin-bottom: 0.875rem; }
+    .daily-summary:empty { display: none; }
+    .ds-heading {
+      font-family: var(--pixel);
+      font-size: 0.42rem;
+      color: var(--muted);
+      letter-spacing: 0.06em;
+      margin-bottom: 0.5rem;
+    }
+    .mover-list {
       display: flex;
       flex-wrap: wrap;
-      gap: 0.5rem 1.25rem;
-      align-items: center;
-      padding: 0.6rem 0.875rem;
-      background: var(--surface);
-      border: 2px solid var(--border);
-      box-shadow: 3px 3px 0 rgba(0,0,0,.4);
-      margin-bottom: 0.875rem;
-      font-size: 0.72rem;
+      gap: 0.4rem;
     }
-    .daily-summary:empty { display: none; }
-    .ds-label { font-family: var(--pixel); font-size: 0.4rem; color: var(--muted); margin-right: 0.3rem; letter-spacing: 0.05em; }
-    .ds-divider { color: var(--border); }
-    .ds-up   { color: var(--green); }
-    .ds-down { color: var(--red); }
-    .ds-same { color: var(--muted); }
+    .mover-pill {
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+      padding: 0.35rem 0.65rem;
+      background: var(--card);
+      border: 2px solid var(--border);
+      box-shadow: 2px 2px 0 rgba(0,0,0,.4);
+      font-size: 0.72rem;
+      white-space: nowrap;
+    }
+    .mover-pill.mp-up   { border-color: var(--green); }
+    .mover-pill.mp-down { border-color: var(--red); }
+    .mover-pill .mflag-sm { line-height: 1; }
+    .mover-pill .mflag-sm .flag-img { height: 1rem; vertical-align: middle; }
+    .mover-rank { font-family: var(--pixel); font-size: 0.42rem; }
+    .mover-rank.rd-up   { color: var(--green); }
+    .mover-rank.rd-down { color: var(--red); }
+    .mover-gd   { font-size: 0.65rem; color: var(--muted); }
 
     /* ── RESPONSIVE ───────────────────────────────────── */
     @media (max-width: 600px) {
@@ -626,7 +641,7 @@ const FLAG_CODES = {
   'algeria':        'dz', 'argentina':      'ar', 'australia':      'au',
   'austria':        'at', 'belgium':        'be', 'bosnia/herz':    'ba',
   'brazil':         'br', 'canada':         'ca', 'cape verde':     'cv',
-  'colombia':       'co', 'croatia':        'hr', 'czechia':        'cz',
+  'colombia':       'co', 'croatia':        'hr', 'czechia':        'cz', 'czech republic': 'cz',
   "côte d'ivoire":  'ci', 'ivory coast':    'ci', 'curaçao':        'cw',
   'dr congo':       'cd', 'ecuador':        'ec', 'egypt':          'eg',
   'england':        'gb-eng', 'france':     'fr', 'germany':        'de',
@@ -802,13 +817,13 @@ function renderMatches(all, raffle = RAFFLE) {
         <div class="match-body">
           <div class="match-team">
             <span class="mflag">${hf}</span>
-            <div class="mname">${m.homeTeam.shortName || m.homeTeam.name}</div>
+            <div class="mname">${hp ? hp.team : (m.homeTeam.shortName || m.homeTeam.name)}</div>
             ${hOwner}
           </div>
           ${scoreHtml}
           <div class="match-team">
             <span class="mflag">${af}</span>
-            <div class="mname">${m.awayTeam.shortName || m.awayTeam.name}</div>
+            <div class="mname">${ap ? ap.team : (m.awayTeam.shortName || m.awayTeam.name)}</div>
             ${aOwner}
           </div>
         </div>
@@ -934,7 +949,7 @@ const RANKINGS = [
   { rank:21, team:'USA',          flag:'🇺🇸', s:[22,12,13,19,24,12,23,20,31,16,27,22,20,20], avg:20.07 },
   { rank:22, team:'Austria',      flag:'🇦🇹', s:[23,26,24,25,17,24,29,24,21,22,22,24,24,18], avg:23.07 },
   { rank:23, team:"Ivory Coast",  flag:'🇨🇮', s:[17,29,23,26,14,35,20,23,35,29,32,19,19,15], avg:24 },
-  { rank:24, team:'South Korea',  flag:'🇰🇷', s:[30,28,25,22,44,20,16,22,28,23,25,27,23,29], avg:25.86 },
+  { rank:24, team:'South Korea',  flag:'🇰🇷', api:'Korea Republic', s:[30,28,25,22,44,20,16,22,28,23,25,27,23,29], avg:25.86 },
   { rank:25, team:'Canada',       flag:'🇨🇦', s:[25,24,21,33,31,22,30,25,23,27,28,25,26,30], avg:26.43 },
   { rank:26, team:'Egypt',        flag:'🇪🇬', s:[31,25,29,31,19,34,15,27,34,26,33,31,36,21], avg:28 },
   { rank:27, team:'Sweden',       flag:'🇸🇪', s:[20,21,28,29,26,25,33,35,33,31,35,21,35,23], avg:28.21 },
@@ -943,7 +958,7 @@ const RANKINGS = [
   { rank:30, team:'Iran',         flag:'🇮🇷', s:[35,23,36,23,38,30,28,29,26,19,21,33,29,41], avg:29.36 },
   { rank:31, team:'Australia',    flag:'🇦🇺', s:[32,38,27,34,28,36,25,36,25,24,23,34,33,33], avg:30.57 },
   { rank:32, team:'Scotland',     flag:'🏴󠁧󠁢󠁳󠁣󠁴󠁿', flagUrl:'https://flagcdn.com/gb-sct.svg', s:[28,27,30,40,39,27,35,33,24,34,30,26,31,28], avg:30.86 },
-  { rank:33, team:'Czechia',      flag:'🇨🇿', s:[29,30,40,28,35,29,39,26,29,32,31,32,34,31], avg:31.79 },
+  { rank:33, team:'Czech Republic', flag:'🇨🇿', s:[29,30,40,28,35,29,39,26,29,32,31,32,34,31], avg:31.79 },
   { rank:34, team:'Ghana',        flag:'🇬🇭', s:[36,32,26,24,37,28,26,37,46,45,44,29,42,36], avg:34.86 },
   { rank:35, team:'Tunisia',      flag:'🇹🇳', s:[39,31,39,35,27,38,36,30,38,36,37,38,30,38], avg:35.14 },
   { rank:36, team:'Bosnia/Herz',  flag:'🇧🇦', s:[37,33,34,30,36,32,42,31,40,43,45,35,32,32], avg:35.86 },
@@ -1031,35 +1046,50 @@ function getEntryDelta(label, entry, currentRank) {
 function renderDailySummary(label, sortedEntries, summaryId) {
   const el = document.getElementById(summaryId);
   if (!el) return;
+
   const snap = loadSnapshot(label, -1) || loadSnapshot(label, 0);
   if (!snap) { el.innerHTML = ''; return; }
 
-  let up = 0, down = 0, same = 0, gdPos = 0, gdNeg = 0, gdSame = 0;
+  const movers = [];
   sortedEntries.forEach((e, i) => {
     const prev = snap[e.name + '|' + e.team];
     if (!prev) return;
-    const rd = prev.rank - (i + 1);
-    if (rd > 0) up++; else if (rd < 0) down++; else same++;
-    const gdd = e.p.gd - prev.gd;
-    if (gdd > 0) gdPos++; else if (gdd < 0) gdNeg++; else gdSame++;
+    const rankDelta = prev.rank - (i + 1); // positive = climbed
+    const gdDelta   = e.p.gd - prev.gd;
+    if (rankDelta !== 0 || gdDelta !== 0) {
+      movers.push({ e, rankDelta, gdDelta });
+    }
   });
 
-  const label2 = loadSnapshot(label, -1) ? 'vs yesterday' : 'vs today\'s start';
+  if (movers.length === 0) {
+    el.innerHTML = '<p class="ds-heading">NO MOVEMENT YET TODAY</p>';
+    return;
+  }
+
+  movers.sort((a, b) =>
+    Math.abs(b.rankDelta) - Math.abs(a.rankDelta) ||
+    Math.abs(b.gdDelta)   - Math.abs(a.gdDelta)
+  );
+
+  const since = loadSnapshot(label, -1) ? 'vs yesterday' : 'since first load today';
+  const pills = movers.map(({ e, rankDelta, gdDelta }) => {
+    const pillCls  = rankDelta > 0 ? 'mp-up' : rankDelta < 0 ? 'mp-down' : '';
+    const rankStr  = rankDelta > 0 ? `▲${rankDelta}` : rankDelta < 0 ? `▼${Math.abs(rankDelta)}` : '';
+    const rankCls  = rankDelta > 0 ? 'rd-up' : 'rd-down';
+    const gdStr    = gdDelta > 0 ? `GD +${gdDelta}` : gdDelta < 0 ? `GD ${gdDelta}` : '';
+    return `
+      <div class="mover-pill ${pillCls}">
+        <span class="mflag-sm">${flagHtml(e)}</span>
+        <strong>${e.name}</strong>
+        <span style="color:var(--muted);font-size:.65rem">${e.team}</span>
+        ${rankStr ? `<span class="mover-rank ${rankCls}">${rankStr}</span>` : ''}
+        ${gdStr   ? `<span class="mover-gd">${gdStr}</span>` : ''}
+      </div>`;
+  }).join('');
+
   el.innerHTML = `
-    <span class="ds-label">TODAY (${label2}):</span>
-    <span class="ds-up">▲ ${up} up</span>
-    <span class="ds-divider">·</span>
-    <span class="ds-down">▼ ${down} down</span>
-    <span class="ds-divider">·</span>
-    <span class="ds-same">= ${same} steady</span>
-    <span class="ds-divider">|</span>
-    <span class="ds-label">GD:</span>
-    <span class="ds-up">+${gdPos} gained</span>
-    <span class="ds-divider">·</span>
-    <span class="ds-down">${gdNeg} lost</span>
-    <span class="ds-divider">·</span>
-    <span class="ds-same">${gdSame} stale</span>
-  `;
+    <p class="ds-heading">TODAY'S MOVERS (${since})</p>
+    <div class="mover-list">${pills}</div>`;
 }
 
 // ── PR SOURCE SELECTOR ────────────────────────────────────
