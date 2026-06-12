@@ -116,6 +116,14 @@
       flex: 1;
     }
     .pr-selector-bar select:focus { border-color: var(--gold); }
+    .pr-match-toggle {
+      display: flex; align-items: center; gap: 0.35rem; cursor: pointer;
+      font-family: var(--pixel); font-size: 0.42rem; color: var(--text);
+      white-space: nowrap; padding: 0 0.25rem;
+    }
+    .pr-match-toggle input { accent-color: var(--gold); cursor: pointer; width: 0.8rem; height: 0.8rem; flex-shrink: 0; }
+    .match-pr { font-size: 0.5rem; color: var(--muted); margin-top: 0.15rem; }
+    .match-pr .pr-num { color: var(--gold); font-family: var(--pixel); font-size: 0.48rem; }
 
     /* ── MATCH CARDS ─────────────────────────────────── */
     .matches-grid {
@@ -459,6 +467,9 @@
       <option value="12">PrizePicks</option>
       <option value="13">Goal</option>
     </select>
+    <label class="pr-match-toggle">
+      <input type="checkbox" id="matchPRToggle"> Show PR in Matches
+    </label>
   </div>
 
   <!-- Tab bar -->
@@ -617,13 +628,16 @@ const STAGE_LABEL = {
 };
 
 // ── POWER RANKING LOOKUP ─────────────────────────────────
-let prSourceIdx = -1; // -1 = avg, 0-13 = individual sources
+let prSourceIdx  = -1;   // -1 = avg, 0-13 = individual sources
+let showMatchPR  = false;
 
 function getPrData(raffleEntry) {
   const key = (raffleEntry.api || raffleEntry.team || '').toLowerCase();
   const found = RANKINGS.find(r => {
     const rk = r.team.toLowerCase();
-    return rk === key || rk.includes(key) || key.includes(rk);
+    const ra = (r.api || '').toLowerCase();
+    return rk === key || rk.includes(key) || key.includes(rk) ||
+           (ra && (ra === key || ra.includes(key) || key.includes(ra)));
   });
   if (!found) return null;
   const displayRank = prSourceIdx === -1 ? found.avg : found.s[prSourceIdx];
@@ -633,11 +647,11 @@ function getPrData(raffleEntry) {
 // ── FLAG IMAGE MAP (flagcdn.com ISO codes) ───────────────
 const FLAG_CODES = {
   'algeria':        'dz', 'argentina':      'ar', 'australia':      'au',
-  'austria':        'at', 'belgium':        'be', 'bosnia/herz':    'ba',
-  'brazil':         'br', 'canada':         'ca', 'cape verde':     'cv',
+  'austria':        'at', 'belgium':        'be', 'bosnia/herz':    'ba', 'bosnia-herzegovina': 'ba',
+  'brazil':         'br', 'canada':         'ca', 'cape verde':     'cv', 'cape verde islands': 'cv',
   'colombia':       'co', 'croatia':        'hr', 'czechia':        'cz', 'czech republic': 'cz',
   "côte d'ivoire":  'ci', 'ivory coast':    'ci', 'curaçao':        'cw',
-  'dr congo':       'cd', 'ecuador':        'ec', 'egypt':          'eg',
+  'dr congo':       'cd', 'congo dr':       'cd', 'ecuador':        'ec', 'egypt':          'eg',
   'england':        'gb-eng', 'france':     'fr', 'germany':        'de',
   'ghana':          'gh', 'haiti':          'ht', 'iran':           'ir',
   'iraq':           'iq', 'japan':          'jp', 'jordan':         'jo',
@@ -778,10 +792,18 @@ function renderMatches(all, raffle = RAFFLE) {
   grid.innerHTML = show.map(m => {
     const hp = findParticipant(m.homeTeam.name, raffle);
     const ap = findParticipant(m.awayTeam.name, raffle);
-    const hf = flagHtml(hp || { flag: '🏳️' });
-    const af = flagHtml(ap || { flag: '🏳️' });
+    const hf = flagHtml(hp || { api: m.homeTeam.name });
+    const af = flagHtml(ap || { api: m.awayTeam.name });
     const hOwner = hp ? `<div class="mowner">${hp.name}</div>` : '';
     const aOwner = ap ? `<div class="mowner">${ap.name}</div>` : '';
+
+    let hPR = '', aPR = '';
+    if (showMatchPR) {
+      const hPrData = getPrData(hp || { api: m.homeTeam.name });
+      const aPrData = getPrData(ap || { api: m.awayTeam.name });
+      if (hPrData) hPR = `<div class="match-pr">PR <span class="pr-num">#${Math.round(hPrData.display)}</span></div>`;
+      if (aPrData) aPR = `<div class="match-pr">PR <span class="pr-num">#${Math.round(aPrData.display)}</span></div>`;
+    }
 
     const isLive = m.status === 'IN_PLAY' || m.status === 'PAUSED';
     const isDone = m.status === 'FINISHED';
@@ -812,13 +834,13 @@ function renderMatches(all, raffle = RAFFLE) {
           <div class="match-team">
             <span class="mflag">${hf}</span>
             <div class="mname">${hp ? hp.team : (m.homeTeam.shortName || m.homeTeam.name)}</div>
-            ${hOwner}
+            ${hOwner}${hPR}
           </div>
           ${scoreHtml}
           <div class="match-team">
             <span class="mflag">${af}</span>
             <div class="mname">${ap ? ap.team : (m.awayTeam.shortName || m.awayTeam.name)}</div>
-            ${aOwner}
+            ${aOwner}${aPR}
           </div>
         </div>
       </div>
@@ -954,9 +976,9 @@ const RANKINGS = [
   { rank:33, team:'Czech Republic', flag:'🇨🇿', s:[29,30,40,28,35,29,39,26,29,32,31,32,34,31], avg:31.79 },
   { rank:34, team:'Ghana',        flag:'🇬🇭', s:[36,32,26,24,37,28,26,37,46,45,44,29,42,36], avg:34.86 },
   { rank:35, team:'Tunisia',      flag:'🇹🇳', s:[39,31,39,35,27,38,36,30,38,36,37,38,30,38], avg:35.14 },
-  { rank:36, team:'Bosnia/Herz',  flag:'🇧🇦', s:[37,33,34,30,36,32,42,31,40,43,45,35,32,32], avg:35.86 },
+  { rank:36, team:'Bosnia/Herz',  flag:'🇧🇦', api:'Bosnia-Herzegovina', s:[37,33,34,30,36,32,42,31,40,43,45,35,32,32], avg:35.86 },
   { rank:37, team:'Panama',       flag:'🇵🇦', s:[38,43,41,36,40,46,34,28,30,30,34,37,28,47], avg:36.57 },
-  { rank:38, team:'DR Congo',     flag:'🇨🇩', s:[33,44,31,43,30,39,43,45,37,35,36,36,40,35], avg:37.64 },
+  { rank:38, team:'DR Congo',     flag:'🇨🇩', api:'Congo DR', s:[33,44,31,43,30,39,43,45,37,35,36,36,40,35], avg:37.64 },
   { rank:39, team:'Uzbekistan',   flag:'🇺🇿', s:[34,45,38,46,34,40,45,39,32,37,29,39,37,37], avg:38 },
   { rank:40, team:'Saudi Arabia', flag:'🇸🇦', s:[44,36,42,38,46,31,32,41,42,41,41,41,38,40], avg:39.5 },
   { rank:41, team:'South Africa', flag:'🇿🇦', s:[46,40,35,37,29,45,37,44,45,40,40,42,43,34], avg:39.79 },
@@ -964,7 +986,7 @@ const RANKINGS = [
   { rank:43, team:'Iraq',         flag:'🇮🇶', s:[42,41,43,47,33,42,46,46,39,38,39,43,45,43], avg:41.93 },
   { rank:44, team:'New Zealand',  flag:'🇳🇿', s:[41,47,44,44,41,43,40,34,43,48,43,40,44,46], avg:42.71 },
   { rank:45, team:'Qatar',        flag:'🇶🇦', s:[48,34,46,45,43,41,38,42,48,39,46,47,41,44], avg:43 },
-  { rank:46, team:'Cape Verde',   flag:'🇨🇻', s:[43,46,45,41,45,44,44,43,41,44,42,46,46,39], avg:43.5 },
+  { rank:46, team:'Cape Verde',   flag:'🇨🇻', api:'Cape Verde Islands', s:[43,46,45,41,45,44,44,43,41,44,42,46,46,39], avg:43.5 },
   { rank:47, team:'Haiti',        flag:'🇭🇹', s:[45,42,37,39,47,48,48,48,44,47,47,45,47,42], avg:44.71 },
   { rank:48, team:'Curaçao',      flag:'🇨🇼', s:[47,48,48,42,48,47,47,47,47,46,48,48,48,48], avg:47.07 },
 ];
@@ -1104,6 +1126,12 @@ document.getElementById('prSourceSelect').addEventListener('change', e => {
   prSourceIdx = parseInt(e.target.value);
   renderLeaderboard(RAFFLE,  allMatches, 'leaderboard',  'g1');
   renderLeaderboard(RAFFLE2, allMatches, 'leaderboard2', 'g2');
+  if (showMatchPR) renderMatches(allMatches, activeRaffle);
+});
+
+document.getElementById('matchPRToggle').addEventListener('change', e => {
+  showMatchPR = e.target.checked;
+  renderMatches(allMatches, activeRaffle);
 });
 
 // ── TAB SWITCHING ─────────────────────────────────────────
