@@ -7,8 +7,9 @@
   import PicksGrid from '$lib/components/PicksGrid.svelte';
   import RankingsTable from '$lib/components/RankingsTable.svelte';
   import RulesTab from '$lib/components/RulesTab.svelte';
+  import GroupSelector from '$lib/components/GroupSelector.svelte';
+  import PowerRankingSourceSelector from '$lib/components/PowerRankingSourceSelector.svelte';
   import { RAFFLE, RAFFLE2, type RaffleGroup } from '$lib/data/raffle';
-  import { PR_SOURCE_LABELS, RANK_SOURCES } from '$lib/data/rankings';
   import type { Match } from '$lib/types';
   import { persistLeaderboard, sortLeaderboard } from '$lib/utils/leaderboard';
   import {
@@ -17,7 +18,6 @@
     filterTodayMatches
   } from '$lib/utils/matches';
   import { migrateSnapshots } from '$lib/utils/snapshots';
-    import GroupSelector from '$lib/components/GroupSelector.svelte';
 
   type TabId = 'tab-leaderboard' | 'tab-raffle' | 'tab-rankings' | 'tab-rules' | 'tab-history';
 
@@ -97,6 +97,12 @@
         Show Power Rankings
       </label>
 
+      {#if showMatchPR}
+        <div>
+          <PowerRankingSourceSelector bind:value={prSourceIdx} />
+        </div>
+      {/if}
+
       {#if allMatches === null}
         <p style="font-size:.8rem;color:var(--muted)">Match data loading — check back shortly.</p>
       {:else if allMatches && todayMatches.length === 0}
@@ -112,16 +118,6 @@
     </div>
   </section>
 
-  <div class="pr-selector-bar">
-    <label for="prSourceSelect">⚔ Power Ranking Source:</label>
-    <select id="prSourceSelect" bind:value={prSourceIdx}>
-      <option value={-1}>Avg — All {RANK_SOURCES.length} Sources</option>
-      {#each PR_SOURCE_LABELS as label, idx (idx)}
-        <option value={idx}>{label}</option>
-      {/each}
-    </select>
-  </div>
-
   <nav class="tab-bar">
     {#each TABS as tab}
       <button
@@ -135,6 +131,8 @@
 
   <div id="tab-leaderboard" class="tab-panel" class:active={activeTab === 'tab-leaderboard'}>
     <div class="sec-title">🏆 Teams ({activeRaffle.length})</div>
+
+    <PowerRankingSourceSelector bind:value={prSourceIdx} />
 
     <DailySummary entries={lb1} {allMatches} snapLabel="g1" />
 
@@ -154,6 +152,8 @@
   </div>
 
   <div id="tab-history" class="tab-panel" class:active={activeTab === 'tab-history'}>
+    <PowerRankingSourceSelector bind:value={prSourceIdx} />
+
     <HistoryTab {allMatches} {prSourceIdx} {raffleGroup} />
   </div>
 </main>
