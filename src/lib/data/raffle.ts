@@ -6,8 +6,8 @@ export const RAFFLE_LABEL = 'Main Group (30)';
 export const RAFFLE2_LABEL = "Gaby's Group (21)";
 
 export const RAFFLE_GROUP_OPTIONS: { id: RaffleGroup; label: string }[] = [
-  { id: 'g1', label: '🏆 Main Group' },
-  { id: 'g2', label: "🏆 Gaby's Group" }
+  { id: 'g1', label: `🏆 Luis' Group` },
+  { id: 'g2', label: `🏆 Gaby's Group` }
 ];
 
 export const RAFFLE: RaffleEntry[] = [
