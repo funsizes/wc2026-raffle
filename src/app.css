@@ -414,6 +414,7 @@ section { margin-bottom: 2.5rem; }
       height: auto;
       image-rendering: pixelated;
       filter: drop-shadow(0 6px 12px rgba(0,0,0,.55));
+      opacity: 0.7;
     }
 
     .pot-tagline {
