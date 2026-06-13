@@ -1,6 +1,13 @@
 <script lang="ts">
   import { onMount } from 'svelte';
-  import { hasLocale, initLocale, setLocale, t } from '$lib/i18n/locale.svelte';
+  import {
+    closeLocalePrompt,
+    hasLocale,
+    initLocale,
+    isLocalePromptOpen,
+    setLocale,
+    t
+  } from '$lib/i18n/locale.svelte';
   import type { Locale } from '$lib/i18n/types';
 
   let open = $state(false);
@@ -10,9 +17,16 @@
     open = !hasLocale();
   });
 
+  $effect(() => {
+    if (isLocalePromptOpen()) {
+      open = true;
+    }
+  });
+
   function choose(next: Locale) {
     setLocale(next);
     open = false;
+    closeLocalePrompt();
   }
 </script>
 

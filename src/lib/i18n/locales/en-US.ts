@@ -3,7 +3,8 @@ export const enUS = {
     promptTitle: 'Choose your tongue',
     promptSubtitle: 'Pick a language for the realm. You can change this later.',
     english: 'English',
-    spanish: 'Español'
+    spanish: 'Español',
+    changeLanguage: '🌐 Language'
   },
   app: {
     pageTitle: 'WC 2026 Raffle ⚔️',

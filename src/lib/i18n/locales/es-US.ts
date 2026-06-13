@@ -5,7 +5,8 @@ export const esUS: Messages = {
     promptTitle: 'Elige tu idioma',
     promptSubtitle: 'Escoge un idioma para el reino. Podrás cambiarlo después.',
     english: 'English',
-    spanish: 'Español'
+    spanish: 'Español',
+    changeLanguage: '🌐 Idioma'
   },
   app: {
     pageTitle: 'Sorteo WC 2026 ⚔️',

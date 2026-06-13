@@ -8,6 +8,7 @@ const dictionaries = {
 } as const;
 
 const localeState = $state<{ value: Locale | null }>({ value: null });
+const promptState = $state({ open: false });
 
 export function initLocale(): void {
   if (typeof localStorage === 'undefined') return;
@@ -31,6 +32,18 @@ export function hasLocale(): boolean {
 
 export function getLocale(): Locale {
   return localeState.value ?? 'en-US';
+}
+
+export function openLocalePrompt(): void {
+  promptState.open = true;
+}
+
+export function closeLocalePrompt(): void {
+  promptState.open = false;
+}
+
+export function isLocalePromptOpen(): boolean {
+  return promptState.open;
 }
 
 function applyDocumentLang(next: Locale): void {

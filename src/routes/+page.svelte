@@ -21,7 +21,7 @@
   } from '$lib/utils/matches';
   import { migrateSnapshots } from '$lib/utils/snapshots';
   import { page } from '$app/stores';
-  import { formatTime, t } from '$lib/i18n/locale.svelte';
+  import { formatTime, openLocalePrompt, t } from '$lib/i18n/locale.svelte';
 
   // Automatically updates if the query string changes
   const groupQueryParam = $derived($page.url.searchParams.get('group') || 'g1');
@@ -123,11 +123,16 @@
       <span onclick={onTitleClick}>⚽</span> {t('app.title')}
     </h1>
 
-    {#if showGroupSelector}
-      <p class="group-selector">
-        <GroupSelector bind:value={raffleGroup} />
-      </p>
-    {/if}
+    <div class="header-controls">
+      {#if showGroupSelector}
+        <p class="group-selector">
+          <GroupSelector bind:value={raffleGroup} />
+        </p>
+      {/if}
+      <button type="button" class="locale-toggle-btn" onclick={openLocalePrompt}>
+        {t('locale.changeLanguage')}
+      </button>
+    </div>
   </div>
   <div class="header-right">
     {#if liveCount > 0}
