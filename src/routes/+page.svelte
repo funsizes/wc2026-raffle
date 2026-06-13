@@ -33,9 +33,9 @@
   const TABS = $derived([
     { id: 'tab-leaderboard' as TabId, label: t('tabs.leaderboard') },
     { id: 'tab-raffle' as TabId, label: t('tabs.raffle') },
-    { id: 'tab-rankings' as TabId, label: t('tabs.rankings') },
     { id: 'tab-rules' as TabId, label: t('tabs.rules') },
-    { id: 'tab-history' as TabId, label: t('tabs.history') }
+    { id: 'tab-rankings' as TabId, label: t('tabs.rankings') },
+    { id: 'tab-history' as TabId, label: t('tabs.history') },
   ]);
 
   let allMatches = $state<Match[] | null>(null);
