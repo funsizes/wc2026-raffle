@@ -93,6 +93,16 @@ section { margin-bottom: 2.5rem; }
   border: 2px solid var(--border);
   box-shadow: 3px 3px 0 rgba(0,0,0,.4);
 }
+
+.match-pr-selector {
+  margin-bottom: 0.5rem;
+
+  .pr-selector-bar {
+    margin-top: 1rem;
+    margin-bottom: 0;
+  }
+}
+
 .pr-selector-bar label {
   font-family: var(--pixel);
   font-size: 0.45rem;
@@ -344,6 +354,12 @@ section { margin-bottom: 2.5rem; }
   scrollbar-width: none;
 }
 .tab-bar::-webkit-scrollbar { display: none; }
+
+.matches-grid {
+  .tab-bar {
+    margin-bottom: 0;
+  }
+}
 
 .tab-btn {
   background: var(--surface);

@@ -15,9 +15,19 @@
   import {
     countLiveMatches,
     fetchMatches,
-    filterTodayMatches
+    filterTodayMatches,
+
+    getRecentMatches
+
   } from '$lib/utils/matches';
   import { migrateSnapshots } from '$lib/utils/snapshots';
+
+  type MatchTabId = 'tab-recent' | 'tab-today';
+
+  const MATCH_TABS: { id: MatchTabId; label: string }[] = [
+    { id: 'tab-recent', label: 'Recent' },
+    { id: 'tab-today', label: 'Today' }
+  ];
 
   type TabId = 'tab-leaderboard' | 'tab-raffle' | 'tab-rankings' | 'tab-rules' | 'tab-history';
 
@@ -32,16 +42,17 @@
   let allMatches = $state<Match[] | null>(null);
   let prSourceIdx = $state(-1);
   let showMatchPR = $state(false);
+
   let activeTab = $state<TabId>('tab-leaderboard');
+  let activeMatchTab = $state<MatchTabId>('tab-today');
+
   let statusText = $state('Auto-refreshes every 90 seconds');
   let raffleGroup = $state<RaffleGroup>('g1');
 
   const activeRaffle = $derived(raffleGroup === 'g1' ? RAFFLE : RAFFLE2);
   const liveCount = $derived(countLiveMatches(allMatches));
   const todayMatches = $derived(allMatches ? filterTodayMatches(allMatches) : []);
-  const matchesTitle = $derived(
-    liveCount ? "🔴 Live & Today's Matches" : "📅 Today's Matches"
-  );
+  const recentMatches = $derived(allMatches ? getRecentMatches(allMatches, 24) : []);
 
   // TODO: fix this later on
   const lb1 = $derived(sortLeaderboard(raffleGroup === 'g1' ? RAFFLE : RAFFLE2, allMatches));
@@ -63,6 +74,10 @@
 
   function selectTab(id: TabId) {
     activeTab = id;
+  }
+
+  function selectMatchTab(id: MatchTabId) {
+    activeMatchTab = id;
   }
 
   onMount(() => {
@@ -90,30 +105,54 @@
 
 <main>
   <section>
-    <div class="sec-title">{matchesTitle}</div>
+    <div class="sec-title">📅 Scheduled Matches</div>
+
     <div class="matches-grid">
-      <label class="pr-match-toggle">
-        <input type="checkbox" bind:checked={showMatchPR} />
-        Show Power Rankings
-      </label>
-
-      {#if showMatchPR}
-        <div>
-          <PowerRankingSourceSelector bind:value={prSourceIdx} />
-        </div>
-      {/if}
-
       {#if allMatches === null}
         <p style="font-size:.8rem;color:var(--muted)">Match data loading — check back shortly.</p>
-      {:else if allMatches && todayMatches.length === 0}
+      {:else if todayMatches.length === 0 && recentMatches.length === 0}
         <p style="font-size:.8rem;color:var(--muted)">No matches right now — check back soon!</p>
-      {:else if allMatches}
+      {:else}
+
+      <div class="match-pr-selector">
+        <label class="pr-match-toggle">
+          <input type="checkbox" bind:checked={showMatchPR} />
+          Show Power Rankings
+        </label>
+
+        {#if showMatchPR}
+          <div>
+            <PowerRankingSourceSelector bind:value={prSourceIdx} />
+          </div>
+        {/if}
+      </div>
+
+      <nav class="tab-bar">
+        {#each MATCH_TABS as tab}
+          <button
+            type="button"
+            class="tab-btn"
+            class:active={activeMatchTab === tab.id}
+            onclick={() => selectMatchTab(tab.id as MatchTabId)}>{tab.label}</button
+          >
+        {/each}
+      </nav>
+
+      {#if activeMatchTab === 'tab-recent'}
+        <MatchGrid
+          matches={recentMatches}
+          raffle={activeRaffle}
+          {showMatchPR}
+          {prSourceIdx}
+        />
+      {:else}
         <MatchGrid
           matches={todayMatches}
           raffle={activeRaffle}
           {showMatchPR}
           {prSourceIdx}
         />
+        {/if}
       {/if}
     </div>
   </section>
