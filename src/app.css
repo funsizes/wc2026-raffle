@@ -28,33 +28,47 @@ header {
   background: linear-gradient(180deg, #221508 0%, #0e0b05 100%);
   border-bottom: 4px solid var(--gold);
   box-shadow: 0 3px 0 var(--amber), 0 6px 20px rgba(0,0,0,.7);
-  padding: 1.1rem 1.5rem;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
+  padding: 1.1rem 1rem;
   position: sticky;
   top: 0;
   z-index: 50;
+  margin-bottom: 0.5rem;
 }
+
+.header-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.header-title {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.logo-icon {
+  font-size: 1rem;
+  text-shadow: none;
+}
+
 .logo h1 {
   font-family: var(--pixel);
-  font-size: 0.72rem;
+  font-size: 0.675rem;
   color: var(--gold);
   text-shadow: 2px 2px 0 var(--amber), 0 0 24px rgba(232,160,32,.45);
   line-height: 1.7;
   user-select: none;
 }
-.logo .group-selector {
-  margin-top: 0;
+
+header .group-selector {
+  margin-top: 1rem;
 }
 
 .header-controls {
   display: flex;
-  flex-wrap: wrap;
   align-items: center;
-  gap: 0.5rem;
-  margin-top: 1rem;
+  margin-left: auto;
 }
 
 .locale-toggle-btn,

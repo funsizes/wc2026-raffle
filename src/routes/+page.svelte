@@ -131,18 +131,19 @@
 </script>
 
 <header>
-  <div class="logo">
-    <h1>
-      <!-- svelte-ignore a11y_click_events_have_key_events, a11y_no_noninteractive_element_interactions -->
-      <span onclick={onTitleClick}>⚽</span> {t('app.title')}
-    </h1>
+  <div class="header-container">
+    <div class="logo">
+      <div class="header-title">
+        <span onclick={onTitleClick} class="logo-icon">⚽</span>
+
+        <h1>
+          <!-- svelte-ignore a11y_click_events_have_key_events, a11y_no_noninteractive_element_interactions -->
+          <span>{t('app.title')}</span>
+        </h1>
+      </div>
+    </div>
 
     <div class="header-controls">
-      {#if showGroupSelector}
-        <p class="group-selector">
-          <GroupSelector bind:value={raffleGroup} />
-        </p>
-      {/if}
       <button
         type="button"
         class="settings-toggle-btn"
@@ -152,12 +153,19 @@
         <i class="fa-solid fa-gear"></i>
       </button>
     </div>
+
+    <div class="header-right">
+      {#if liveCount > 0}
+        <span class="live-chip">{t('app.live')}</span>
+      {/if}
+    </div>
   </div>
-  <div class="header-right">
-    {#if liveCount > 0}
-      <span class="live-chip">{t('app.live')}</span>
-    {/if}
-  </div>
+
+  {#if showGroupSelector}
+    <p class="group-selector">
+      <GroupSelector bind:value={raffleGroup} />
+    </p>
+  {/if}
 </header>
 
 <main>
