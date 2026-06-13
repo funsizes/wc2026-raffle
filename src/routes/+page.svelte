@@ -143,8 +143,13 @@
           <GroupSelector bind:value={raffleGroup} />
         </p>
       {/if}
-      <button type="button" class="settings-toggle-btn" onclick={openSettings}>
-        {t('settings.openButton')}
+      <button
+        type="button"
+        class="settings-toggle-btn"
+        aria-label={t('settings.title')}
+        onclick={openSettings}
+      >
+        <i class="fa-solid fa-gear"></i>
       </button>
     </div>
   </div>
@@ -249,4 +254,6 @@
 <!-- svelte-ignore a11y_click_events_have_key_events, a11y_no_static_element_interactions -->
 <div class="status-bar" onclick={onStatusBarClick}>
   <span class="dot"></span>{statusText}
+
+  <a href="https://www.flaticon.com/free-icons/settings" title="settings icons">Settings icons created by Pixel perfect - Flaticon</a>
 </div>

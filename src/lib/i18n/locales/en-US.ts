@@ -14,7 +14,6 @@ export const enUS = {
   settings: {
     title: 'Settings',
     firstVisitTitle: 'Choose your tongue',
-    openButton: '⚙ Settings',
     firstVisitSubtitle: 'Pick a language for the realm. You can change this later.',
     language: 'Language',
     done: 'Done',

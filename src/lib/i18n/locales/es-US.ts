@@ -17,7 +17,6 @@ export const esUS: Messages = {
   settings: {
     title: 'Configuración',
     firstVisitTitle: 'Elige tu lengua',
-    openButton: '⚙ Ajustes',
     firstVisitSubtitle: 'Elige un idioma para el reino. Podrás cambiarlo después.',
     language: 'Idioma',
     done: 'Listo',
