@@ -26,6 +26,8 @@
 
   {#if participant}
     <div class="mowner">{participant.name}</div>
+  {:else}
+    <div class="mname placeholder">-</div>
   {/if}
 
   {#if prData}
