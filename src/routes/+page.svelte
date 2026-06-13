@@ -49,7 +49,7 @@
   let lastUpdateTime = $state<string | null>(null);
 
   let raffleGroup = $state<RaffleGroup>(groupQueryParam as unknown as RaffleGroup);
-  let showGroupSelector = $state(true);
+  let showAdminControls = $state(false);
 
   const statusText = $derived.by(() => {
     if (isRefreshing) return t('status.refreshing');
@@ -106,7 +106,7 @@
     titleClickTimes.push(now);
 
     if (titleClickTimes.length >= 3) {
-      showGroupSelector = !showGroupSelector;
+      showAdminControls = !showAdminControls;
       titleClickTimes = [];
     }
   }
@@ -161,7 +161,7 @@
     </div>
   </div>
 
-  {#if showGroupSelector}
+  {#if showAdminControls}
     <p class="group-selector">
       <GroupSelector bind:value={raffleGroup} />
     </p>
@@ -221,12 +221,14 @@
 
   <nav class="tab-bar">
     {#each TABS as tab}
-      <button
-        type="button"
-        class="tab-btn"
-        class:active={activeTab === tab.id}
-        onclick={() => selectTab(tab.id)}>{tab.label}</button
-      >
+      {#if tab.id !== 'tab-history' || showAdminControls}
+        <button
+          type="button"
+          class="tab-btn"
+          class:active={activeTab === tab.id}
+          onclick={() => selectTab(tab.id)}>{tab.label}</button
+        >
+      {/if}
     {/each}
   </nav>
 
@@ -253,9 +255,11 @@
   </div>
 
   <div id="tab-history" class="tab-panel" class:active={activeTab === 'tab-history'}>
-    <PowerRankingSourceSelector bind:value={prSourceIdx} />
+    {#if showAdminControls}
+      <PowerRankingSourceSelector bind:value={prSourceIdx} />
 
-    <HistoryTab {allMatches} {prSourceIdx} {raffleGroup} />
+      <HistoryTab {allMatches} {prSourceIdx} {raffleGroup} />
+    {/if}
   </div>
 </main>
 
