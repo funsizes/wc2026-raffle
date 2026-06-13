@@ -17,19 +17,13 @@
     fetchMatches,
     filterTodayMatches,
     getRecentMatches,
+    getTomorrowMatches,
   } from '$lib/utils/matches';
   import { migrateSnapshots } from '$lib/utils/snapshots';
   import { page } from '$app/stores';
 
   // Automatically updates if the query string changes
   const groupQueryParam = $derived($page.url.searchParams.get('group') || 'g1');
-
-  type MatchTabId = 'tab-recent' | 'tab-today';
-
-  const MATCH_TABS: { id: MatchTabId; label: string }[] = [
-    { id: 'tab-recent', label: 'Recent' },
-    { id: 'tab-today', label: 'Today' },
-  ];
 
   type TabId = 'tab-leaderboard' | 'tab-raffle' | 'tab-rankings' | 'tab-rules' | 'tab-history';
 
@@ -56,6 +50,15 @@
   const liveCount = $derived(countLiveMatches(allMatches));
   const todayMatches = $derived(allMatches ? filterTodayMatches(allMatches) : []);
   const recentMatches = $derived(allMatches ? getRecentMatches(allMatches, 24) : []);
+  const tomorrowMatches = $derived(allMatches ? getTomorrowMatches(allMatches) : []);
+
+  type MatchTabId = 'tab-recent' | 'tab-today' | 'tab-tomorrow';
+
+  const MATCH_TABS: { id: MatchTabId; label: string; data: Match[] }[] = $derived([
+    { id: 'tab-recent' as const, label: 'Recent', data: recentMatches },
+    { id: 'tab-today' as const, label: 'Today', data: todayMatches },
+    { id: 'tab-tomorrow' as const, label: 'Tomorrow', data: tomorrowMatches },
+  ]);
 
   // TODO: fix this later on
   const lb1 = $derived(sortLeaderboard(raffleGroup === 'g1' ? RAFFLE : RAFFLE2, allMatches));
@@ -168,21 +171,12 @@
           {/each}
         </nav>
 
-        {#if activeMatchTab === "tab-recent"}
-          <MatchGrid
-            matches={recentMatches}
+        <MatchGrid
+          matches={MATCH_TABS.find((tab) => tab.id === activeMatchTab)?.data ?? []}
             raffle={activeRaffle}
             {showMatchPR}
             {prSourceIdx}
           />
-        {:else}
-          <MatchGrid
-            matches={todayMatches}
-            raffle={activeRaffle}
-            {showMatchPR}
-            {prSourceIdx}
-          />
-        {/if}
       {/if}
     </div>
   </section>
