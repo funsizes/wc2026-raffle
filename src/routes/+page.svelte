@@ -263,5 +263,7 @@
 <div class="status-bar" onclick={onStatusBarClick}>
   <span class="dot"></span>{statusText}
 
-  <a href="https://www.flaticon.com/free-icons/settings" title="settings icons">Settings icons created by Pixel perfect - Flaticon</a>
+  <div style="padding: 1rem 0 0.5rem;">
+    <a href="https://www.flaticon.com/free-icons/settings" title="settings icons">Settings icons created by Pixel perfect - Flaticon</a>
+  </div>
 </div>
