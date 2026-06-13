@@ -43,6 +43,7 @@ header {
   color: var(--gold);
   text-shadow: 2px 2px 0 var(--amber), 0 0 24px rgba(232,160,32,.45);
   line-height: 1.7;
+  user-select: none;
 }
 .logo .group-selector {
   margin-top: 1rem;

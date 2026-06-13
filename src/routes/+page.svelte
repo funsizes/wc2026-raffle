@@ -21,6 +21,10 @@
 
   } from '$lib/utils/matches';
   import { migrateSnapshots } from '$lib/utils/snapshots';
+  import { page } from '$app/stores';
+
+  // Automatically updates if the query string changes
+  const groupQueryParam = $derived($page.url.searchParams.get('group') || 'g1');
 
   type MatchTabId = 'tab-recent' | 'tab-today';
 
@@ -47,7 +51,8 @@
   let activeMatchTab = $state<MatchTabId>('tab-today');
 
   let statusText = $state('Auto-refreshes every 90 seconds');
-  let raffleGroup = $state<RaffleGroup>('g1');
+  let raffleGroup = $state<RaffleGroup>(groupQueryParam as unknown as RaffleGroup);
+  let showGroupSelector = $state(false);
 
   const activeRaffle = $derived(raffleGroup === 'g1' ? RAFFLE : RAFFLE2);
   const liveCount = $derived(countLiveMatches(allMatches));
@@ -80,6 +85,19 @@
     activeMatchTab = id;
   }
 
+  let titleClickTimes: number[] = [];
+
+  function onTitleClick() {
+    const now = Date.now();
+    titleClickTimes = titleClickTimes.filter((t) => now - t < 4_000);
+    titleClickTimes.push(now);
+
+    if (titleClickTimes.length >= 3) {
+      showGroupSelector = !showGroupSelector;
+      titleClickTimes = [];
+    }
+  }
+
   onMount(() => {
     migrateSnapshots();
     refresh();
@@ -90,11 +108,16 @@
 
 <header>
   <div class="logo">
-    <h1>⚽ World Cup 2026 Raffle</h1>
+    <h1>
+      <!-- svelte-ignore a11y_click_events_have_key_events, a11y_no_noninteractive_element_interactions -->
+      <span onclick={onTitleClick}>⚽</span> World Cup 2026 Raffle
+    </h1>
 
-    <p class="group-selector">
-      <GroupSelector bind:value={raffleGroup} />
-    </p>
+    {#if showGroupSelector}
+      <p class="group-selector">
+        <GroupSelector bind:value={raffleGroup} />
+      </p>
+    {/if}
   </div>
   <div class="header-right">
     {#if liveCount > 0}
