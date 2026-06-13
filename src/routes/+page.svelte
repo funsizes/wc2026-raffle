@@ -7,7 +7,9 @@
   import PicksGrid from '$lib/components/PicksGrid.svelte';
   import RankingsTable from '$lib/components/RankingsTable.svelte';
   import RulesTab from '$lib/components/RulesTab.svelte';
-  import { RAFFLE, RAFFLE2, RAFFLE2_LABEL, RAFFLE_LABEL } from '$lib/data/raffle';
+  import GroupSelector from '$lib/components/GroupSelector.svelte';
+  import PowerRankingSourceSelector from '$lib/components/PowerRankingSourceSelector.svelte';
+  import { RAFFLE, RAFFLE2, type RaffleGroup } from '$lib/data/raffle';
   import type { Match } from '$lib/types';
   import { persistLeaderboard, sortLeaderboard } from '$lib/utils/leaderboard';
   import {
@@ -17,11 +19,10 @@
   } from '$lib/utils/matches';
   import { migrateSnapshots } from '$lib/utils/snapshots';
 
-  type TabId = 'tab-main' | 'tab-gaby' | 'tab-raffle' | 'tab-rankings' | 'tab-rules' | 'tab-history';
+  type TabId = 'tab-leaderboard' | 'tab-raffle' | 'tab-rankings' | 'tab-rules' | 'tab-history';
 
   const TABS: { id: TabId; label: string }[] = [
-    { id: 'tab-main', label: '🏆 Main Group' },
-    { id: 'tab-gaby', label: "🏆 Gaby's Group" },
+    { id: 'tab-leaderboard', label: '🏆 Leaderboard' },
     { id: 'tab-raffle', label: '🎟 Raffle Draw' },
     { id: 'tab-rankings', label: '📊 Power Rankings' },
     { id: 'tab-rules', label: '📋 Rules' },
@@ -31,18 +32,20 @@
   let allMatches = $state<Match[] | null>(null);
   let prSourceIdx = $state(-1);
   let showMatchPR = $state(false);
-  let activeTab = $state<TabId>('tab-main');
+  let activeTab = $state<TabId>('tab-leaderboard');
   let statusText = $state('Auto-refreshes every 90 seconds');
+  let raffleGroup = $state<RaffleGroup>('g1');
 
-  const activeRaffle = $derived(activeTab === 'tab-gaby' ? RAFFLE2 : RAFFLE);
+  const activeRaffle = $derived(raffleGroup === 'g1' ? RAFFLE : RAFFLE2);
   const liveCount = $derived(countLiveMatches(allMatches));
   const todayMatches = $derived(allMatches ? filterTodayMatches(allMatches) : []);
   const matchesTitle = $derived(
     liveCount ? "🔴 Live & Today's Matches" : "📅 Today's Matches"
   );
 
-  const lb1 = $derived(sortLeaderboard(RAFFLE, allMatches));
-  const lb2 = $derived(sortLeaderboard(RAFFLE2, allMatches));
+  // TODO: fix this later on
+  const lb1 = $derived(sortLeaderboard(raffleGroup === 'g1' ? RAFFLE : RAFFLE2, allMatches));
+  const lb2 = $derived(sortLeaderboard(raffleGroup === 'g2' ? RAFFLE2 : RAFFLE, allMatches));
 
   $effect(() => {
     if (allMatches) {
@@ -73,7 +76,10 @@
 <header>
   <div class="logo">
     <h1>⚽ World Cup 2026 Raffle</h1>
-    <p>Winner-take-all · two groups</p>
+
+    <p class="group-selector">
+      <GroupSelector bind:value={raffleGroup} />
+    </p>
   </div>
   <div class="header-right">
     {#if liveCount > 0}
@@ -86,6 +92,17 @@
   <section>
     <div class="sec-title">{matchesTitle}</div>
     <div class="matches-grid">
+      <label class="pr-match-toggle">
+        <input type="checkbox" bind:checked={showMatchPR} />
+        Show Power Rankings
+      </label>
+
+      {#if showMatchPR}
+        <div>
+          <PowerRankingSourceSelector bind:value={prSourceIdx} />
+        </div>
+      {/if}
+
       {#if allMatches === null}
         <p style="font-size:.8rem;color:var(--muted)">Match data loading — check back shortly.</p>
       {:else if allMatches && todayMatches.length === 0}
@@ -101,30 +118,6 @@
     </div>
   </section>
 
-  <div class="pr-selector-bar">
-    <label for="prSourceSelect">⚔ Power Ranking Source:</label>
-    <select id="prSourceSelect" bind:value={prSourceIdx}>
-      <option value={-1}>Avg — All 14 Sources</option>
-      <option value={0}>ESPN</option>
-      <option value={1}>CBS Sports</option>
-      <option value={2}>USA Today</option>
-      <option value={3}>Yahoo Sports</option>
-      <option value={4}>The Guardian</option>
-      <option value={5}>Fox Sports</option>
-      <option value={6}>The Athletic</option>
-      <option value={7}>Bleacher Report</option>
-      <option value={8}>Elo Ratings</option>
-      <option value={9}>FIFA Rankings</option>
-      <option value={10}>Opta</option>
-      <option value={11}>Score</option>
-      <option value={12}>PrizePicks</option>
-      <option value={13}>Goal</option>
-    </select>
-    <label class="pr-match-toggle">
-      <input type="checkbox" bind:checked={showMatchPR} /> Show PR in Matches
-    </label>
-  </div>
-
   <nav class="tab-bar">
     {#each TABS as tab}
       <button
@@ -136,27 +129,22 @@
     {/each}
   </nav>
 
-  <div id="tab-main" class="tab-panel" class:active={activeTab === 'tab-main'}>
-    <div class="sec-title">🏆 {RAFFLE_LABEL}</div>
-    <DailySummary entries={lb1} {allMatches} snapLabel="g1" />
-    <Leaderboard entries={lb1} snapLabel="g1" {prSourceIdx} />
-  </div>
+  <div id="tab-leaderboard" class="tab-panel" class:active={activeTab === 'tab-leaderboard'}>
+    <div class="sec-title">🏆 Teams ({activeRaffle.length})</div>
 
-  <div id="tab-gaby" class="tab-panel" class:active={activeTab === 'tab-gaby'}>
-    <div class="sec-title">🏆 {RAFFLE2_LABEL}</div>
-    <DailySummary entries={lb2} {allMatches} snapLabel="g2" />
-    <Leaderboard entries={lb2} snapLabel="g2" {prSourceIdx} />
+    <PowerRankingSourceSelector bind:value={prSourceIdx} />
+
+    <DailySummary entries={lb1} {allMatches} snapLabel="g1" />
+
+    <Leaderboard entries={lb2} {prSourceIdx} {raffleGroup} />
   </div>
 
   <div id="tab-raffle" class="tab-panel" class:active={activeTab === 'tab-raffle'}>
-    <div class="sec-title">Main Group (30 participants)</div>
-    <PicksGrid raffle={RAFFLE} />
-    <div class="sec-title" style="margin-top:2rem">Gaby's Group (21 participants)</div>
-    <PicksGrid raffle={RAFFLE2} />
+    <PicksGrid raffle={activeRaffle} />
   </div>
 
   <div id="tab-rankings" class="tab-panel" class:active={activeTab === 'tab-rankings'}>
-    <RankingsTable />
+    <RankingsTable {raffleGroup} />
   </div>
 
   <div id="tab-rules" class="tab-panel" class:active={activeTab === 'tab-rules'}>
@@ -164,7 +152,9 @@
   </div>
 
   <div id="tab-history" class="tab-panel" class:active={activeTab === 'tab-history'}>
-    <HistoryTab {allMatches} {prSourceIdx} />
+    <PowerRankingSourceSelector bind:value={prSourceIdx} />
+
+    <HistoryTab {allMatches} {prSourceIdx} {raffleGroup} />
   </div>
 </main>
 

@@ -3,16 +3,19 @@
   import { getEntryDelta } from '$lib/utils/snapshots';
   import { getPrData } from '$lib/utils/rankings';
   import Flag from './Flag.svelte';
+    import type { RaffleGroup } from '$lib/data/raffle';
 
   interface Props {
     entries: LeaderboardEntry[];
-    snapLabel?: string;
     prSourceIdx: number;
+    raffleGroup: RaffleGroup;
   }
 
-  let { entries, snapLabel, prSourceIdx }: Props = $props();
+  let { entries, prSourceIdx, raffleGroup }: Props = $props();
 
   const MEDALS: Record<number, string> = { 1: '🥇', 2: '🥈', 3: '🥉' };
+
+  const snapLabel = $derived(raffleGroup === 'g1' ? 'g1' : 'g2');
 </script>
 
 {#each entries as e, i (e.name + e.team)}
@@ -28,6 +31,7 @@
   {@const delta = snapLabel ? getEntryDelta(snapLabel, e, rank) : null}
   {@const prData = getPrData(e, prSourceIdx)}
   {@const prDelta = prData ? Math.round(prData.display) - rank : null}
+
   <div class="lb-row {rankCls} {stateCls}">
     <div class="lb-rank">
       {rankDisplay}

@@ -1,6 +1,6 @@
 <script lang="ts">
   import { HIST_SRC_LABELS } from '$lib/data/rankings';
-  import { RAFFLE, RAFFLE2 } from '$lib/data/raffle';
+  import { RAFFLE, RAFFLE2, RAFFLE2_LABEL, RAFFLE_LABEL, type RaffleGroup } from '$lib/data/raffle';
   import type { Match, RaffleEntry } from '$lib/types';
   import { getPrData } from '$lib/utils/rankings';
   import {
@@ -14,18 +14,19 @@
   interface Props {
     allMatches: Match[] | null;
     prSourceIdx: number;
+    raffleGroup: RaffleGroup;
   }
 
-  let { allMatches, prSourceIdx }: Props = $props();
+  let { allMatches, prSourceIdx, raffleGroup: histGroup }: Props = $props();
 
   const HIST_MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
   const HIST_DAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
   const MEDALS: Record<number, string> = { 1: '🥇', 2: '🥈', 3: '🥉' };
 
-  let histGroup = $state<'g1' | 'g2'>('g1');
   let histDateIdx = $state(9999);
 
   const histRaffle = $derived(histGroup === 'g1' ? RAFFLE : RAFFLE2);
+
   const dates = $derived(getSnapshotDates(histGroup));
   const safeIdx = $derived(
     dates.length ? Math.max(0, Math.min(histDateIdx, dates.length - 1)) : 0
@@ -80,7 +81,7 @@
     return `${HIST_DAYS[dateObj.getDay()]}, ${HIST_MONTHS[+m - 1]} ${+d}, ${y}`;
   });
 
-  const groupLbl = $derived(histGroup === 'g1' ? 'Main Group (30)' : "Gaby's Group (21)");
+  const groupLbl = $derived(histGroup === 'g1' ? RAFFLE_LABEL : RAFFLE2_LABEL);
   const srcLbl = $derived(prSourceIdx === -1 ? 'Avg (14 sources)' : HIST_SRC_LABELS[prSourceIdx]);
   const vsLbl = $derived(
     prev && prevDate
@@ -88,27 +89,14 @@
       : 'Day 1 — no prior snapshot'
   );
 
-  function setGroup(g: 'g1' | 'g2') {
-    histGroup = g;
+  $effect(() => {
+   if (histGroup !== histGroup) {
     histDateIdx = 9999;
-  }
+   }
+  });
 </script>
 
 <div class="hist-controls">
-  <div class="hist-group-toggle">
-    <button
-      type="button"
-      class="hist-group-btn"
-      class:active={histGroup === 'g1'}
-      onclick={() => setGroup('g1')}>🏆 Main Group</button
-    >
-    <button
-      type="button"
-      class="hist-group-btn"
-      class:active={histGroup === 'g2'}
-      onclick={() => setGroup('g2')}>🏆 Gaby's Group</button
-    >
-  </div>
   <div class="hist-date-nav">
     <button type="button" class="hist-nav-btn" disabled={safeIdx === 0} onclick={() => histDateIdx--}
       >◀</button

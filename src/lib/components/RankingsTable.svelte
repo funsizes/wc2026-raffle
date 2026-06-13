@@ -1,13 +1,33 @@
 <script lang="ts">
-  import { RANKINGS, RANK_SOURCES } from '$lib/data/rankings';
-  import { findOwners } from '$lib/utils/teams';
-  import { rkClass } from '$lib/utils/rankings';
-  import Flag from './Flag.svelte';
+  import { RANKINGS, RANK_SOURCES } from "$lib/data/rankings";
+  import { rkClass } from "$lib/utils/rankings";
+  import Flag from "./Flag.svelte";
+  import type { RaffleGroup } from "$lib/data/raffle";
+    import { sameTeam } from "$lib/utils/teams";
+    import { RAFFLE, RAFFLE2 } from "$lib/data/raffle";
+
+  interface Props {
+    raffleGroup: RaffleGroup;
+  }
+
+  let { raffleGroup }: Props = $props();
+
+  const raffle = $derived(raffleGroup === "g1" ? RAFFLE : RAFFLE2);
+
+  function findOwners(teamName: string): string[] {
+    const owners: string[] = [];
+
+    for (const r of raffle)
+      if (sameTeam(teamName, r.api)) owners.push(r.name);
+
+    return owners;
+  }
 </script>
 
 <div class="rankings-source">
-  Aggregated from 14 media outlets (ESPN, CBS, USAT, Yahoo, Guardian, Fox Sports, The Athletic,
-  Bleacher Report, Elo, FIFA, Opta, Score, PrizePicks, Goal) ·
+  Aggregated from 14 media outlets (ESPN, CBS, USAT, Yahoo, Guardian, Fox
+  Sports, The Athletic, Bleacher Report, Elo, FIFA, Opta, Score, PrizePicks,
+  Goal) ·
   <a
     href="https://www.reddit.com/r/soccer/comments/1u28hp0/gathered_every_media_power_ranking_of_the_48/"
     target="_blank"

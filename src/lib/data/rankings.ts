@@ -34,6 +34,24 @@ export const HIST_SRC_LABELS = [
   'Goal'
 ];
 
+/** Full labels for the power-ranking source selector. */
+export const PR_SOURCE_LABELS = [
+  'ESPN',
+  'CBS Sports',
+  'USA Today',
+  'Yahoo Sports',
+  'The Guardian',
+  'Fox Sports',
+  'The Athletic',
+  'Bleacher Report',
+  'Elo Ratings',
+  'FIFA Rankings',
+  'Opta',
+  'Score',
+  'PrizePicks',
+  'Goal'
+] as const;
+
 export const RANKINGS: RankingEntry[] = [
   { rank: 1, team: 'Spain', flag: '🇪🇸', s: [2, 1, 1, 2, 2, 2, 1, 1, 1, 2, 1, 2, 1, 1], avg: 1.43 },
   { rank: 2, team: 'France', flag: '🇫🇷', s: [1, 2, 2, 1, 1, 1, 3, 2, 3, 3, 2, 1, 2, 3], avg: 1.93 },
