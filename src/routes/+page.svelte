@@ -52,7 +52,7 @@
 
   let statusText = $state('Auto-refreshes every 90 seconds');
   let raffleGroup = $state<RaffleGroup>(groupQueryParam as unknown as RaffleGroup);
-  let showGroupSelector = $state(false);
+  let showGroupSelector = $state(true);
 
   const activeRaffle = $derived(raffleGroup === 'g1' ? RAFFLE : RAFFLE2);
   const liveCount = $derived(countLiveMatches(allMatches));
