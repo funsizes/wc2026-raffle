@@ -1,5 +1,6 @@
 <script lang="ts">
   import { RAFFLE_GROUP_OPTIONS, type RaffleGroup } from '$lib/data/raffle';
+  import { t } from '$lib/i18n/locale.svelte';
 
   interface Props {
     value?: RaffleGroup;
@@ -20,7 +21,7 @@
       type="button"
       class="hist-group-btn"
       class:active={value === opt.id}
-      onclick={() => select(opt.id)}>{opt.label}</button
+      onclick={() => select(opt.id)}>{t(`groups.${opt.id}`)}</button
     >
   {/each}
 </div>

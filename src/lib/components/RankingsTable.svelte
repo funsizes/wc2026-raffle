@@ -3,8 +3,9 @@
   import { rkClass } from "$lib/utils/rankings";
   import Flag from "./Flag.svelte";
   import type { RaffleGroup } from "$lib/data/raffle";
-    import { sameTeam } from "$lib/utils/teams";
-    import { RAFFLE, RAFFLE2 } from "$lib/data/raffle";
+  import { sameTeam } from "$lib/utils/teams";
+  import { RAFFLE, RAFFLE2 } from "$lib/data/raffle";
+  import { t } from "$lib/i18n/locale.svelte";
 
   interface Props {
     raffleGroup: RaffleGroup;
@@ -25,13 +26,11 @@
 </script>
 
 <div class="rankings-source">
-  Aggregated from 14 media outlets (ESPN, CBS, USAT, Yahoo, Guardian, Fox
-  Sports, The Athletic, Bleacher Report, Elo, FIFA, Opta, Score, PrizePicks,
-  Goal) ·
+  {t('rankings.source')}
   <a
     href="https://www.reddit.com/r/soccer/comments/1u28hp0/gathered_every_media_power_ranking_of_the_48/"
     target="_blank"
-    rel="noopener">Source (Reddit r/soccer)</a
+    rel="noopener">{t('rankings.sourceLink')}</a
   >
 </div>
 <div class="rankings-wrap">
@@ -39,8 +38,8 @@
     <thead>
       <tr>
         <th>#</th>
-        <th class="col-team">Team</th>
-        <th>Avg</th>
+        <th class="col-team">{t('rankings.team')}</th>
+        <th>{t('rankings.avg')}</th>
         {#each RANK_SOURCES as s}<th>{s}</th>{/each}
       </tr>
     </thead>

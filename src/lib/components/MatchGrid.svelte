@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { STAGE_LABEL } from '$lib/data/raffle';
+  import { formatTime, t } from '$lib/i18n/locale.svelte';
   import type { Match, RaffleEntry } from '$lib/types';
   import { isLiveMatch } from '$lib/utils/matches';
   import { getPrData } from '$lib/utils/rankings';
@@ -14,6 +14,12 @@
   }
 
   let { matches, raffle, showMatchPR, prSourceIdx }: Props = $props();
+
+  function stageLabel(stage: string): string {
+    const key = `stage.${stage}`;
+    const label = t(key);
+    return label === key ? stage : label;
+  }
 </script>
 
 {#each matches as m (m.utcDate + m.homeTeam.name + m.awayTeam.name)}
@@ -27,14 +33,14 @@
 
   <div class="match-card" class:live={isLive}>
     <div class="match-meta">
-      <span>{STAGE_LABEL[m.stage] || m.stage}</span>
+      <span>{stageLabel(m.stage)}</span>
 
       {#if isDone}
-        <span class="status-done">FT</span>
+        <span class="status-done">{t('matchStatus.ft')}</span>
       {:else if isLive}
-        <span class="status-live">● LIVE</span>
+        <span class="status-live">{t('matchStatus.live')}</span>
       {:else}
-        <span class="status-upcoming">UPCOMING</span>
+        <span class="status-upcoming">{t('matchStatus.upcoming')}</span>
       {/if}
     </div>
 
@@ -49,7 +55,7 @@
         </div>
       {:else}
         <div class="match-score" style="font-size:1rem;color:var(--gold)">
-          {new Date(m.utcDate).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+          {formatTime(m.utcDate)}
         </div>
       {/if}
 

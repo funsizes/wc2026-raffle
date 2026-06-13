@@ -1,6 +1,7 @@
 <script lang="ts">
   import chestImg from '$lib/assets/chest.png';
   import { getRafflePot, type RaffleGroup } from '$lib/data/raffle';
+  import { formatCurrency, t } from '$lib/i18n/locale.svelte';
 
   interface Props {
     raffleGroup: RaffleGroup;
@@ -9,55 +10,46 @@
   let { raffleGroup }: Props = $props();
 
   const pot = $derived(getRafflePot(raffleGroup));
-
-  const potDisplay = $derived(
-    new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD',
-      maximumFractionDigits: 0
-    }).format(pot.amount)
-  );
+  const potDisplay = $derived(formatCurrency(pot.amount));
 </script>
 
 <div class="rules-tab">
   <div class="pot-box tb-box">
-    <h3>👑 Winner's Hoard</h3>
+    <h3>{t('pot.title')}</h3>
 
     <div class="pot-chest-wrap">
-      <img class="chest-img" src={chestImg} alt="Treasure chest" width="96" height="96" />
+      <img class="chest-img" src={chestImg} alt={t('pot.chestAlt')} width="96" height="96" />
 
       <div class="pot-details">
-        <p class="pot-tagline">One champion. One chest. Winner take all.</p>
+        <p class="pot-tagline">{t('pot.tagline')}</p>
         <p class="pot-amount">{potDisplay}</p>
-        <p class="pot-meta">{pot.participants} entrants</p>
+        <p class="pot-meta">{t('pot.entrants', { count: pot.participants })}</p>
       </div>
     </div>
   </div>
 
   <div class="tb-box">
-    <h3>⚔️ How to Win</h3>
+    <h3>{t('rules.howToWin')}</h3>
     <ol>
       <li>
-        <strong>Round Reached</strong> —
-        Whoever's team survives the longest wins outright. Champion takes the gold.
+        <strong>{t('rules.roundReachedTitle')}</strong> —
+        {t('rules.roundReachedBody')}
       </li>
       <li>
-        <strong>Goal Difference</strong> —
-        Eliminated at the same stage? Best combined GD across every match (Groups + all Knockouts) wins.
+        <strong>{t('rules.goalDiffTitle')}</strong> —
+        {t('rules.goalDiffBody')}
       </li>
       <li>
-        <strong>Goals Scored</strong> —
-        Still tied? Most total goals scored across all matches breaks it.
+        <strong>{t('rules.goalsScoredTitle')}</strong> —
+        {t('rules.goalsScoredBody')}
       </li>
       <li>
-        <strong>🎲 Coin Toss</strong> —
-        If everything above is completely dead even, we flip a coin. Contact the organizer.
+        <strong>{t('rules.coinTossTitle')}</strong> —
+        {t('rules.coinTossBody')}
       </li>
     </ol>
     <p style="margin-top:1.25rem;font-size:0.75rem;color:var(--muted);line-height:1.7">
-      The <strong style="color:var(--gold)">Today's Movers</strong> section only shows participants whose
-      team actually played that day — so every movement you see is from real results, not from someone
-      else's team losing.
+      {t('rules.moversNotePrefix')}<strong style="color:var(--gold)">{t('rules.moversHighlight')}</strong>{t('rules.moversNoteSuffix')}
     </p>
   </div>
 </div>
