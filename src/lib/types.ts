@@ -60,7 +60,7 @@ export interface RankDelta {
   gs: number;
 }
 
-export interface PrData {
+export interface PowerRankingsData {
   display: number;
   consensus: number;
 }

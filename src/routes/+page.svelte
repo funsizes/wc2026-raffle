@@ -2,7 +2,7 @@
   import { onMount } from 'svelte';
   import DailySummary from '$lib/components/DailySummary.svelte';
   import HistoryTab from '$lib/components/HistoryTab.svelte';
-  import Leaderboard from '$lib/components/Leaderboard.svelte';
+  import Leaderboard from '$lib/components/leaderboard/Leaderboard.svelte';
   import MatchGrid from '$lib/components/MatchGrid.svelte';
   import PicksGrid from '$lib/components/PicksGrid.svelte';
   import RankingsTable from '$lib/components/RankingsTable.svelte';
@@ -16,18 +16,14 @@
     countLiveMatches,
     fetchMatches,
     filterTodayMatches,
-
-    getRecentMatches
-
+    getRecentMatches,
+    getTomorrowMatches,
   } from '$lib/utils/matches';
   import { migrateSnapshots } from '$lib/utils/snapshots';
+  import { page } from '$app/stores';
 
-  type MatchTabId = 'tab-recent' | 'tab-today';
-
-  const MATCH_TABS: { id: MatchTabId; label: string }[] = [
-    { id: 'tab-recent', label: 'Recent' },
-    { id: 'tab-today', label: 'Today' }
-  ];
+  // Automatically updates if the query string changes
+  const groupQueryParam = $derived($page.url.searchParams.get('group') || 'g1');
 
   type TabId = 'tab-leaderboard' | 'tab-raffle' | 'tab-rankings' | 'tab-rules' | 'tab-history';
 
@@ -36,7 +32,7 @@
     { id: 'tab-raffle', label: '🎟 Raffle Draw' },
     { id: 'tab-rankings', label: '📊 Power Rankings' },
     { id: 'tab-rules', label: '📋 Rules' },
-    { id: 'tab-history', label: '📅 Daily History' }
+    { id: 'tab-history', label: '📅 Daily History' },
   ];
 
   let allMatches = $state<Match[] | null>(null);
@@ -47,12 +43,22 @@
   let activeMatchTab = $state<MatchTabId>('tab-today');
 
   let statusText = $state('Auto-refreshes every 90 seconds');
-  let raffleGroup = $state<RaffleGroup>('g1');
+  let raffleGroup = $state<RaffleGroup>(groupQueryParam as unknown as RaffleGroup);
+  let showGroupSelector = $state(true);
 
   const activeRaffle = $derived(raffleGroup === 'g1' ? RAFFLE : RAFFLE2);
   const liveCount = $derived(countLiveMatches(allMatches));
   const todayMatches = $derived(allMatches ? filterTodayMatches(allMatches) : []);
   const recentMatches = $derived(allMatches ? getRecentMatches(allMatches, 24) : []);
+  const tomorrowMatches = $derived(allMatches ? getTomorrowMatches(allMatches) : []);
+
+  type MatchTabId = 'tab-recent' | 'tab-today' | 'tab-tomorrow';
+
+  const MATCH_TABS: { id: MatchTabId; label: string; data: Match[] }[] = $derived([
+    { id: 'tab-recent' as const, label: 'Recent', data: recentMatches },
+    { id: 'tab-today' as const, label: 'Today', data: todayMatches },
+    { id: 'tab-tomorrow' as const, label: 'Tomorrow', data: tomorrowMatches },
+  ]);
 
   // TODO: fix this later on
   const lb1 = $derived(sortLeaderboard(raffleGroup === 'g1' ? RAFFLE : RAFFLE2, allMatches));
@@ -68,7 +74,10 @@
   async function refresh() {
     statusText = 'Refreshing…';
     allMatches = await fetchMatches();
-    const t = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    const t = new Date().toLocaleTimeString([], {
+      hour: '2-digit',
+      minute: '2-digit',
+    });
     statusText = `Last updated ${t} · auto-refreshes every 90 s`;
   }
 
@@ -78,6 +87,19 @@
 
   function selectMatchTab(id: MatchTabId) {
     activeMatchTab = id;
+  }
+
+  let titleClickTimes: number[] = [];
+
+  function onTitleClick() {
+    const now = Date.now();
+    titleClickTimes = titleClickTimes.filter((t) => now - t < 4_000);
+    titleClickTimes.push(now);
+
+    if (titleClickTimes.length >= 3) {
+      showGroupSelector = !showGroupSelector;
+      titleClickTimes = [];
+    }
   }
 
   onMount(() => {
@@ -90,11 +112,16 @@
 
 <header>
   <div class="logo">
-    <h1>⚽ World Cup 2026 Raffle</h1>
+    <h1>
+      <!-- svelte-ignore a11y_click_events_have_key_events, a11y_no_noninteractive_element_interactions -->
+      <span onclick={onTitleClick}>⚽</span> World Cup 2026 Raffle
+    </h1>
 
-    <p class="group-selector">
-      <GroupSelector bind:value={raffleGroup} />
-    </p>
+    {#if showGroupSelector}
+      <p class="group-selector">
+        <GroupSelector bind:value={raffleGroup} />
+      </p>
+    {/if}
   </div>
   <div class="header-right">
     {#if liveCount > 0}
@@ -105,54 +132,51 @@
 
 <main>
   <section>
-    <div class="sec-title">📅 Scheduled Matches</div>
+    <div class="sec-title">
+      <span>📅 Matches</span>
+
+      <div class="match-pr-selector">
+        <label class="pr-match-toggle" style="color:var(--muted)">
+          <input type='checkbox' bind:checked={showMatchPR} />
+          Show PRs
+        </label>
+      </div>
+    </div>
 
     <div class="matches-grid">
       {#if allMatches === null}
-        <p style="font-size:.8rem;color:var(--muted)">Match data loading — check back shortly.</p>
+        <p style="font-size:.8rem;color:var(--muted)">
+          Match data loading — check back shortly.
+        </p>
       {:else if todayMatches.length === 0 && recentMatches.length === 0}
-        <p style="font-size:.8rem;color:var(--muted)">No matches right now — check back soon!</p>
+        <p style="font-size:.8rem;color:var(--muted)">
+          No matches right now — check back soon!
+        </p>
       {:else}
-
-      <div class="match-pr-selector">
-        <label class="pr-match-toggle">
-          <input type="checkbox" bind:checked={showMatchPR} />
-          Show Power Rankings
-        </label>
-
         {#if showMatchPR}
           <div>
             <PowerRankingSourceSelector bind:value={prSourceIdx} />
           </div>
         {/if}
-      </div>
 
-      <nav class="tab-bar">
-        {#each MATCH_TABS as tab}
-          <button
-            type="button"
-            class="tab-btn"
-            class:active={activeMatchTab === tab.id}
-            onclick={() => selectMatchTab(tab.id as MatchTabId)}>{tab.label}</button
-          >
-        {/each}
-      </nav>
+        <nav class="tab-bar">
+          {#each MATCH_TABS as tab}
+            <button
+              type="button"
+              class="tab-btn"
+              class:active={activeMatchTab === tab.id}
+              onclick={() => selectMatchTab(tab.id as MatchTabId)}
+              >{tab.label}</button
+            >
+          {/each}
+        </nav>
 
-      {#if activeMatchTab === 'tab-recent'}
         <MatchGrid
-          matches={recentMatches}
-          raffle={activeRaffle}
-          {showMatchPR}
-          {prSourceIdx}
-        />
-      {:else}
-        <MatchGrid
-          matches={todayMatches}
-          raffle={activeRaffle}
-          {showMatchPR}
-          {prSourceIdx}
-        />
-        {/if}
+          matches={MATCH_TABS.find((tab) => tab.id === activeMatchTab)?.data ?? []}
+            raffle={activeRaffle}
+            {showMatchPR}
+            {prSourceIdx}
+          />
       {/if}
     </div>
   </section>
@@ -187,7 +211,7 @@
   </div>
 
   <div id="tab-rules" class="tab-panel" class:active={activeTab === 'tab-rules'}>
-    <RulesTab />
+    <RulesTab {raffleGroup} />
   </div>
 
   <div id="tab-history" class="tab-panel" class:active={activeTab === 'tab-history'}>

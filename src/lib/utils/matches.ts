@@ -31,16 +31,32 @@ export function filterTodayMatches(matches: Match[]): Match[] {
     .sort((a, b) => new Date(a.utcDate).getTime() - new Date(b.utcDate).getTime());
 }
 
+export function getTomorrowMatches(matches: Match[]): Match[] {
+  const tomorrow = new Date();
+  tomorrow.setDate(tomorrow.getDate() + 1);
+  const tomorrowKey = localDateKey(tomorrow);
+
+  return matches
+    .filter((m) => localDateKey(new Date(m.utcDate)) === tomorrowKey)
+    .sort((a, b) => new Date(a.utcDate).getTime() - new Date(b.utcDate).getTime());
+}
+
 export function getRecentMatches(matches: Match[], hours: number): Match[] {
   const now = Date.now();
+  const today = localDateKey(new Date());
 
   return matches
     .filter((m) => {
       const kickoff = new Date(m.utcDate).getTime();
       const hoursAgo = (now - kickoff) / 3_600_000;
 
-      return hoursAgo >= 0 && hoursAgo < hours;
+      return (
+        hoursAgo >= 0 &&
+        hoursAgo < hours &&
+        localDateKey(new Date(m.utcDate)) !== today
+      );
     })
+    .sort((a, b) => new Date(a.utcDate).getTime() - new Date(b.utcDate).getTime());
 }
 
 export function countLiveMatches(matches: Match[] | null): number {
