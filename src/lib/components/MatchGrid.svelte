@@ -4,7 +4,7 @@
   import { isLiveMatch } from '$lib/utils/matches';
   import { getPrData } from '$lib/utils/rankings';
   import { findParticipant } from '$lib/utils/teams';
-  import Flag from './Flag.svelte';
+  import MatchTeam from './MatchTeam.svelte';
 
   interface Props {
     matches: Match[];
@@ -17,15 +17,18 @@
 </script>
 
 {#each matches as m (m.utcDate + m.homeTeam.name + m.awayTeam.name)}
-  {@const hp = findParticipant(m.homeTeam.name, raffle)}
-  {@const ap = findParticipant(m.awayTeam.name, raffle)}
+  {@const homeParticipant = findParticipant(m.homeTeam.name, raffle)}
+  {@const awayParticipant = findParticipant(m.awayTeam.name, raffle)}
+
   {@const isLive = isLiveMatch(m)}
   {@const isDone = m.status === 'FINISHED'}
-  {@const hPrData = showMatchPR ? getPrData(hp || { api: m.homeTeam.name, team: m.homeTeam.name }, prSourceIdx) : null}
-  {@const aPrData = showMatchPR ? getPrData(ap || { api: m.awayTeam.name, team: m.awayTeam.name }, prSourceIdx) : null}
+  {@const homeParticipantPowerRankingsData = showMatchPR ? getPrData(homeParticipant || { api: m.homeTeam.name, team: m.homeTeam.name }, prSourceIdx) : null}
+  {@const awayParticipantPowerRankingsData = showMatchPR ? getPrData(awayParticipant || { api: m.awayTeam.name, team: m.awayTeam.name }, prSourceIdx) : null}
+
   <div class="match-card" class:live={isLive}>
     <div class="match-meta">
       <span>{STAGE_LABEL[m.stage] || m.stage}</span>
+
       {#if isDone}
         <span class="status-done">FT</span>
       {:else if isLive}
@@ -34,15 +37,10 @@
         <span class="status-upcoming">UPCOMING</span>
       {/if}
     </div>
+
     <div class="match-body">
-      <div class="match-team">
-        <span class="mflag"><Flag entry={hp || { api: m.homeTeam.name, team: m.homeTeam.name, flag: '🏳️' }} /></span>
-        <div class="mname">{hp ? hp.team : m.homeTeam.shortName || m.homeTeam.name}</div>
-        {#if hp}<div class="mowner">{hp.name}</div>{/if}
-        {#if hPrData}
-          <div class="match-pr">PR <span class="pr-num">#{Math.round(hPrData.display)}</span></div>
-        {/if}
-      </div>
+      <MatchTeam participant={homeParticipant} team={m.homeTeam} powerRankingsData={homeParticipantPowerRankingsData} />
+
       {#if isDone}
         <div class="match-score">{m.score.fullTime.home} – {m.score.fullTime.away}</div>
       {:else if isLive}
@@ -54,14 +52,8 @@
           {new Date(m.utcDate).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
         </div>
       {/if}
-      <div class="match-team">
-        <span class="mflag"><Flag entry={ap || { api: m.awayTeam.name, team: m.awayTeam.name, flag: '🏳️' }} /></span>
-        <div class="mname">{ap ? ap.team : m.awayTeam.shortName || m.awayTeam.name}</div>
-        {#if ap}<div class="mowner">{ap.name}</div>{/if}
-        {#if aPrData}
-          <div class="match-pr">PR <span class="pr-num">#{Math.round(aPrData.display)}</span></div>
-        {/if}
-      </div>
+
+      <MatchTeam participant={awayParticipant} team={m.awayTeam} powerRankingsData={awayParticipantPowerRankingsData} />
     </div>
   </div>
 {/each}

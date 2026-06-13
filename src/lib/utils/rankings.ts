@@ -1,7 +1,7 @@
 import { RANKINGS } from '$lib/data/rankings';
-import type { PrData, RaffleEntry } from '$lib/types';
+import type { PowerRankingsData, RaffleEntry } from '$lib/types';
 
-export function getPrData(raffleEntry: Pick<RaffleEntry, 'api' | 'team'>, prSourceIdx: number): PrData | null {
+export function getPrData(raffleEntry: Pick<RaffleEntry, 'api' | 'team'>, prSourceIdx: number): PowerRankingsData | null {
   const key = (raffleEntry.api || raffleEntry.team || '').toLowerCase();
   const found = RANKINGS.find((r) => {
     const rk = r.team.toLowerCase();
