@@ -45,8 +45,8 @@ export const esUS: Messages = {
     goals: '{count} goles'
   },
   groups: {
-    g1: '🏆 Grupo de Luis',
-    g2: '🏆 Grupo de Gaby'
+    g1: '🏆 Grupo Luis',
+    g2: '🏆 Grupo Gaby'
   },
   pot: {
     title: 'Tesoro del ganador',
