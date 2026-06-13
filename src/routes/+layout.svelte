@@ -3,6 +3,7 @@
   import GameMaster from '$lib/components/GameMaster.svelte';
   import UserSettings from '$lib/components/UserSettings.svelte';
   import { t } from '$lib/i18n/locale.svelte';
+  import '@fortawesome/fontawesome-free/css/all.min.css';
 </script>
 
 <svelte:head>
