@@ -1,6 +1,12 @@
 <script lang="ts">
   import { HIST_SRC_LABELS } from '$lib/data/rankings';
-  import { RAFFLE, RAFFLE2, RAFFLE2_LABEL, RAFFLE_LABEL, type RaffleGroup } from '$lib/data/raffle';
+  import { RAFFLE, RAFFLE2, type RaffleGroup } from '$lib/data/raffle';
+  import {
+    formatMonthDay,
+    formatShortDate,
+    formatWeekdayDate,
+    t
+  } from '$lib/i18n/locale.svelte';
   import type { Match, RaffleEntry } from '$lib/types';
   import { getPrData } from '$lib/utils/rankings';
   import {
@@ -19,8 +25,6 @@
 
   let { allMatches, prSourceIdx, raffleGroup: histGroup }: Props = $props();
 
-  const HIST_MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-  const HIST_DAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
   const MEDALS: Record<number, string> = { 1: '🥇', 2: '🥈', 3: '🥉' };
 
   let histDateIdx = $state(9999);
@@ -37,11 +41,7 @@
   const snap = $derived(date ? loadHistSnap(histGroup, date) : null);
   const prev = $derived(prevDate ? loadHistSnap(histGroup, prevDate) : null);
 
-  const dateLabel = $derived.by(() => {
-    if (!date) return '—';
-    const [y, m, d] = date.split('-');
-    return `${HIST_MONTHS[+m - 1]} ${+d}, ${y}`;
-  });
+  const dateLabel = $derived(date ? formatShortDate(date) : '—');
 
   const movers = $derived.by(() => {
     if (!snap || !allMatches) return null;
@@ -74,25 +74,23 @@
       );
   });
 
-  const fullDate = $derived.by(() => {
-    if (!date) return '';
-    const [y, m, d] = date.split('-');
-    const dateObj = new Date(date + 'T12:00:00');
-    return `${HIST_DAYS[dateObj.getDay()]}, ${HIST_MONTHS[+m - 1]} ${+d}, ${y}`;
-  });
+  const fullDate = $derived(date ? formatWeekdayDate(date) : '');
 
-  const groupLbl = $derived(histGroup === 'g1' ? RAFFLE_LABEL : RAFFLE2_LABEL);
-  const srcLbl = $derived(prSourceIdx === -1 ? 'Avg (14 sources)' : HIST_SRC_LABELS[prSourceIdx]);
+  const groupLbl = $derived(t(`groups.${histGroup}`));
+  const srcLbl = $derived(
+    prSourceIdx === -1
+      ? t('history.avgSources', { count: 14 })
+      : HIST_SRC_LABELS[prSourceIdx]
+  );
   const vsLbl = $derived(
     prev && prevDate
-      ? `vs ${HIST_MONTHS[+prevDate.split('-')[1] - 1]} ${+prevDate.split('-')[2]}`
-      : 'Day 1 — no prior snapshot'
+      ? t('history.vsDate', { date: formatMonthDay(prevDate) })
+      : t('history.dayOneSnapshot')
   );
 
   $effect(() => {
-   if (histGroup !== histGroup) {
+    histGroup;
     histDateIdx = 9999;
-   }
   });
 </script>
 
@@ -113,30 +111,30 @@
 
 {#if dates.length === 0}
   <div class="sc-empty">
-    No history saved yet.<br />The page saves a snapshot each day you visit.<br />Check back tomorrow!
+    {t('history.noHistory')}<br />{t('history.savesDaily')}<br />{t('history.checkTomorrow')}
   </div>
 {:else if !snap}
-  <div class="sc-empty">No data for this date.</div>
+  <div class="sc-empty">{t('history.noData')}</div>
 {:else if !allMatches}
-  <div class="sc-empty">Match data still loading…<br />Check back in a moment.</div>
+  <div class="sc-empty">{t('history.matchesLoading')}<br />{t('history.checkBack')}</div>
 {:else if movers && movers.length === 0}
   <div class="sc-card">
     <div class="sc-head">
-      <div class="sc-title">⚔ WC 2026 DAILY RECAP ⚔</div>
+      <div class="sc-title">{t('history.recapTitle')}</div>
       <div class="sc-sub">{fullDate} · {groupLbl}</div>
     </div>
-    <div class="sc-empty">No matches involving your teams on this day.</div>
+    <div class="sc-empty">{t('history.noTeamMatches')}</div>
   </div>
 {:else if movers}
   <div class="sc-card">
     <div class="sc-head">
-      <div class="sc-title">⚔ WC 2026 DAILY RECAP ⚔</div>
+      <div class="sc-title">{t('history.recapTitle')}</div>
       <div class="sc-sub">{fullDate} · {groupLbl}</div>
-      <div class="sc-meta">Position change {vsLbl} · PR: {srcLbl}</div>
+      <div class="sc-meta">{t('history.positionChange')} {vsLbl} · {t('pr.rankShort')}: {srcLbl}</div>
     </div>
     <div class="sc-col-heads">
-      <span>#</span><span></span><span>PLAYER</span>
-      <span>MOVE</span><span>GD · GOALS</span><span>PR RANK</span>
+      <span>#</span><span></span><span>{t('history.player')}</span>
+      <span>{t('history.move')}</span><span>{t('history.gdGoals')}</span><span>{t('history.prRank')}</span>
     </div>
     {#each movers as e (e.name + e.team)}
       {@const prData = getPrData(
@@ -165,7 +163,7 @@
           <span class={gdCls}>GD {gdStr}</span><span class="sc-goals"> · {e.gs}⚽</span>
         </div>
         <div class="sc-pr-cell">
-          PR <span class="sc-pr-num">{prData ? `#${Math.round(prData.display)}` : '—'}</span>
+          {t('pr.rankShort')} <span class="sc-pr-num">{prData ? `#${Math.round(prData.display)}` : '—'}</span>
         </div>
       </div>
     {/each}

@@ -1,5 +1,6 @@
 <script lang="ts">
   import type { LeaderboardEntry, Match } from '$lib/types';
+  import { t } from '$lib/i18n/locale.svelte';
   import { loadSnapshot, teamPlayedToday, teamsPlayedToday } from '$lib/utils/snapshots';
   import Flag from './Flag.svelte';
 
@@ -31,16 +32,20 @@
     return list;
   });
 
-  const since = $derived(loadSnapshot(snapLabel, -1) ? 'vs yesterday' : 'since first load today');
+  const since = $derived(
+    loadSnapshot(snapLabel, -1)
+      ? t('dailySummary.sinceYesterday')
+      : t('dailySummary.sinceFirstLoad')
+  );
 </script>
 
 <div class="daily-summary">
   {#if snap === null}
-    <p class="ds-heading">DAY 1 — NO PRIOR RANKINGS TO COMPARE YET</p>
+    <p class="ds-heading">{t('dailySummary.dayOne')}</p>
   {:else if movers !== null && movers.length === 0}
-    <p class="ds-heading">NO GAMES TODAY YET</p>
+    <p class="ds-heading">{t('dailySummary.noGames')}</p>
   {:else if movers}
-    <p class="ds-heading">TODAY'S MOVERS ({since})</p>
+    <p class="ds-heading">{t('dailySummary.movers', { since })}</p>
     <div class="mover-list">
       {#each movers as { e, rankDelta } (e.name + e.team)}
         {@const pillCls = rankDelta > 0 ? 'mp-up' : rankDelta < 0 ? 'mp-down' : ''}

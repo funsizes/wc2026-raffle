@@ -671,6 +671,57 @@ section { margin-bottom: 2.5rem; }
   font-size: 0.68rem; color: var(--muted); line-height: 2.2;
 }
 
+/* ── LOCALE PROMPT ────────────────────────────────── */
+.locale-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  background: rgba(8, 6, 2, 0.82);
+  backdrop-filter: blur(2px);
+}
+
+.locale-dialog {
+  width: min(100%, 22rem);
+  text-align: center;
+  border-color: var(--gold);
+  box-shadow: 0 0 0 2px rgba(232,160,32,.15), 6px 6px 0 rgba(0,0,0,.55);
+}
+
+.locale-subtitle {
+  font-size: 0.78rem;
+  color: var(--muted);
+  line-height: 1.7;
+  margin-bottom: 1.25rem;
+}
+
+.locale-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.locale-btn {
+  font-family: var(--pixel);
+  font-size: 0.5rem;
+  letter-spacing: 0.05em;
+  padding: 0.85rem 1rem;
+  background: var(--surface);
+  border: 2px solid var(--border);
+  color: var(--text);
+  cursor: pointer;
+  transition: border-color 0.15s, color 0.15s, transform 0.15s;
+}
+
+.locale-btn:hover {
+  border-color: var(--gold);
+  color: var(--gold);
+  transform: translate(-1px, -1px);
+}
+
 /* ── RESPONSIVE ───────────────────────────────────── */
 /* @media (max-width: 600px) {
   .lb-row { grid-template-columns: 2rem 1.5rem 1fr auto auto; }

@@ -1,5 +1,6 @@
 <script lang="ts">
   import type { MatchTeam, PowerRankingsData, RaffleEntry } from '$lib/types';
+  import { t } from '$lib/i18n/locale.svelte';
   import Flag from './Flag.svelte';
 
   interface Props {
@@ -31,6 +32,6 @@
   {/if}
 
   {#if prData}
-    <div class="match-pr">PR <span class="pr-num">#{Math.round(prData.display)}</span></div>
+    <div class="match-pr">{t('pr.rankShort')} <span class="pr-num">#{Math.round(prData.display)}</span></div>
   {/if}
 </div>

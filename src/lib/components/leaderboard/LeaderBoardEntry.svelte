@@ -2,6 +2,7 @@
   import type { LeaderboardEntry } from "$lib/types";
   import { getEntryDelta } from "$lib/utils/snapshots";
   import { getPrData } from "$lib/utils/rankings";
+  import { t } from '$lib/i18n/locale.svelte';
   import Flag from "../Flag.svelte";
 
   interface Props {
@@ -72,7 +73,7 @@
 
     <div class="lb-stats">
       <div class={goalDifferentialClass}>GD {goalDifferentialDisplayValue}</div>
-      <div class="gs-val">{p.gs} goals</div>
+      <div class="gs-val">{t('leaderboard.goals', { count: p.gs })}</div>
     </div>
 
     <button class="lb-actions" onclick={() => (isExpanded = !isExpanded)}>
@@ -86,7 +87,7 @@
 
       <div class="lb-pr">
         {#if powerRankingData}
-          <span class="pr-badge">PR #{powerRankingData.display}</span>
+          <span class="pr-badge">{t('pr.rank', { rank: powerRankingData.display })}</span>
 
           <span
             class="pr-delta {powerRankingDelta && powerRankingDelta > 0
