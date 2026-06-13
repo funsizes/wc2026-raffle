@@ -553,9 +553,9 @@ section { margin-bottom: 2.5rem; }
 }
 
 /* ── RESPONSIVE ───────────────────────────────────── */
-@media (max-width: 600px) {
+/* @media (max-width: 600px) {
   .lb-row { grid-template-columns: 2rem 1.5rem 1fr auto auto; }
   .lb-stage { display: none; }
   .lb-pr { display: none; }
   .lb-stats { font-size: 0.62rem; }
-}
+} */
