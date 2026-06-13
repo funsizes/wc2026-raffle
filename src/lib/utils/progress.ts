@@ -38,7 +38,9 @@ export function calcProgress(entry: RaffleEntry, all: Match[]): Progress {
 
     if (stage === 'GROUP_STAGE') {
       const inKO = mine.some((m) => m.stage !== 'GROUP_STAGE');
-      return { score: inKO ? 2 : 1, label: inKO ? 'Round of 32' : 'Group Stage', gs, gd, active: inKO };
+      const gsComplete = mine.filter((m) => m.stage === 'GROUP_STAGE').every((m) => m.status === 'FINISHED');
+      const active = inKO || !gsComplete;
+      return { score: inKO ? 2 : 1, label: inKO ? 'Round of 32' : 'Group Stage', gs, gd, active };
     }
 
     const last = stageDone.sort((a, b) => new Date(b.utcDate).getTime() - new Date(a.utcDate).getTime())[0];
