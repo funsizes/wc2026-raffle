@@ -80,6 +80,16 @@ section { margin-bottom: 2.5rem; }
   display: flex;
   align-items: center;
   gap: 0.5rem;
+
+  .match-pr-selector {
+    margin-left: auto;
+    text-shadow: none;
+
+    .pr-selector-bar {
+      margin-top: 1rem;
+      margin-bottom: 0;
+    }
+  }
 }
 
 /* ── PR SOURCE SELECTOR ──────────────────────────── */
@@ -93,15 +103,6 @@ section { margin-bottom: 2.5rem; }
   background: var(--surface);
   border: 2px solid var(--border);
   box-shadow: 3px 3px 0 rgba(0,0,0,.4);
-}
-
-.match-pr-selector {
-  margin-bottom: 0.5rem;
-
-  .pr-selector-bar {
-    margin-top: 1rem;
-    margin-bottom: 0;
-  }
 }
 
 .pr-selector-bar label {
