@@ -21,7 +21,8 @@
   } from '$lib/utils/matches';
   import { migrateSnapshots } from '$lib/utils/snapshots';
   import { page } from '$app/stores';
-  import { formatTime, openLocalePrompt, t } from '$lib/i18n/locale.svelte';
+  import { formatTime, t } from '$lib/i18n/locale.svelte';
+  import { openSettings } from '$lib/settings/settings.svelte';
 
   // Automatically updates if the query string changes
   const groupQueryParam = $derived($page.url.searchParams.get('group') || 'g1');
@@ -129,8 +130,8 @@
           <GroupSelector bind:value={raffleGroup} />
         </p>
       {/if}
-      <button type="button" class="locale-toggle-btn" onclick={openLocalePrompt}>
-        {t('locale.changeLanguage')}
+      <button type="button" class="settings-toggle-btn" onclick={openSettings}>
+        {t('settings.openButton')}
       </button>
     </div>
   </div>

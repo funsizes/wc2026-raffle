@@ -1,10 +1,19 @@
 export const enUS = {
   locale: {
-    promptTitle: 'Choose your tongue',
-    promptSubtitle: 'Pick a language for the realm. You can change this later.',
     english: 'English',
-    spanish: 'Español',
-    changeLanguage: '🌐 Language'
+    spanish: 'Español'
+  },
+  settings: {
+    title: 'Settings',
+    firstVisitTitle: 'Choose your tongue',
+    openButton: '⚙ Settings',
+    firstVisitSubtitle: 'Pick a language for the realm. You can change this later.',
+    language: 'Language',
+    done: 'Done',
+    locale: {
+      'en-US': 'English',
+      'es-US': 'Español'
+    }
   },
   app: {
     pageTitle: 'WC 2026 Raffle ⚔️',

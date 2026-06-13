@@ -2,11 +2,20 @@ import type { Messages } from './en-US';
 
 export const esUS: Messages = {
   locale: {
-    promptTitle: 'Elige tu idioma',
-    promptSubtitle: 'Escoge un idioma para el reino. Podrás cambiarlo después.',
     english: 'English',
-    spanish: 'Español',
-    changeLanguage: '🌐 Idioma'
+    spanish: 'Español'
+  },
+  settings: {
+    title: 'Configuración',
+    firstVisitTitle: 'Elige tu lengua',
+    openButton: '⚙ Ajustes',
+    firstVisitSubtitle: 'Elige un idioma para el reino. Podrás cambiarlo después.',
+    language: 'Idioma',
+    done: 'Listo',
+    locale: {
+      'en-US': 'English',
+      'es-US': 'Español'
+    }
   },
   app: {
     pageTitle: 'Sorteo WC 2026 ⚔️',

@@ -57,7 +57,8 @@ header {
   margin-top: 1rem;
 }
 
-.locale-toggle-btn {
+.locale-toggle-btn,
+.settings-toggle-btn {
   font-family: var(--pixel);
   font-size: 0.42rem;
   letter-spacing: 0.04em;
@@ -69,7 +70,8 @@ header {
   white-space: nowrap;
 }
 
-.locale-toggle-btn:hover {
+.locale-toggle-btn:hover,
+.settings-toggle-btn:hover {
   border-color: var(--gold);
   color: var(--gold);
 }
@@ -696,8 +698,8 @@ section { margin-bottom: 2.5rem; }
   font-size: 0.68rem; color: var(--muted); line-height: 2.2;
 }
 
-/* ── LOCALE PROMPT ────────────────────────────────── */
-.locale-overlay {
+/* ── USER SETTINGS ────────────────────────────────── */
+.settings-overlay {
   position: fixed;
   inset: 0;
   z-index: 200;
@@ -709,42 +711,47 @@ section { margin-bottom: 2.5rem; }
   backdrop-filter: blur(2px);
 }
 
-.locale-dialog {
-  width: min(100%, 22rem);
-  text-align: center;
+.settings-dialog {
+  width: min(100%, 24rem);
   border-color: var(--gold);
   box-shadow: 0 0 0 2px rgba(232,160,32,.15), 6px 6px 0 rgba(0,0,0,.55);
 }
 
-.locale-subtitle {
+.settings-subtitle {
   font-size: 0.78rem;
   color: var(--muted);
   line-height: 1.7;
   margin-bottom: 1.25rem;
 }
 
-.locale-actions {
-  display: flex;
-  flex-direction: column;
-  gap: 0.65rem;
+.settings-section {
+  margin-top: 0.5rem;
 }
 
-.locale-btn {
+.settings-section-label {
   font-family: var(--pixel);
-  font-size: 0.5rem;
+  font-size: 0.42rem;
+  color: var(--muted);
+  letter-spacing: 0.06em;
+  margin-bottom: 0.6rem;
+}
+
+.settings-done-btn {
+  width: 100%;
+  margin-top: 1.25rem;
+  font-family: var(--pixel);
+  font-size: 0.48rem;
   letter-spacing: 0.05em;
-  padding: 0.85rem 1rem;
+  padding: 0.75rem 1rem;
   background: var(--surface);
   border: 2px solid var(--border);
   color: var(--text);
   cursor: pointer;
-  transition: border-color 0.15s, color 0.15s, transform 0.15s;
 }
 
-.locale-btn:hover {
+.settings-done-btn:hover {
   border-color: var(--gold);
   color: var(--gold);
-  transform: translate(-1px, -1px);
 }
 
 /* ── RESPONSIVE ───────────────────────────────────── */

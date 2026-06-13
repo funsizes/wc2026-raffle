@@ -1,6 +1,6 @@
 <script lang="ts">
   import '../app.css';
-  import LocalePrompt from '$lib/components/LocalePrompt.svelte';
+  import UserSettings from '$lib/components/UserSettings.svelte';
   import { t } from '$lib/i18n/locale.svelte';
 </script>
 
@@ -8,6 +8,6 @@
   <title>{t('app.pageTitle')}</title>
 </svelte:head>
 
-<LocalePrompt />
+<UserSettings />
 
 <slot />
