@@ -41,11 +41,13 @@
 
   const delta = $derived(getEntryDelta(snapLabel, e, rank));
   const powerRankingData = $derived(getPrData(e, prSourceIdx));
-  const powerRankingDelta = $derived(powerRankingData ? Math.round(powerRankingData.display) - rank : null);
+  const powerRankingDelta = $derived(
+    powerRankingData ? Math.round(powerRankingData.display) - rank : null,
+  );
 </script>
 
-<div>
-  <div class="lb-row {rankCls} {stateCls}">
+<div class="lb-row {rankCls}">
+  <div class="lb-top-row {stateCls}">
     <div class="lb-rank">
       {rankDisplay}
       {#if delta}
@@ -73,13 +75,13 @@
       <div class="gs-val">{p.gs} goals</div>
     </div>
 
-    <button class="lb-expand-btn" onclick={() => (isExpanded = !isExpanded)}>
+    <button class="lb-actions" onclick={() => (isExpanded = !isExpanded)}>
       {isExpanded ? "▲" : "▼"}
     </button>
   </div>
 
   {#if isExpanded}
-    <div>
+    <div class="lb-bottom-row">
       <div class="lb-stage {stageCls}">{p.label}</div>
 
       <div class="lb-pr">
