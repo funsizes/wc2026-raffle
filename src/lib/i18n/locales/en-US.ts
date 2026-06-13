@@ -3,6 +3,14 @@ export const enUS = {
     english: 'English',
     spanish: 'Español'
   },
+  gameMaster: {
+    title: 'Game Master',
+    subtitle: 'Admin controls for the realm.',
+    storage: 'Local storage',
+    clearStorage: 'Clear all saved data',
+    clearConfirm: 'Erase all saved raffle data from this browser? The page will reload.',
+    done: 'Done'
+  },
   settings: {
     title: 'Settings',
     firstVisitTitle: 'Choose your tongue',

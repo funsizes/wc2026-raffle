@@ -5,6 +5,15 @@ export const esUS: Messages = {
     english: 'English',
     spanish: 'Español'
   },
+  gameMaster: {
+    title: 'Game Master',
+    subtitle: 'Controles de administración del reino.',
+    storage: 'Almacenamiento local',
+    clearStorage: 'Borrar todos los datos guardados',
+    clearConfirm:
+      '¿Borrar todos los datos guardados del sorteo en este navegador? La página se recargará.',
+    done: 'Listo'
+  },
   settings: {
     title: 'Configuración',
     firstVisitTitle: 'Elige tu lengua',

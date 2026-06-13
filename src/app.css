@@ -754,6 +754,28 @@ section { margin-bottom: 2.5rem; }
   color: var(--gold);
 }
 
+.gamemaster-action-btn {
+  width: 100%;
+  font-family: var(--pixel);
+  font-size: 0.48rem;
+  letter-spacing: 0.05em;
+  padding: 0.75rem 1rem;
+  background: var(--surface);
+  border: 2px solid var(--border);
+  color: var(--text);
+  cursor: pointer;
+}
+
+.gamemaster-action-btn:hover:not(:disabled) {
+  border-color: #c44;
+  color: #f88;
+}
+
+.gamemaster-action-btn:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}
+
 /* ── RESPONSIVE ───────────────────────────────────── */
 /* @media (max-width: 600px) {
   .lb-row { grid-template-columns: 2rem 1.5rem 1fr auto auto; }

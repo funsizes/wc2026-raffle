@@ -22,6 +22,7 @@
   import { migrateSnapshots } from '$lib/utils/snapshots';
   import { page } from '$app/stores';
   import { formatTime, t } from '$lib/i18n/locale.svelte';
+  import { openGameMaster } from '$lib/settings/gamemaster.svelte';
   import { openSettings } from '$lib/settings/settings.svelte';
 
   // Automatically updates if the query string changes
@@ -97,6 +98,7 @@
   }
 
   let titleClickTimes: number[] = [];
+  let statusClickTimes: number[] = [];
 
   function onTitleClick() {
     const now = Date.now();
@@ -106,6 +108,17 @@
     if (titleClickTimes.length >= 3) {
       showGroupSelector = !showGroupSelector;
       titleClickTimes = [];
+    }
+  }
+
+  function onStatusBarClick() {
+    const now = Date.now();
+    statusClickTimes = statusClickTimes.filter((t) => now - t < 4_000);
+    statusClickTimes.push(now);
+
+    if (statusClickTimes.length >= 3) {
+      openGameMaster();
+      statusClickTimes = [];
     }
   }
 
@@ -233,6 +246,7 @@
   </div>
 </main>
 
-<div class="status-bar">
+<!-- svelte-ignore a11y_click_events_have_key_events, a11y_no_static_element_interactions -->
+<div class="status-bar" onclick={onStatusBarClick}>
   <span class="dot"></span>{statusText}
 </div>
