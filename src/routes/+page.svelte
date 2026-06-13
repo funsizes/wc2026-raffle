@@ -2,7 +2,7 @@
   import { onMount } from 'svelte';
   import DailySummary from '$lib/components/DailySummary.svelte';
   import HistoryTab from '$lib/components/HistoryTab.svelte';
-  import Leaderboard from '$lib/components/Leaderboard.svelte';
+  import Leaderboard from '$lib/components/leaderboard/Leaderboard.svelte';
   import MatchGrid from '$lib/components/MatchGrid.svelte';
   import PicksGrid from '$lib/components/PicksGrid.svelte';
   import RankingsTable from '$lib/components/RankingsTable.svelte';
