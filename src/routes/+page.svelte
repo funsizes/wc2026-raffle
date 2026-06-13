@@ -211,7 +211,7 @@
   </div>
 
   <div id="tab-rules" class="tab-panel" class:active={activeTab === 'tab-rules'}>
-    <RulesTab />
+    <RulesTab {raffleGroup} />
   </div>
 
   <div id="tab-history" class="tab-panel" class:active={activeTab === 'tab-history'}>

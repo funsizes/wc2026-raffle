@@ -5,6 +5,30 @@ export type RaffleGroup = 'g1' | 'g2';
 export const RAFFLE_LABEL = 'Main Group (30)';
 export const RAFFLE2_LABEL = "Gaby's Group (21)";
 
+/** Entry fee per participant — update to match your pool. */
+export const RAFFLE_ENTRY_FEE = 10;
+export const RAFFLE2_ENTRY_FEE = 10;
+
+export function getRafflePot(group: RaffleGroup): {
+  amount: number;
+  participants: number;
+  label: string;
+} {
+  if (group === 'g1') {
+    return {
+      amount: RAFFLE.length * RAFFLE_ENTRY_FEE,
+      participants: RAFFLE.length,
+      label: RAFFLE_LABEL
+    };
+  }
+
+  return {
+    amount: RAFFLE2.length * RAFFLE2_ENTRY_FEE,
+    participants: RAFFLE2.length,
+    label: RAFFLE2_LABEL
+  };
+}
+
 export const RAFFLE_GROUP_OPTIONS: { id: RaffleGroup; label: string }[] = [
   { id: 'g1', label: `🏆 Luis' Group` },
   { id: 'g2', label: `🏆 Gaby's Group` }
