@@ -4,6 +4,7 @@
   import { isLiveMatch } from '$lib/utils/matches';
   import { getPrData } from '$lib/utils/rankings';
   import { findParticipant } from '$lib/utils/teams';
+  import swordIcon from '$lib/assets/sword.png';
   import MatchTeam from './MatchTeam.svelte';
 
   interface Props {
@@ -33,14 +34,22 @@
 
   <div class="match-card" class:live={isLive}>
     <div class="match-meta">
-      <span>{stageLabel(m.stage)}</span>
+      <span class="match-meta-stage">{stageLabel(m.stage)}</span>
+
+      <span class="match-meta-center">
+        {#if homeParticipant && awayParticipant}
+          <span class="match-meta-swords">
+            <img class="match-meta-sword" src={swordIcon} alt="" width="16" height="16" />
+          </span>
+        {/if}
+      </span>
 
       {#if isDone}
-        <span class="status-done">{t('matchStatus.ft')}</span>
+        <span class="match-meta-status status-done">{t('matchStatus.ft')}</span>
       {:else if isLive}
-        <span class="status-live">{t('matchStatus.live')}</span>
+        <span class="match-meta-status status-live">{t('matchStatus.live')}</span>
       {:else}
-        <span class="status-upcoming">{t('matchStatus.upcoming')}</span>
+        <span class="match-meta-status status-upcoming">{t('matchStatus.upcoming')}</span>
       {/if}
     </div>
 
