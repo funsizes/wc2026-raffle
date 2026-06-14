@@ -34,9 +34,9 @@ export const esUS: Messages = {
     live: 'EN VIVO'
   },
   status: {
-    autoRefresh: 'Se actualiza cada 90 segundos',
+    autoRefresh: 'Se actualiza cada {seconds} segundos',
     refreshing: 'Actualizando…',
-    lastUpdated: 'Última actualización {time} · se actualiza cada 90 s'
+    lastUpdated: 'Última actualización {time} · se actualiza cada {seconds} s'
   },
   tabs: {
     leaderboard: '🏆 Clasificación',

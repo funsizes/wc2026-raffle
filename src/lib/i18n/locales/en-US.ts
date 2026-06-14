@@ -31,9 +31,9 @@ export const enUS = {
     live: 'LIVE'
   },
   status: {
-    autoRefresh: 'Auto-refreshes every 90 seconds',
+    autoRefresh: 'Auto-refreshes every {seconds} seconds',
     refreshing: 'Refreshing…',
-    lastUpdated: 'Last updated {time} · auto-refreshes every 90 s'
+    lastUpdated: 'Last updated {time} · auto-refreshes every {seconds} s'
   },
   tabs: {
     leaderboard: '🏆 Leaderboard',

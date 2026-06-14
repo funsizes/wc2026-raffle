@@ -11,6 +11,7 @@
   import RulesTab from '$lib/components/RulesTab.svelte';
   import { RAFFLE, RAFFLE2, type RaffleGroup } from '$lib/data/raffle';
   import swordIcon from '$lib/assets/sword.png';
+  import { MATCH_REFRESH_INTERVAL_SECONDS } from '$lib/config';
   import { formatTime, t } from '$lib/i18n/locale.svelte';
   import { openGameMaster } from '$lib/settings/gamemaster.svelte';
   import { openSettings } from '$lib/settings/settings.svelte';
@@ -53,9 +54,13 @@
   let showAdminControls = $state(false);
 
   const statusText = $derived.by(() => {
+    const refresh = { seconds: MATCH_REFRESH_INTERVAL_SECONDS };
+
     if (isRefreshing) return t('status.refreshing');
-    if (lastUpdateTime) return t('status.lastUpdated', { time: lastUpdateTime });
-    return t('status.autoRefresh');
+
+    if (lastUpdateTime) return t('status.lastUpdated', { time: lastUpdateTime, ...refresh });
+
+    return t('status.autoRefresh', refresh);
   });
 
   const activeRaffle = $derived(raffleGroup === 'g1' ? RAFFLE : RAFFLE2);
@@ -86,7 +91,10 @@
   async function refresh() {
     isRefreshing = true;
     allMatches = await fetchMatches();
-    lastUpdateTime = formatTime(new Date().toISOString(), { compactPeriod: true });
+    lastUpdateTime = formatTime(new Date().toISOString(), {
+      compactPeriod: true,
+      includeSeconds: true
+    });
     isRefreshing = false;
   }
 
@@ -126,7 +134,7 @@
   onMount(() => {
     migrateSnapshots();
     refresh();
-    const interval = setInterval(refresh, 90_000);
+    const interval = setInterval(refresh, MATCH_REFRESH_INTERVAL_SECONDS * 1000);
     return () => clearInterval(interval);
   });
 </script>

@@ -86,12 +86,15 @@ export function formatDate(date: string, options: Intl.DateTimeFormatOptions): s
 export type FormatTimeOptions = {
   /** Lowercase am/pm without periods (e.g. "3:30 pm" instead of "3:30 p.m.") */
   compactPeriod?: boolean;
+  /** Include seconds in the time (e.g. "3:30:45 pm") */
+  includeSeconds?: boolean;
 };
 
 export function formatTime(isoDate: string, options: FormatTimeOptions = {}): string {
   const formatted = new Intl.DateTimeFormat(localeState.value ?? 'en-US', {
     hour: '2-digit',
-    minute: '2-digit'
+    minute: '2-digit',
+    ...(options.includeSeconds ? { second: '2-digit' } : {})
   }).format(new Date(isoDate));
 
   if (!options.compactPeriod) return formatted;
