@@ -63,7 +63,7 @@
     </div>
 
     <div class="lb-flag">
-      <Flag entry={e} class="flag-img" />
+      <Flag entry={e} icons />
     </div>
 
     <div class="lb-info">
