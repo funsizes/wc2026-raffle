@@ -4,6 +4,7 @@
   import UserSettings from '$lib/components/UserSettings.svelte';
   import { t } from '$lib/i18n/locale.svelte';
   import '@fortawesome/fontawesome-free/css/all.min.css';
+  import 'flag-icons/css/flag-icons.min.css';
 </script>
 
 <svelte:head>

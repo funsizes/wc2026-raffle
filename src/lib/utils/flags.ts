@@ -1,5 +1,3 @@
-import type { RaffleEntry } from '$lib/types';
-
 export const FLAG_CODES: Record<string, string> = {
   algeria: 'dz',
   argentina: 'ar',
@@ -64,12 +62,63 @@ export type FlagEntry =
   | null
   | undefined;
 
-export function getFlagSrc(entry: FlagEntry): string | null {
+export type FlagFormat = 'png' | 'webp';
+
+/** Standard 4:3 flag boxes from flagcdn — every flag is the same pixel size. */
+export const FLAG_BOX_SIZES = {
+  sm: { width: 24, height: 18 },
+  md: { width: 40, height: 30 },
+  lg: { width: 48, height: 36 }
+} as const;
+
+export interface FlagSrcOptions {
+  /** Fixed height (h{N}). Default — matches CSS that constrains flag height. */
+  height?: number;
+  /** Fixed width (w{N}). Width is uniform; height still varies by flag. */
+  width?: number;
+  /** Fixed width×height (e.g. 40x30) — same size for every flag. */
+  boxWidth?: number;
+  boxHeight?: number;
+  format?: FlagFormat;
+  /** Vector flag instead of fixed-dimension bitmap. */
+  svg?: boolean;
+}
+
+const DEFAULT_FLAG_HEIGHT = 24;
+
+export function getFlagCode(entry: FlagEntry): string | null {
   if (!entry) return null;
-  if (entry.flagUrl) return entry.flagUrl;
   const key = (entry.api || entry.team || '').toLowerCase();
-  const code = FLAG_CODES[key];
-  return code ? `https://flagcdn.com/${code}.svg` : null;
+  return FLAG_CODES[key] ?? null;
+}
+
+/** CSS class for flag-icons — e.g. `fi-gb-eng`. See https://flagicons.lipis.dev/ */
+export function getFlagIconClass(entry: FlagEntry): string | null {
+  const code = getFlagCode(entry);
+  return code ? `fi-${code}` : null;
+}
+
+export function getFlagSrc(entry: FlagEntry, options: FlagSrcOptions = {}): string | null {
+  const code = getFlagCode(entry);
+  if (code) {
+    const {
+      height = DEFAULT_FLAG_HEIGHT,
+      width,
+      boxWidth,
+      boxHeight,
+      format = 'png',
+      svg = false
+    } = options;
+
+    if (svg) return `https://flagcdn.com/${code}.svg`;
+    if (boxWidth != null && boxHeight != null) {
+      return `https://flagcdn.com/${boxWidth}x${boxHeight}/${code}.${format}`;
+    }
+    if (width != null) return `https://flagcdn.com/w${width}/${code}.${format}`;
+    return `https://flagcdn.com/h${height}/${code}.${format}`;
+  }
+
+  return entry?.flagUrl ?? null;
 }
 
 export function getFlagEmoji(entry: FlagEntry): string {

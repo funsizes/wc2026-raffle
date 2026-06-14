@@ -10,9 +10,10 @@
     rank: number;
     snapLabel: string;
     prSourceIdx: number;
+    showAdminControls?: boolean;
   }
 
-  let { entry: e, rank, snapLabel, prSourceIdx }: Props = $props();
+  let { entry: e, rank, snapLabel, prSourceIdx, showAdminControls = false }: Props = $props();
 
   const MEDALS: Record<number, string> = { 1: "🥇", 2: "🥈", 3: "🥉" };
 
@@ -63,7 +64,7 @@
     </div>
 
     <div class="lb-flag">
-      <Flag entry={e} class="flag-img" />
+      <Flag entry={e} icons />
     </div>
 
     <div class="lb-info">
@@ -76,12 +77,14 @@
       <div class="gs-val">{t('leaderboard.goals', { count: p.gs })}</div>
     </div>
 
-    <button class="lb-actions" onclick={() => (isExpanded = !isExpanded)}>
-      {isExpanded ? "▲" : "▼"}
-    </button>
+    {#if showAdminControls}
+      <button class="lb-actions" onclick={() => (isExpanded = !isExpanded)}>
+        {isExpanded ? "▲" : "▼"}
+      </button>
+    {/if}
   </div>
 
-  {#if isExpanded}
+  {#if showAdminControls && isExpanded}
     <div class="lb-bottom-row">
       <div class="lb-stage {stageCls}">{p.label}</div>
 

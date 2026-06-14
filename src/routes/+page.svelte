@@ -239,7 +239,7 @@
 
     <DailySummary entries={lb1} {allMatches} snapLabel="g1" />
 
-    <Leaderboard entries={lb2} {prSourceIdx} {raffleGroup} />
+    <Leaderboard entries={lb2} {prSourceIdx} {raffleGroup} {showAdminControls} />
   </div>
 
   <div id="tab-raffle" class="tab-panel" class:active={activeTab === 'tab-raffle'}>

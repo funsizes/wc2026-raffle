@@ -14,7 +14,9 @@
   {#each raffle as r (r.pick)}
     <div class="pick-card">
       <div class="pick-num">{t('picks.pick', { num: r.pick })}</div>
-      <span class="pick-flag"><Flag entry={r} /></span>
+
+      <span class="pick-flag"><Flag entry={r} icons /></span>
+
       <div class="pick-name">{r.name}</div>
       <div class="pick-team">{r.team}</div>
     </div>

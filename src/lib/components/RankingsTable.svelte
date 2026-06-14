@@ -23,6 +23,10 @@
 
     return owners;
   }
+
+  function formatAvg(avg: number): string {
+    return avg.toFixed(2);
+  }
 </script>
 
 <div class="rankings-source">
@@ -49,12 +53,12 @@
         <tr>
           <td class="col-rk">{r.rank}</td>
           <td class="col-team">
-            <Flag entry={r} />
+            <Flag entry={r} icons />
             {r.team}
             {#each owners as o}<span class="raffle-owner">{o}</span>{/each}
           </td>
           <td class="col-avg">
-            <span class="rk-cell {rkClass(Math.round(r.avg))}">{r.avg}</span>
+            <span class="rk-cell rk-cell-avg {rkClass(Math.round(r.avg))}">{formatAvg(r.avg)}</span>
           </td>
           {#each r.s as n}
             <td><span class="rk-cell {rkClass(n)}">{n}</span></td>

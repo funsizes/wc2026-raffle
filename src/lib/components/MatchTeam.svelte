@@ -20,7 +20,7 @@
 
 <div class="match-team">
   <span class="mflag">
-    <Flag entry={flagEntry} />
+    <Flag entry={flagEntry} icons />
   </span>
 
   <div class="mname">{teamName}</div>
