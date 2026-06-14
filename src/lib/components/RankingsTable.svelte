@@ -49,7 +49,7 @@
         <tr>
           <td class="col-rk">{r.rank}</td>
           <td class="col-team">
-            <Flag entry={r} />
+            <Flag entry={r} icons />
             {r.team}
             {#each owners as o}<span class="raffle-owner">{o}</span>{/each}
           </td>
