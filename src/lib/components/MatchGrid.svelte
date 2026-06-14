@@ -45,7 +45,11 @@
     </div>
 
     <div class="match-body">
-      <MatchTeam participant={homeParticipant} team={m.homeTeam} powerRankingsData={homeParticipantPowerRankingsData} />
+      <MatchTeam
+        participant={homeParticipant}
+        team={m.homeTeam}
+        powerRankingsData={homeParticipantPowerRankingsData}
+      />
 
       {#if isDone}
         <div class="match-score">{m.score.fullTime.home} – {m.score.fullTime.away}</div>
@@ -59,7 +63,11 @@
         </div>
       {/if}
 
-      <MatchTeam participant={awayParticipant} team={m.awayTeam} powerRankingsData={awayParticipantPowerRankingsData} />
+      <MatchTeam
+        participant={awayParticipant}
+        team={m.awayTeam}
+        powerRankingsData={awayParticipantPowerRankingsData}
+      />
     </div>
   </div>
 {/each}

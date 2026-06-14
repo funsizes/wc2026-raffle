@@ -36,7 +36,7 @@ export const RAFFLE_GROUP_OPTIONS: { id: RaffleGroup; label: string }[] = [
 
 export const RAFFLE: RaffleEntry[] = [
   { pick: 1, name: 'Oscar', team: 'Croatia', flag: '🇭🇷', api: 'Croatia' },
-  { pick: 2, name: 'Krystie', team: 'England', flag: '🏴󠁧󠁢󠁥󠁮󠁧󠁿', flagUrl: 'https://flagcdn.com/gb-eng.svg', api: 'England' },
+  { pick: 2, name: 'Krystie', team: 'England', flag: '🏴󠁧󠁢󠁥󠁮󠁧󠁿', api: 'England' },
   { pick: 3, name: 'Andrea', team: 'Belgium', flag: '🇧🇪', api: 'Belgium' },
   { pick: 4, name: 'Celine', team: 'Mexico', flag: '🇲🇽', api: 'Mexico' },
   { pick: 5, name: 'Gerardo', team: 'Germany', flag: '🇩🇪', api: 'Germany' },
@@ -51,7 +51,7 @@ export const RAFFLE: RaffleEntry[] = [
   { pick: 14, name: 'David', team: 'Uruguay', flag: '🇺🇾', api: 'Uruguay' },
   { pick: 15, name: 'Gaby', team: 'Argentina', flag: '🇦🇷', api: 'Argentina' },
   { pick: 16, name: 'Pocho', team: 'Switzerland', flag: '🇨🇭', api: 'Switzerland' },
-  { pick: 17, name: 'Anderson', team: 'Scotland', flag: '🏴󠁧󠁢󠁳󠁣󠁴󠁿', flagUrl: 'https://flagcdn.com/gb-sct.svg', api: 'Scotland' },
+  { pick: 17, name: 'Anderson', team: 'Scotland', flag: '🏴󠁧󠁢󠁳󠁣󠁴󠁿', api: 'Scotland' },
   { pick: 18, name: 'Mariale', team: 'Netherlands', flag: '🇳🇱', api: 'Netherlands' },
   { pick: 19, name: 'Abraham', team: 'Canada', flag: '🇨🇦', api: 'Canada' },
   { pick: 20, name: 'Luis M', team: 'Turkey', flag: '🇹🇷', api: 'Turkey' },
@@ -86,7 +86,7 @@ export const RAFFLE2: RaffleEntry[] = [
   { pick: 16, name: 'Camila', team: 'Colombia', flag: '🇨🇴', api: 'Colombia' },
   { pick: 17, name: 'Mariangel', team: 'Netherlands', flag: '🇳🇱', api: 'Netherlands' },
   { pick: 18, name: 'Pilar', team: 'Paraguay', flag: '🇵🇾', api: 'Paraguay' },
-  { pick: 19, name: 'Raquel', team: 'England', flag: '🏴󠁧󠁢󠁥󠁮󠁧󠁿', flagUrl: 'https://flagcdn.com/gb-eng.svg', api: 'England' },
+  { pick: 19, name: 'Raquel', team: 'England', flag: '🏴󠁧󠁢󠁥󠁮󠁧󠁿', api: 'England' },
   { pick: 20, name: 'Alicia', team: 'Algeria', flag: '🇩🇿', api: 'Algeria' },
   { pick: 21, name: 'Carlos', team: 'Norway', flag: '🇳🇴', api: 'Norway' }
 ];

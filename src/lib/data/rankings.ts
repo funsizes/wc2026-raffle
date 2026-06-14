@@ -60,7 +60,6 @@ export const RANKINGS: RankingEntry[] = [
     rank: 4,
     team: 'England',
     flag: '🏴󠁧󠁢󠁥󠁮󠁧󠁿',
-    flagUrl: 'https://flagcdn.com/gb-eng.svg',
     s: [3, 6, 4, 4, 12, 3, 6, 4, 4, 4, 4, 4, 4, 5],
     avg: 4.79
   },
@@ -95,7 +94,6 @@ export const RANKINGS: RankingEntry[] = [
     rank: 32,
     team: 'Scotland',
     flag: '🏴󠁧󠁢󠁳󠁣󠁴󠁿',
-    flagUrl: 'https://flagcdn.com/gb-sct.svg',
     s: [28, 27, 30, 40, 39, 27, 35, 33, 24, 34, 30, 26, 31, 28],
     avg: 30.86
   },

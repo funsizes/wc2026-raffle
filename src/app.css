@@ -243,9 +243,9 @@ section { margin-bottom: 2.5rem; }
   .mflag {
     margin-bottom: 0.2rem;
 
-    .flag-img {
-      max-width: 3rem;
-      height: 22px;
+    .fi {
+      font-size: 1.4rem;
+      border-radius: 1px;
     }
   }
   .mname  {
@@ -558,7 +558,7 @@ section { margin-bottom: 2.5rem; }
 
 .flag-img { height: 1.1em; vertical-align: middle; border-radius: 1px; }
 .pick-flag .flag-img { height: 1.9rem; display: block; margin: 0 auto; }
-.mflag     .flag-img { height: 1.6rem; display: block; margin: 0 auto; }
+.mflag     .fi { font-size: 1.4rem; border-radius: 1px; display: inline-block; }
 .lb-flag   .flag-img { height: 1.3rem; display: block; margin: 0 auto; }
 
 .rankings-source { font-size: 0.7rem; color: var(--muted); margin-bottom: 1rem; }
