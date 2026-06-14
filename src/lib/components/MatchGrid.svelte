@@ -58,7 +58,7 @@
           {m.score.fullTime.home ?? 0} – {m.score.fullTime.away ?? 0}
         </div>
       {:else}
-        <div class="match-score" style="font-size:1rem;color:var(--gold)">
+        <div class="match-score match-time">
           {formatTime(m.utcDate)}
         </div>
       {/if}
