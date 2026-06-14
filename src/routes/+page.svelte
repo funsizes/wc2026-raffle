@@ -1,29 +1,29 @@
 <script lang="ts">
-  import { onMount } from 'svelte';
+  import { page } from '$app/stores';
   import DailySummary from '$lib/components/DailySummary.svelte';
+  import GroupSelector from '$lib/components/GroupSelector.svelte';
   import HistoryTab from '$lib/components/HistoryTab.svelte';
   import Leaderboard from '$lib/components/leaderboard/Leaderboard.svelte';
   import MatchGrid from '$lib/components/MatchGrid.svelte';
   import PicksGrid from '$lib/components/PicksGrid.svelte';
+  import PowerRankingSourceSelector from '$lib/components/PowerRankingSourceSelector.svelte';
   import RankingsTable from '$lib/components/RankingsTable.svelte';
   import RulesTab from '$lib/components/RulesTab.svelte';
-  import GroupSelector from '$lib/components/GroupSelector.svelte';
-  import PowerRankingSourceSelector from '$lib/components/PowerRankingSourceSelector.svelte';
   import { RAFFLE, RAFFLE2, type RaffleGroup } from '$lib/data/raffle';
-  import type { Match } from '$lib/types';
-  import { persistLeaderboard, sortLeaderboard } from '$lib/utils/leaderboard';
-  import {
-    countLiveMatches,
-    fetchMatches,
-    filterTodayMatches,
-    getRecentMatches,
-    getTomorrowMatches,
-  } from '$lib/utils/matches';
-  import { migrateSnapshots } from '$lib/utils/snapshots';
-  import { page } from '$app/stores';
   import { formatTime, t } from '$lib/i18n/locale.svelte';
   import { openGameMaster } from '$lib/settings/gamemaster.svelte';
   import { openSettings } from '$lib/settings/settings.svelte';
+  import type { Match } from '$lib/types';
+  import { persistLeaderboard, sortLeaderboard } from '$lib/utils/leaderboard';
+  import {
+      countLiveMatches,
+      fetchMatches,
+      filterTodayMatches,
+      getRecentMatches,
+      getTomorrowMatches,
+  } from '$lib/utils/matches';
+  import { migrateSnapshots } from '$lib/utils/snapshots';
+  import { onMount } from 'svelte';
 
   // Automatically updates if the query string changes
   const groupQueryParam = $derived($page.url.searchParams.get('group') || 'g1');
