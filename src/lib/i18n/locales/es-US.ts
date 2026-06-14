@@ -12,6 +12,9 @@ export const esUS: Messages = {
     clearStorage: 'Borrar todos los datos guardados',
     clearConfirm:
       '¿Borrar todos los datos guardados del sorteo en este navegador? La página se recargará.',
+    matchesUrl: 'Fuente de partidos',
+    matchesUrlFull: 'Completo',
+    matchesUrlSlim: 'Reducido',
     done: 'Listo'
   },
   settings: {

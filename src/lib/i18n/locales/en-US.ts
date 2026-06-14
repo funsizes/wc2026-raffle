@@ -9,6 +9,9 @@ export const enUS = {
     storage: 'Local storage',
     clearStorage: 'Clear all saved data',
     clearConfirm: 'Erase all saved raffle data from this browser? The page will reload.',
+    matchesUrl: 'Match data source',
+    matchesUrlFull: 'Full',
+    matchesUrlSlim: 'Slim',
     done: 'Done'
   },
   settings: {
