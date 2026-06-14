@@ -433,7 +433,13 @@ section { margin-bottom: 2.5rem; }
   transition: border-color .1s, transform .1s, box-shadow .1s;
 }
 .pick-card:hover { border-color: var(--gold); transform: translate(-2px,-2px); box-shadow: 5px 5px 0 rgba(0,0,0,.4); }
-.pick-card .pick-num  { font-family: var(--pixel); font-size: 0.4rem; color: var(--muted); margin-bottom: 0.3rem; }
+.pick-card .pick-num  {
+  font-family: var(--pixel);
+  font-size: 0.4rem;
+  color: var(--muted);
+  margin-bottom: 0.5rem;
+  text-align: center;
+}
 .pick-card .pick-flag { font-size: 2rem; display: block; line-height: 1.2; }
 .pick-card .pick-name { font-weight: 700; font-size: 0.82rem; margin-top: 0.3rem; }
 .pick-card .pick-team { font-size: 0.65rem; color: var(--muted); margin-top: 2px; }
@@ -556,7 +562,7 @@ section { margin-bottom: 2.5rem; }
 .raffle-owner { display: inline-block; font-size: 0.58rem; color: var(--gold); font-weight: 600; margin-left: 0.3rem; vertical-align: middle; }
 
 .flag-img { height: 1.1em; vertical-align: middle; border-radius: 1px; }
-.pick-flag .flag-img { height: 1.9rem; display: block; margin: 0 auto; }
+.pick-flag .fi { font-size: 1.9rem; border-radius: 1px; display: block; margin: 0 auto; }
 .mflag     .fi { font-size: 1.4rem; border-radius: 1px; display: inline-block; }
 .lb-flag   .fi { font-size: 1.3rem; border-radius: 1px; display: inline-block; margin: 0 auto; }
 
