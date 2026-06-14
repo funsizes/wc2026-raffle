@@ -28,7 +28,7 @@ export const esUS: Messages = {
   app: {
     pageTitle: 'Sorteo WC 2026 ⚔️',
     title: 'Sorteo Copa Mundial 2026',
-    live: '● EN VIVO'
+    live: 'EN VIVO'
   },
   status: {
     autoRefresh: 'Se actualiza cada 90 segundos',

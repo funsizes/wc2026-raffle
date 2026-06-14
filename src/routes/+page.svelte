@@ -157,7 +157,10 @@
 
     <div class="header-right">
       {#if liveCount > 0}
-        <span class="live-chip">{t('app.live')}</span>
+        <span class="live-chip">
+          <i class="fa-solid fa-circle live-chip-icon" aria-hidden="true"></i>
+          {t('app.live')}
+        </span>
       {/if}
     </div>
   </div>

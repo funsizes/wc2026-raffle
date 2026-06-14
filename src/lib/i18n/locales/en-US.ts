@@ -25,7 +25,7 @@ export const enUS = {
   app: {
     pageTitle: 'WC 2026 Raffle ⚔️',
     title: 'World Cup 2026 Raffle',
-    live: '● LIVE'
+    live: 'LIVE'
   },
   status: {
     autoRefresh: 'Auto-refreshes every 90 seconds',

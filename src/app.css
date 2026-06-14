@@ -112,16 +112,23 @@ header .group-selector {
 }
 
 .live-chip {
-  display: inline;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
   margin-left: 0.5rem;
   background: var(--red);
   color: #ffd;
   font-family: var(--pixel);
   font-size: 0.45rem;
-  padding: 0.3rem 0.65rem;
+  padding: 0.4rem 0.65rem;
   border: 2px solid #c04030;
   letter-spacing: 0.08em;
+  text-wrap-mode: nowrap;
   animation: pixelblink 1s step-start infinite;
+}
+.live-chip-icon {
+  font-size: 0.35rem;
+  line-height: 1;
 }
 @keyframes pixelblink { 50% { opacity: 0.25; } }
 
