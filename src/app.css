@@ -568,6 +568,17 @@ section { margin-bottom: 2.5rem; }
 .rankings-table td.col-rk  { font-weight: 800; font-size: 0.9rem; color: var(--muted); min-width: 2rem; }
 .rankings-table td.col-avg { font-weight: 700; font-size: 0.8rem; color: var(--text); min-width: 3rem; }
 .rk-cell { padding: 0.15rem 0.4rem; border: 1px solid transparent; }
+.rankings-table .rk-cell {
+  display: inline-block;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+.rankings-table td:not(.col-avg) .rk-cell {
+  width: 1.85rem;
+}
+.rankings-table td.col-avg .rk-cell-avg {
+  width: 3.25rem;
+}
 .rk-s1 { border-color: rgba(74,140,56,.6);  background: rgba(74,140,56,.18);  color: #80c870; }
 .rk-s2 { border-color: rgba(232,160,32,.5); background: rgba(232,160,32,.15); color: var(--gold); }
 .rk-s3 { border-color: rgba(144,48,32,.5);  background: rgba(144,48,32,.18);  color: #d06050; }
