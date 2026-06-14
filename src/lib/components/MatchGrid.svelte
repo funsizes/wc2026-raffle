@@ -59,7 +59,7 @@
         </div>
       {:else}
         <div class="match-score match-time">
-          {formatTime(m.utcDate)}
+          {formatTime(m.utcDate, { compactPeriod: true })}
         </div>
       {/if}
 

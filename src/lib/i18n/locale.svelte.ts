@@ -83,11 +83,20 @@ export function formatDate(date: string, options: Intl.DateTimeFormatOptions): s
   );
 }
 
-export function formatTime(isoDate: string): string {
-  return new Intl.DateTimeFormat(localeState.value ?? 'en-US', {
+export type FormatTimeOptions = {
+  /** Lowercase am/pm without periods (e.g. "3:30 pm" instead of "3:30 p.m.") */
+  compactPeriod?: boolean;
+};
+
+export function formatTime(isoDate: string, options: FormatTimeOptions = {}): string {
+  const formatted = new Intl.DateTimeFormat(localeState.value ?? 'en-US', {
     hour: '2-digit',
     minute: '2-digit'
   }).format(new Date(isoDate));
+
+  if (!options.compactPeriod) return formatted;
+
+  return formatted.replace(/\s*(a|p)\.?\s*m\.?\s*$/i, (_, ap) => ` ${ap.toLowerCase()}m`);
 }
 
 export function formatShortDate(date: string): string {

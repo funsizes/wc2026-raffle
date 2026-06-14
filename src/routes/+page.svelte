@@ -85,7 +85,7 @@
   async function refresh() {
     isRefreshing = true;
     allMatches = await fetchMatches();
-    lastUpdateTime = formatTime(new Date().toISOString());
+    lastUpdateTime = formatTime(new Date().toISOString(), { compactPeriod: true });
     isRefreshing = false;
   }
 
