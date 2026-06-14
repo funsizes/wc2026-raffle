@@ -1,10 +1,41 @@
 import type { Match } from '$lib/types';
 
-const MATCHES_URL = 'https://wc2026-raffle-assets.s3.us-east-1.amazonaws.com/matches.json';
+export const MATCHES_URL_FULL = 'https://wc2026-raffle-assets.s3.us-east-1.amazonaws.com/matches.json';
+export const MATCHES_URL_SLIM = 'https://wc2026-raffle-assets.s3.us-east-1.amazonaws.com/matches-slim.json';
+
+const MATCHES_SOURCE_STORAGE_KEY = 'wc2026_matches_source';
+
+export type MatchesUrlOption = 'full' | 'slim';
+
+function resolveMatchesUrlOption(stored: string | null): MatchesUrlOption {
+  if (stored === 'slim' || stored === 'full') {
+    return stored;
+  }
+
+  return 'slim';
+}
+
+export function getMatchesUrlOption(): MatchesUrlOption {
+  if (typeof localStorage === 'undefined') return 'slim';
+
+  const stored =
+    localStorage.getItem(MATCHES_SOURCE_STORAGE_KEY) ??
+    localStorage.getItem('wc2026_matches_url');
+
+  return resolveMatchesUrlOption(stored);
+}
+
+export function getMatchesUrl(): string {
+  return getMatchesUrlOption() === 'slim' ? MATCHES_URL_SLIM : MATCHES_URL_FULL;
+}
+
+export function setMatchesUrlOption(option: MatchesUrlOption): void {
+  localStorage.setItem(MATCHES_SOURCE_STORAGE_KEY, option);
+}
 
 export async function fetchMatches(): Promise<Match[] | null> {
   try {
-    const res = await fetch(MATCHES_URL, { cache: 'no-store' });
+    const res = await fetch(getMatchesUrl(), { cache: 'no-store' });
 
     if (!res.ok) throw new Error(String(res.status));
 

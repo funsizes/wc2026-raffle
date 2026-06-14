@@ -12,6 +12,9 @@ export const esUS: Messages = {
     clearStorage: 'Borrar todos los datos guardados',
     clearConfirm:
       '¿Borrar todos los datos guardados del sorteo en este navegador? La página se recargará.',
+    matchesUrl: 'Fuente de partidos',
+    matchesUrlFull: 'Completo',
+    matchesUrlSlim: 'Reducido',
     done: 'Listo'
   },
   settings: {
@@ -28,12 +31,12 @@ export const esUS: Messages = {
   app: {
     pageTitle: 'Sorteo WC 2026 ⚔️',
     title: 'Sorteo Copa Mundial 2026',
-    live: '● EN VIVO'
+    live: 'EN VIVO'
   },
   status: {
-    autoRefresh: 'Se actualiza cada 90 segundos',
+    autoRefresh: 'Se actualiza cada {seconds} segundos',
     refreshing: 'Actualizando…',
-    lastUpdated: 'Última actualización {time} · se actualiza cada 90 s'
+    lastUpdated: 'Última actualización {time} · se actualiza cada {seconds} s'
   },
   tabs: {
     leaderboard: '🏆 Clasificación',
@@ -51,7 +54,8 @@ export const esUS: Messages = {
     title: '📅 Partidos',
     showPrs: 'Mostrar PR',
     loading: 'Cargando partidos — vuelve pronto.',
-    empty: 'No hay partidos ahora — ¡vuelve pronto!'
+    empty: 'No hay partidos ahora — ¡vuelve pronto!',
+    matchupLegend: 'Duelo del sorteo'
   },
   matchStatus: {
     ft: 'FT',

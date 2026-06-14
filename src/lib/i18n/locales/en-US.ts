@@ -9,6 +9,9 @@ export const enUS = {
     storage: 'Local storage',
     clearStorage: 'Clear all saved data',
     clearConfirm: 'Erase all saved raffle data from this browser? The page will reload.',
+    matchesUrl: 'Match data source',
+    matchesUrlFull: 'Full',
+    matchesUrlSlim: 'Slim',
     done: 'Done'
   },
   settings: {
@@ -25,12 +28,12 @@ export const enUS = {
   app: {
     pageTitle: 'WC 2026 Raffle ⚔️',
     title: 'World Cup 2026 Raffle',
-    live: '● LIVE'
+    live: 'LIVE'
   },
   status: {
-    autoRefresh: 'Auto-refreshes every 90 seconds',
+    autoRefresh: 'Auto-refreshes every {seconds} seconds',
     refreshing: 'Refreshing…',
-    lastUpdated: 'Last updated {time} · auto-refreshes every 90 s'
+    lastUpdated: 'Last updated {time} · auto-refreshes every {seconds} s'
   },
   tabs: {
     leaderboard: '🏆 Leaderboard',
@@ -48,7 +51,8 @@ export const enUS = {
     title: '📅 Matches',
     showPrs: 'Show PRs',
     loading: 'Match data loading — check back shortly.',
-    empty: 'No matches right now — check back soon!'
+    empty: 'No matches right now — check back soon!',
+    matchupLegend: 'Raffle duel'
   },
   matchStatus: {
     ft: 'FT',

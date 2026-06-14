@@ -1,29 +1,31 @@
 <script lang="ts">
-  import { onMount } from 'svelte';
+  import { page } from '$app/stores';
   import DailySummary from '$lib/components/DailySummary.svelte';
+  import GroupSelector from '$lib/components/GroupSelector.svelte';
   import HistoryTab from '$lib/components/HistoryTab.svelte';
   import Leaderboard from '$lib/components/leaderboard/Leaderboard.svelte';
   import MatchGrid from '$lib/components/MatchGrid.svelte';
   import PicksGrid from '$lib/components/PicksGrid.svelte';
+  import PowerRankingSourceSelector from '$lib/components/PowerRankingSourceSelector.svelte';
   import RankingsTable from '$lib/components/RankingsTable.svelte';
   import RulesTab from '$lib/components/RulesTab.svelte';
-  import GroupSelector from '$lib/components/GroupSelector.svelte';
-  import PowerRankingSourceSelector from '$lib/components/PowerRankingSourceSelector.svelte';
   import { RAFFLE, RAFFLE2, type RaffleGroup } from '$lib/data/raffle';
-  import type { Match } from '$lib/types';
-  import { persistLeaderboard, sortLeaderboard } from '$lib/utils/leaderboard';
-  import {
-    countLiveMatches,
-    fetchMatches,
-    filterTodayMatches,
-    getRecentMatches,
-    getTomorrowMatches,
-  } from '$lib/utils/matches';
-  import { migrateSnapshots } from '$lib/utils/snapshots';
-  import { page } from '$app/stores';
+  import swordIcon from '$lib/assets/sword.png';
+  import { MATCH_REFRESH_INTERVAL_SECONDS } from '$lib/config';
   import { formatTime, t } from '$lib/i18n/locale.svelte';
   import { openGameMaster } from '$lib/settings/gamemaster.svelte';
   import { openSettings } from '$lib/settings/settings.svelte';
+  import type { Match } from '$lib/types';
+  import { persistLeaderboard, sortLeaderboard } from '$lib/utils/leaderboard';
+  import {
+      countLiveMatches,
+      fetchMatches,
+      filterTodayMatches,
+      getRecentMatches,
+      getTomorrowMatches,
+  } from '$lib/utils/matches';
+  import { migrateSnapshots } from '$lib/utils/snapshots';
+  import { onMount } from 'svelte';
 
   // Automatically updates if the query string changes
   const groupQueryParam = $derived($page.url.searchParams.get('group') || 'g1');
@@ -52,9 +54,13 @@
   let showAdminControls = $state(false);
 
   const statusText = $derived.by(() => {
+    const refresh = { seconds: MATCH_REFRESH_INTERVAL_SECONDS };
+
     if (isRefreshing) return t('status.refreshing');
-    if (lastUpdateTime) return t('status.lastUpdated', { time: lastUpdateTime });
-    return t('status.autoRefresh');
+
+    if (lastUpdateTime) return t('status.lastUpdated', { time: lastUpdateTime, ...refresh });
+
+    return t('status.autoRefresh', refresh);
   });
 
   const activeRaffle = $derived(raffleGroup === 'g1' ? RAFFLE : RAFFLE2);
@@ -85,7 +91,10 @@
   async function refresh() {
     isRefreshing = true;
     allMatches = await fetchMatches();
-    lastUpdateTime = formatTime(new Date().toISOString(), { compactPeriod: true });
+    lastUpdateTime = formatTime(new Date().toISOString(), {
+      compactPeriod: true,
+      includeSeconds: true
+    });
     isRefreshing = false;
   }
 
@@ -125,7 +134,7 @@
   onMount(() => {
     migrateSnapshots();
     refresh();
-    const interval = setInterval(refresh, 90_000);
+    const interval = setInterval(refresh, MATCH_REFRESH_INTERVAL_SECONDS * 1000);
     return () => clearInterval(interval);
   });
 </script>
@@ -156,7 +165,10 @@
 
     <div class="header-right">
       {#if liveCount > 0}
-        <span class="live-chip">{t('app.live')}</span>
+        <span class="live-chip">
+          <i class="fa-solid fa-circle live-chip-icon" aria-hidden="true"></i>
+          {t('app.live')}
+        </span>
       {/if}
     </div>
   </div>
@@ -215,6 +227,15 @@
             {showMatchPR}
             {prSourceIdx}
           />
+
+        <div class="matches-grid-footer">
+          <p class="matches-legend">
+            <span class="match-meta-swords" aria-hidden="true">
+              <img class="match-meta-sword" src={swordIcon} alt="" width="16" height="16" />
+            </span>
+            - {t('matches.matchupLegend')}
+          </p>
+        </div>
       {/if}
     </div>
   </section>
