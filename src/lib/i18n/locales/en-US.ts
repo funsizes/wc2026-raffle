@@ -48,7 +48,8 @@ export const enUS = {
     title: '📅 Matches',
     showPrs: 'Show PRs',
     loading: 'Match data loading — check back shortly.',
-    empty: 'No matches right now — check back soon!'
+    empty: 'No matches right now — check back soon!',
+    matchupLegend: 'Raffle duel'
   },
   matchStatus: {
     ft: 'FT',

@@ -127,7 +127,9 @@ header .group-selector {
 
 /* ── LAYOUT ──────────────────────────────────────── */
 main { max-width: 1100px; margin: 0 auto; padding: 1.25rem 1rem 3rem; }
-section { margin-bottom: 2.5rem; }
+section {
+  margin-bottom: 2rem;
+}
 
 .sec-title {
   font-family: var(--pixel);
@@ -198,6 +200,25 @@ section { margin-bottom: 2.5rem; }
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
   gap: 0.75rem;
+}
+
+.matches-grid-footer {
+  grid-column: 1 / -1;
+  line-height: normal;
+}
+
+.matches-legend {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.55rem;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+}
+
+.matches-legend .match-meta-sword {
+  width: 0.85rem;
+  height: 0.85rem;
 }
 
 .match-card {

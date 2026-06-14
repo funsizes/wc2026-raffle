@@ -51,7 +51,8 @@ export const esUS: Messages = {
     title: '📅 Partidos',
     showPrs: 'Mostrar PR',
     loading: 'Cargando partidos — vuelve pronto.',
-    empty: 'No hay partidos ahora — ¡vuelve pronto!'
+    empty: 'No hay partidos ahora — ¡vuelve pronto!',
+    matchupLegend: 'Duelo del sorteo'
   },
   matchStatus: {
     ft: 'FT',

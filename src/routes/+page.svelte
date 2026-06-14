@@ -10,6 +10,7 @@
   import RankingsTable from '$lib/components/RankingsTable.svelte';
   import RulesTab from '$lib/components/RulesTab.svelte';
   import { RAFFLE, RAFFLE2, type RaffleGroup } from '$lib/data/raffle';
+  import swordIcon from '$lib/assets/sword.png';
   import { formatTime, t } from '$lib/i18n/locale.svelte';
   import { openGameMaster } from '$lib/settings/gamemaster.svelte';
   import { openSettings } from '$lib/settings/settings.svelte';
@@ -215,6 +216,15 @@
             {showMatchPR}
             {prSourceIdx}
           />
+
+        <div class="matches-grid-footer">
+          <p class="matches-legend">
+            <span class="match-meta-swords" aria-hidden="true">
+              <img class="match-meta-sword" src={swordIcon} alt="" width="16" height="16" />
+            </span>
+            - {t('matches.matchupLegend')}
+          </p>
+        </div>
       {/if}
     </div>
   </section>
