@@ -12,11 +12,11 @@ function resolveMatchesUrlOption(stored: string | null): MatchesUrlOption {
     return stored;
   }
 
-  return 'full';
+  return 'slim';
 }
 
 export function getMatchesUrlOption(): MatchesUrlOption {
-  if (typeof localStorage === 'undefined') return 'full';
+  if (typeof localStorage === 'undefined') return 'slim';
 
   const stored =
     localStorage.getItem(MATCHES_SOURCE_STORAGE_KEY) ??
