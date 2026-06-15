@@ -51,13 +51,20 @@
         {@const pillCls = rankDelta > 0 ? 'mp-up' : rankDelta < 0 ? 'mp-down' : ''}
         {@const rankStr =
           rankDelta > 0 ? `▲${rankDelta}` : rankDelta < 0 ? `▼${Math.abs(rankDelta)}` : '='}
+
         {@const rankCls = rankDelta > 0 ? 'rd-up' : rankDelta < 0 ? 'rd-down' : 'rd-same'}
         {@const gd = e.p.gd}
         {@const gdStr = gd > 0 ? `GD +${gd}` : gd < 0 ? `GD ${gd}` : 'GD 0'}
+
         <div class="mover-pill {pillCls}">
-          <span class="mflag-sm"><Flag entry={e} /></span>
-          <strong>{e.name}</strong>
-          <span style="color:var(--muted);font-size:.65rem">{e.team}</span>
+          <span class="mflag-sm">
+            <Flag entry={e} icons />
+          </span>
+
+          <strong class="mover-name">{e.name}</strong>
+
+          <span class="mover-team">{e.team}</span>
+
           <span class="mover-rank {rankCls}">{rankStr}</span>
           <span class="mover-gd">{gdStr}</span>
         </div>

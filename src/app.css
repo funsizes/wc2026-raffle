@@ -65,6 +65,19 @@ header .group-selector {
   margin-top: 1rem;
 }
 
+.group-selector-wrap {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem 1rem;
+}
+
+.group-selector-build {
+  font-size: 0.5rem;
+  color: var(--muted);
+  letter-spacing: 0.04em;
+}
+
 .header-controls {
   display: flex;
   align-items: center;
@@ -205,7 +218,6 @@ section {
 /* ── MATCH CARDS ─────────────────────────────────── */
 .matches-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
   gap: 0.75rem;
 }
 
@@ -223,9 +235,15 @@ section {
   color: var(--muted);
 }
 
+.matches-legend .match-meta-swords {
+  width: 0.85rem;
+  height: 0.85rem;
+}
+
 .matches-legend .match-meta-sword {
   width: 0.85rem;
   height: 0.85rem;
+  margin: -0.425rem 0 0 -0.425rem;
 }
 
 .match-card {
@@ -269,17 +287,26 @@ section {
 }
 
 .match-meta-swords {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.15rem;
-}
-.match-meta-sword {
-  display: block;
+  position: relative;
+  display: inline-block;
   width: 1rem;
   height: 1rem;
+  vertical-align: middle;
+}
+.match-meta-sword {
+  position: absolute;
+  top: 50%;
+  left: 40%;
+  width: 1rem;
+  height: 1rem;
+  margin: -0.5rem 0 0 -0.5rem;
   image-rendering: pixelated;
 }
-.match-meta-sword-flip { transform: scaleX(-1); }
+.match-meta-sword-flip {
+  transform: rotate(-90deg);
+  left: 60%;
+}
+
 .match-meta-status { justify-self: end; }
 .match-meta .status-live { color: var(--green); font-weight: 700; }
 .match-meta .status-done { color: var(--muted); }
@@ -339,6 +366,11 @@ section {
 
 
 /* ── LEADERBOARD ─────────────────────────────────── */
+
+.leaderboard-container {
+  margin-top: 1rem;
+}
+
 .lb-row {
   display: flex;
   flex-direction: column;
@@ -713,30 +745,54 @@ section {
   letter-spacing: 0.06em;
   margin-bottom: 0.5rem;
 }
+
 .mover-list {
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: column;
   gap: 0.4rem;
 }
+
 .mover-pill {
   display: flex;
   align-items: center;
-  gap: 0.35rem;
-  padding: 0.35rem 0.65rem;
+  padding: 0.5rem 0.65rem;
   background: var(--card);
   border: 2px solid var(--border);
   box-shadow: 2px 2px 0 rgba(0,0,0,.4);
   font-size: 0.72rem;
   white-space: nowrap;
 }
+
+.mover-name {
+  padding-left: 0.5rem;
+}
+
+.mover-team {
+  color:var(--muted);
+  font-size:.65rem;
+  padding-left: 0.5rem;
+}
+
 .mover-pill.mp-up   { border-color: var(--green); }
 .mover-pill.mp-down { border-color: var(--red); }
-.mover-pill .mflag-sm { line-height: 1; }
-.mover-pill .mflag-sm .flag-img { height: 1rem; vertical-align: middle; }
-.mover-rank { font-family: var(--pixel); font-size: 0.42rem; }
+.mover-pill .mflag-sm {
+  line-height: 1;
+  font-size: 1rem;
+}
+.mover-rank {
+  font-family: var(--pixel);
+  font-size: 0.42rem;
+  margin-left: auto;
+  padding-right: 0.3rem;
+}
 .mover-rank.rd-up   { color: var(--green); }
 .mover-rank.rd-down { color: var(--red); }
-.mover-gd   { font-size: 0.65rem; color: var(--muted); }
+.mover-gd   {
+  font-size: 0.65rem;
+  color: var(--muted);
+  flex-basis: 10%;
+  text-align: right;
+}
 
 /* ── DAILY HISTORY TAB ───────────────────────────── */
 .hist-controls {

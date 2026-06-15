@@ -232,6 +232,7 @@
           <p class="matches-legend">
             <span class="match-meta-swords" aria-hidden="true">
               <img class="match-meta-sword" src={swordIcon} alt="" width="16" height="16" />
+              <img class="match-meta-sword match-meta-sword-flip" src={swordIcon} alt="" width="16" height="16" />
             </span>
             - {t('matches.matchupLegend')}
           </p>
@@ -256,11 +257,15 @@
   <div id="tab-leaderboard" class="tab-panel" class:active={activeTab === 'tab-leaderboard'}>
     <div class="sec-title">{t('leaderboard.teams', { count: activeRaffle.length })}</div>
 
-    <PowerRankingSourceSelector bind:value={prSourceIdx} />
-
     <DailySummary entries={lb1} {allMatches} snapLabel="g1" />
 
-    <Leaderboard entries={lb2} {prSourceIdx} {raffleGroup} {showAdminControls} />
+    {#if showAdminControls}
+      <PowerRankingSourceSelector bind:value={prSourceIdx} />
+    {/if}
+
+    <div class="leaderboard-container">
+      <Leaderboard entries={lb2} {prSourceIdx} {raffleGroup} {showAdminControls} />
+    </div>
   </div>
 
   <div id="tab-raffle" class="tab-panel" class:active={activeTab === 'tab-raffle'}>

@@ -40,6 +40,7 @@
         {#if homeParticipant && awayParticipant}
           <span class="match-meta-swords">
             <img class="match-meta-sword" src={swordIcon} alt="" width="16" height="16" />
+            <img class="match-meta-sword match-meta-sword-flip" src={swordIcon} alt="" width="16" height="16" />
           </span>
         {/if}
       </span>

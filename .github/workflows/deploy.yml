@@ -37,6 +37,8 @@ jobs:
 
       - name: Build application
         run: npm run build
+        env:
+          PUBLIC_BUILD_TIME: ${{ github.run_started_at }}
 
       - name: Upload production assets
         uses: actions/upload-pages-artifact@v5
