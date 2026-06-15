@@ -366,6 +366,11 @@ section {
 
 
 /* ── LEADERBOARD ─────────────────────────────────── */
+
+.leaderboard-container {
+  margin-top: 1rem;
+}
+
 .lb-row {
   display: flex;
   flex-direction: column;
