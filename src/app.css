@@ -728,30 +728,54 @@ section {
   letter-spacing: 0.06em;
   margin-bottom: 0.5rem;
 }
+
 .mover-list {
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: column;
   gap: 0.4rem;
 }
+
 .mover-pill {
   display: flex;
   align-items: center;
-  gap: 0.35rem;
-  padding: 0.35rem 0.65rem;
+  padding: 0.5rem 0.65rem;
   background: var(--card);
   border: 2px solid var(--border);
   box-shadow: 2px 2px 0 rgba(0,0,0,.4);
   font-size: 0.72rem;
   white-space: nowrap;
 }
+
+.mover-name {
+  padding-left: 0.5rem;
+}
+
+.mover-team {
+  color:var(--muted);
+  font-size:.65rem;
+  padding-left: 0.5rem;
+}
+
 .mover-pill.mp-up   { border-color: var(--green); }
 .mover-pill.mp-down { border-color: var(--red); }
-.mover-pill .mflag-sm { line-height: 1; }
-.mover-pill .mflag-sm .flag-img { height: 1rem; vertical-align: middle; }
-.mover-rank { font-family: var(--pixel); font-size: 0.42rem; }
+.mover-pill .mflag-sm {
+  line-height: 1;
+  font-size: 1rem;
+}
+.mover-rank {
+  font-family: var(--pixel);
+  font-size: 0.42rem;
+  margin-left: auto;
+  padding-right: 0.3rem;
+}
 .mover-rank.rd-up   { color: var(--green); }
 .mover-rank.rd-down { color: var(--red); }
-.mover-gd   { font-size: 0.65rem; color: var(--muted); }
+.mover-gd   {
+  font-size: 0.65rem;
+  color: var(--muted);
+  flex-basis: 10%;
+  text-align: right;
+}
 
 /* ── DAILY HISTORY TAB ───────────────────────────── */
 .hist-controls {
