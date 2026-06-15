@@ -22,6 +22,7 @@ export const esUS: Messages = {
     firstVisitTitle: 'Elige tu lengua',
     firstVisitSubtitle: 'Elige un idioma para el reino. Podrás cambiarlo después.',
     language: 'Idioma',
+    buildTime: 'Compilación del sitio',
     done: 'Listo',
     locale: {
       'en-US': 'English',

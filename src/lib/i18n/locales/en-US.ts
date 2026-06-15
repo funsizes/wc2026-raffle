@@ -19,6 +19,7 @@ export const enUS = {
     firstVisitTitle: 'Choose your tongue',
     firstVisitSubtitle: 'Pick a language for the realm. You can change this later.',
     language: 'Language',
+    buildTime: 'Site build',
     done: 'Done',
     locale: {
       'en-US': 'English',
