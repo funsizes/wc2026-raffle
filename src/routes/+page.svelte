@@ -232,6 +232,7 @@
           <p class="matches-legend">
             <span class="match-meta-swords" aria-hidden="true">
               <img class="match-meta-sword" src={swordIcon} alt="" width="16" height="16" />
+              <img class="match-meta-sword match-meta-sword-flip" src={swordIcon} alt="" width="16" height="16" />
             </span>
             - {t('matches.matchupLegend')}
           </p>

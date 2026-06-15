@@ -223,9 +223,15 @@ section {
   color: var(--muted);
 }
 
+.matches-legend .match-meta-swords {
+  width: 0.85rem;
+  height: 0.85rem;
+}
+
 .matches-legend .match-meta-sword {
   width: 0.85rem;
   height: 0.85rem;
+  margin: -0.425rem 0 0 -0.425rem;
 }
 
 .match-card {
@@ -269,17 +275,26 @@ section {
 }
 
 .match-meta-swords {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.15rem;
-}
-.match-meta-sword {
-  display: block;
+  position: relative;
+  display: inline-block;
   width: 1rem;
   height: 1rem;
+  vertical-align: middle;
+}
+.match-meta-sword {
+  position: absolute;
+  top: 50%;
+  left: 40%;
+  width: 1rem;
+  height: 1rem;
+  margin: -0.5rem 0 0 -0.5rem;
   image-rendering: pixelated;
 }
-.match-meta-sword-flip { transform: scaleX(-1); }
+.match-meta-sword-flip {
+  transform: rotate(-90deg);
+  left: 60%;
+}
+
 .match-meta-status { justify-self: end; }
 .match-meta .status-live { color: var(--green); font-weight: 700; }
 .match-meta .status-done { color: var(--muted); }
