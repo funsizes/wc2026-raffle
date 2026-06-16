@@ -1,7 +1,15 @@
-# Copy to samconfig.toml and fill in FootballDataApiKey for deploys.
-# Do not commit samconfig.toml if it contains secrets.
+# Copy to samconfig.toml before deploy. No secrets required in this file.
 #
 #   cp samconfig.toml.example samconfig.toml
+#
+# After the first deploy, set secrets in Secrets Manager:
+#   Secret name: wcsorteo2026/app-secrets
+#   Value (JSON), e.g.:
+#   {"footballDataApiKey":"YOUR_TOKEN","otherSecret":"..."}
+#
+# Local invoke only — copy and fill in lambda/env.local.example.json:
+#   sam local invoke FetchMatchesFunction -t infra/template.yaml \
+#     --env-vars lambda/env.local.json
 #
 # Greenfield deploy (creates all resources new — safe to run alongside old infra
 # while you migrate app references):
@@ -33,7 +41,7 @@ resolve_s3 = true
 s3_prefix = "wcsorteo2026"
 region = "us-east-1"
 tags = "PROJECT=wcsorteo2026"
-parameter_overrides = "ProjectTag=wcsorteo2026 AssetsBucketName=wcsorteo2026-assets AnalyticsTimezone=America/New_York FetchScheduleExpression='rate(5 minutes)' CreateSnapshotsTable=false FootballDataApiKey=REPLACE_ME"
+parameter_overrides = "ProjectTag=wcsorteo2026 AssetsBucketName=wcsorteo2026-assets AppSecretsName=wcsorteo2026/app-secrets AnalyticsTimezone=America/New_York FetchScheduleExpression='rate(5 minutes)' CreateSnapshotsTable=false"
 
 [default.sync.parameters]
 watch = true

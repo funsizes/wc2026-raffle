@@ -13,10 +13,10 @@ Parameters:
     Default: wcsorteo2026-assets
     Description: S3 bucket for live match JSON and daily snapshots
 
-  FootballDataApiKey:
+  AppSecretsName:
     Type: String
-    NoEcho: true
-    Description: football-data.org API token (X-Auth-Token)
+    Default: wcsorteo2026/app-secrets
+    Description: Secrets Manager name for app configuration and sensitive values (JSON)
 
   AnalyticsTimezone:
     Type: String
@@ -100,6 +100,16 @@ Resources:
             Action: s3:PutObject
             Resource: !Sub '${AssetsBucket.Arn}/*'
 
+  AppSecrets:
+    Type: AWS::SecretsManager::Secret
+    Properties:
+      Name: !Ref AppSecretsName
+      Description: App secrets and sensitive configuration for wcsorteo2026 (JSON object)
+      SecretString: '{"footballDataApiKey":"SET_ME_IN_SECRETS_MANAGER"}'
+      Tags:
+        - Key: PROJECT
+          Value: !Ref ProjectTag
+
   FetchMatchesFunction:
     Type: AWS::Serverless::Function
     Metadata:
@@ -114,11 +124,13 @@ Resources:
       Environment:
         Variables:
           ASSETS_BUCKET_NAME: !Ref AssetsBucket
-          FOOTBALL_DATA_API_KEY: !Ref FootballDataApiKey
+          APP_SECRETS_ARN: !Ref AppSecrets
           ANALYTICS_TIMEZONE: !Ref AnalyticsTimezone
       Policies:
         - S3CrudPolicy:
             BucketName: !Ref AssetsBucket
+        - AWSSecretsManagerGetSecretValuePolicy:
+            SecretArn: !Ref AppSecrets
       Events:
         FetchSchedule:
           Type: Schedule
@@ -162,6 +174,14 @@ Outputs:
   AssetsBucketArn:
     Description: S3 bucket ARN
     Value: !GetAtt AssetsBucket.Arn
+
+  AppSecretsArn:
+    Description: Secrets Manager ARN for app secrets (JSON)
+    Value: !Ref AppSecrets
+
+  AppSecretsName:
+    Description: Secrets Manager name for app secrets (JSON)
+    Value: !Ref AppSecretsName
 
   FetchMatchesFunctionArn:
     Description: Match fetch Lambda ARN

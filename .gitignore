@@ -11,3 +11,4 @@ node_modules
 infra/samconfig.toml
 lambda/node_modules
 lambda/_shared
+lambda/env.local.json
