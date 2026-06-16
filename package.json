@@ -12,6 +12,7 @@
     "build": "vite build",
     "preview": "vite preview",
     "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
+    "postinstall": "rm -rf lambda/_shared && cp -r shared lambda/_shared",
     "sync:shared": "rm -rf lambda/_shared && cp -r shared lambda/_shared",
     "shared:check": "tsc -p shared/tsconfig.json",
     "lambda:check": "npm run sync:shared && tsc -p lambda/tsconfig.json",

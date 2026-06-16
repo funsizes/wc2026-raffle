@@ -1,5 +1,5 @@
-# Requires `npm run sync:shared` before `sam build` (copies shared → lambda/_shared).
 # SAM's build sandbox has no node_modules — install deps in the artifact, bundle, then ship js only.
+# _shared is populated by the root postinstall script (copies shared/ → lambda/_shared).
 build-FetchMatchesFunction:
 	rm -rf $(ARTIFACTS_DIR)
 	mkdir -p $(ARTIFACTS_DIR)/node_modules/@wc2026
