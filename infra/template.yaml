@@ -1,0 +1,181 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: WC 2026 raffle — match fetch Lambda, schedule, assets bucket, optional DynamoDB
+
+Parameters:
+  ProjectTag:
+    Type: String
+    Default: wcsorteo2026
+    Description: Value for the PROJECT tag applied to all stack resources
+
+  AssetsBucketName:
+    Type: String
+    Default: wcsorteo2026-assets
+    Description: S3 bucket for live match JSON and daily snapshots
+
+  FootballDataApiKey:
+    Type: String
+    NoEcho: true
+    Description: football-data.org API token (X-Auth-Token)
+
+  AnalyticsTimezone:
+    Type: String
+    Default: America/New_York
+    Description: IANA timezone for daily snapshot date keys
+
+  FetchScheduleExpression:
+    Type: String
+    Default: rate(5 minutes)
+    Description: EventBridge schedule for match fetches
+
+  CreateSnapshotsTable:
+    Type: String
+    Default: 'false'
+    AllowedValues: ['true', 'false']
+    Description: Create a DynamoDB table for future leaderboard snapshot storage
+
+Conditions:
+  CreateSnapshotsTable: !Equals [!Ref CreateSnapshotsTable, 'true']
+
+Globals:
+  Function:
+    Runtime: nodejs22.x
+    Architectures:
+      - x86_64
+    Timeout: 10
+    MemorySize: 128
+    Tags:
+      PROJECT: !Ref ProjectTag
+
+Resources:
+  AssetsBucket:
+    Type: AWS::S3::Bucket
+    DeletionPolicy: Retain
+    UpdateReplacePolicy: Retain
+    Properties:
+      BucketName: !Ref AssetsBucketName
+      Tags:
+        - Key: PROJECT
+          Value: !Ref ProjectTag
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: true
+        BlockPublicPolicy: false
+        IgnorePublicAcls: true
+        RestrictPublicBuckets: false
+      CorsConfiguration:
+        CorsRules:
+          - AllowedHeaders: ['*']
+            AllowedMethods: [GET, HEAD]
+            AllowedOrigins:
+              - https://funsizes.github.io
+              - https://dave9011.github.io
+              - http://localhost:5173
+              - http://127.0.0.1:5173
+              - http://192.168.1.156:5173
+              - http://192.168.50.166:5173
+              - https://wcsorteo2026.com
+              - https://www.wcsorteo2026.com
+            ExposedHeaders:
+              - ETag
+              - x-amz-meta-custom-header
+            MaxAge: 3000
+
+  AssetsBucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    DependsOn: FetchMatchesFunction
+    Properties:
+      Bucket: !Ref AssetsBucket
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Sid: PublicReadGetObject
+            Effect: Allow
+            Principal: '*'
+            Action: s3:GetObject
+            Resource: !Sub '${AssetsBucket.Arn}/*'
+          - Sid: GrantUploadAccessToPrincipal
+            Effect: Allow
+            Principal:
+              AWS: !GetAtt FetchMatchesFunctionRole.Arn
+            Action: s3:PutObject
+            Resource: !Sub '${AssetsBucket.Arn}/*'
+
+  FetchMatchesFunction:
+    Type: AWS::Serverless::Function
+    Metadata:
+      BuildMethod: makefile
+    Properties:
+      FunctionName: wcsorteo2026-fetch-matches
+      Description: Fetches WC match data and writes live + daily snapshot objects to S3
+      CodeUri: ../lambda/
+      Handler: fetch-matches.handler
+      Tags:
+        PROJECT: !Ref ProjectTag
+      Environment:
+        Variables:
+          ASSETS_BUCKET_NAME: !Ref AssetsBucket
+          FOOTBALL_DATA_API_KEY: !Ref FootballDataApiKey
+          ANALYTICS_TIMEZONE: !Ref AnalyticsTimezone
+      Policies:
+        - S3CrudPolicy:
+            BucketName: !Ref AssetsBucket
+      Events:
+        FetchSchedule:
+          Type: Schedule
+          Properties:
+            Schedule: !Ref FetchScheduleExpression
+            Name: wcsorteo2026-fetch-matches-schedule
+            Description: Poll football-data.org and refresh S3 match objects
+            Enabled: true
+
+  SnapshotsTable:
+    Type: AWS::DynamoDB::Table
+    Condition: CreateSnapshotsTable
+    DeletionPolicy: Retain
+    UpdateReplacePolicy: Retain
+    Properties:
+      TableName: !Sub '${AWS::StackName}-snapshots'
+      BillingMode: PAY_PER_REQUEST
+      Tags:
+        - Key: PROJECT
+          Value: !Ref ProjectTag
+      AttributeDefinitions:
+        - AttributeName: pk
+          AttributeType: S
+        - AttributeName: sk
+          AttributeType: S
+      KeySchema:
+        - AttributeName: pk
+          KeyType: HASH
+        - AttributeName: sk
+          KeyType: RANGE
+
+Outputs:
+  ProjectTag:
+    Description: PROJECT tag value applied to stack resources
+    Value: !Ref ProjectTag
+
+  AssetsBucketName:
+    Description: S3 bucket for match JSON assets
+    Value: !Ref AssetsBucket
+
+  AssetsBucketArn:
+    Description: S3 bucket ARN
+    Value: !GetAtt AssetsBucket.Arn
+
+  FetchMatchesFunctionArn:
+    Description: Match fetch Lambda ARN
+    Value: !GetAtt FetchMatchesFunction.Arn
+
+  FetchMatchesFunctionName:
+    Description: Match fetch Lambda name
+    Value: !Ref FetchMatchesFunction
+
+  FetchScheduleExpression:
+    Description: EventBridge schedule expression
+    Value: !Ref FetchScheduleExpression
+
+  SnapshotsTableName:
+    Condition: CreateSnapshotsTable
+    Description: DynamoDB table for snapshots (when enabled)
+    Value: !Ref SnapshotsTable

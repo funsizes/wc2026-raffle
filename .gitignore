@@ -5,3 +5,9 @@ node_modules
 /.svelte-kit
 
 /tmp
+
+# SAM
+.aws-sam
+infra/samconfig.toml
+lambda/node_modules
+lambda/_shared

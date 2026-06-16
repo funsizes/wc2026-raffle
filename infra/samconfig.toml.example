@@ -1,0 +1,45 @@
+# Copy to samconfig.toml and fill in FootballDataApiKey for deploys.
+# Do not commit samconfig.toml if it contains secrets.
+#
+#   cp samconfig.toml.example samconfig.toml
+#
+# Greenfield deploy (creates all resources new — safe to run alongside old infra
+# while you migrate app references):
+#   1. npm run sam:build
+#   2. npm run sam:deploy
+#
+# Run sam commands from the repo root. With -t infra/template.yaml, --config-file
+# is resolved relative to infra/ (use samconfig.toml, not infra/samconfig.toml).
+#
+# Default names use the wcsorteo2026 prefix (bucket, Lambda, schedule) so they
+# do not collide with manually created wc2026-raffle-* resources.
+
+version = 0.1
+
+[default.global.parameters]
+stack_name = "wcsorteo2026"
+
+[default.build.parameters]
+cached = true
+parallel = true
+
+[default.validate.parameters]
+lint = true
+
+[default.deploy.parameters]
+capabilities = "CAPABILITY_IAM"
+confirm_changeset = true
+resolve_s3 = true
+s3_prefix = "wcsorteo2026"
+region = "us-east-1"
+tags = "PROJECT=wcsorteo2026"
+parameter_overrides = "ProjectTag=wcsorteo2026 AssetsBucketName=wcsorteo2026-assets AnalyticsTimezone=America/New_York FetchScheduleExpression='rate(5 minutes)' CreateSnapshotsTable=false FootballDataApiKey=REPLACE_ME"
+
+[default.sync.parameters]
+watch = true
+
+[default.local_start_api.parameters]
+warm_containers = "EAGER"
+
+[default.local_start_lambda.parameters]
+warm_containers = "EAGER"

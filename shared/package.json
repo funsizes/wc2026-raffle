@@ -1,0 +1,12 @@
+{
+  "name": "@wc2026/shared",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./index.ts",
+    "./football-data": "./football-data.ts",
+    "./match-types": "./match-types.ts",
+    "./slim-matches": "./slim-matches.ts"
+  }
+}
