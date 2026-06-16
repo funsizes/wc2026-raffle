@@ -7,17 +7,19 @@
 #   Value (JSON), e.g.:
 #   {"footballDataApiKey":"YOUR_TOKEN","otherSecret":"..."}
 #
-# Local invoke only — copy and fill in lambda/env.local.example.json:
-#   sam local invoke FetchMatchesFunction -t infra/template.yaml \
-#     --env-vars lambda/env.local.json
+# Local invoke — build first, then (after copying env.local.example.json → env.local.json):
+#   npm run sam:invoke
+# Uses .aws-sam/build/template.yaml so the bundled fetch-matches.js is mounted, not raw .ts source.
 #
 # Greenfield deploy (creates all resources new — safe to run alongside old infra
 # while you migrate app references):
 #   1. npm run sam:build
 #   2. npm run sam:deploy
 #
-# Run sam commands from the repo root. With -t infra/template.yaml, --config-file
-# is resolved relative to infra/ (use samconfig.toml, not infra/samconfig.toml).
+# Run sam commands from the repo root.
+# sam:build  — config at infra/samconfig.toml (via --config-file samconfig.toml + -t infra/template.yaml)
+# sam:deploy — uses .aws-sam/build/template.yaml so the bundled fetch-matches.js is deployed
+#              (config path ../../infra/samconfig.toml is relative to .aws-sam/build/)
 #
 # Default names use the wcsorteo2026 prefix (bucket, Lambda, schedule) so they
 # do not collide with manually created wc2026-raffle-* resources.

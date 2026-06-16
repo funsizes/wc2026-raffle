@@ -16,7 +16,8 @@
     "shared:check": "tsc -p shared/tsconfig.json",
     "lambda:check": "npm run sync:shared && tsc -p lambda/tsconfig.json",
     "sam:build": "npm run sync:shared && sam build -t infra/template.yaml --config-file samconfig.toml --region us-east-1",
-    "sam:deploy": "sam deploy -t infra/template.yaml --config-file samconfig.toml --region us-east-1"
+    "sam:deploy": "sam deploy -t .aws-sam/build/template.yaml --config-file ../../infra/samconfig.toml --region us-east-1",
+    "sam:invoke": "sam local invoke FetchMatchesFunction -t .aws-sam/build/template.yaml --env-vars lambda/env.local.json"
   },
   "devDependencies": {
     "@sveltejs/adapter-static": "^3.0.8",
