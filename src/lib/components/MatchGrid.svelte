@@ -1,5 +1,6 @@
 <script lang="ts">
   import { formatTime, t } from '$lib/i18n/locale.svelte';
+  import { isShowMatchTimeEnabled } from '$lib/settings/gamemaster.svelte';
   import type { Match, RaffleEntry } from '$lib/types';
   import { isLiveMatch } from '$lib/utils/matches';
   import { getPrData } from '$lib/utils/rankings';
@@ -64,8 +65,22 @@
       {#if isDone}
         <div class="match-score">{m.score.fullTime.home} – {m.score.fullTime.away}</div>
       {:else if isLive}
-        <div class="match-score live-score">
-          {m.score.fullTime.home ?? 0} – {m.score.fullTime.away ?? 0}
+        <div class="match-score-container">
+          <div class="match-score live-score">
+            {m.score.fullTime.home ?? 0} – {m.score.fullTime.away ?? 0}
+          </div>
+          {#if isShowMatchTimeEnabled()}
+            <div class="match-time">
+              <span class="match-time-minute">{m.minute ?? 0}</span>
+
+              {#if m.injuryTime !== null}
+                <span class="match-time-separator">+</span>
+                <span class="match-time-injury-time">{m.injuryTime}</span>
+              {/if}
+
+              <span class="match-time-separator">'</span>
+            </div>
+          {/if}
         </div>
       {:else}
         <div class="match-score match-time">

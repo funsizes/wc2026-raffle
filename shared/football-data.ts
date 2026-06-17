@@ -61,6 +61,10 @@ export interface FootballDataMatch {
   id: number;
   utcDate: string;
   status: string;
+  /** Present on newer API responses; match clock minute when live or finished. */
+  minute?: number | null;
+  /** Stoppage time added at end of half (e.g. 2 for "45+2"). */
+  injuryTime?: number | null;
   matchday: number | null;
   stage: string;
   group: string | null;

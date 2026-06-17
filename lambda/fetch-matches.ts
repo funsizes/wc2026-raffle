@@ -86,7 +86,8 @@ export const handler: Handler = async () => {
 
     const getResponse = await fetch('https://api.football-data.org/v4/competitions/WC/matches', {
       headers: {
-        'X-Auth-Token': footballApiKey
+        'X-Auth-Token': footballApiKey,
+        'X-Api-Version': 'v4.1',
       }
     });
 

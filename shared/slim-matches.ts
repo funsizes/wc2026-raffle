@@ -32,6 +32,10 @@ function slimScore(score: unknown): SlimScore {
   return { winner, fullTime: { home, away } };
 }
 
+function slimClock(value: unknown): number | null {
+  return typeof value === 'number' && Number.isFinite(value) ? value : null;
+}
+
 function slimMatch(match: unknown): SlimMatch | null {
   if (!match || typeof match !== 'object') return null;
 
@@ -53,6 +57,8 @@ function slimMatch(match: unknown): SlimMatch | null {
     utcDate: m.utcDate,
     status: m.status,
     stage: m.stage,
+    minute: slimClock(m.minute),
+    injuryTime: slimClock(m.injuryTime),
     homeTeam,
     awayTeam,
     score: slimScore(m.score)
