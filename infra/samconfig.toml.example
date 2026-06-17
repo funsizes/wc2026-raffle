@@ -1,0 +1,55 @@
+# Copy to samconfig.toml before deploy. No secrets required in this file.
+#
+#   cp samconfig.toml.example samconfig.toml
+#
+# After the first deploy, set secrets in Secrets Manager:
+#   Secret name: wcsorteo2026/app-secrets
+#   Value (JSON), e.g.:
+#   {"footballDataApiKey":"YOUR_TOKEN","otherSecret":"..."}
+#
+# Local invoke — build first, then (after copying env.local.example.json → env.local.json):
+#   npm run sam:invoke
+# Uses .aws-sam/build/template.yaml so the bundled fetch-matches.js is mounted, not raw .ts source.
+#
+# Greenfield deploy (creates all resources new — safe to run alongside old infra
+# while you migrate app references):
+#   1. npm run sam:build
+#   2. npm run sam:deploy
+#
+# Run sam commands from the repo root.
+# sam:build  — config at infra/samconfig.toml (via --config-file samconfig.toml + -t infra/template.yaml)
+# sam:deploy — uses .aws-sam/build/template.yaml so the bundled fetch-matches.js is deployed
+#              (config path ../../infra/samconfig.toml is relative to .aws-sam/build/)
+#
+# Default names use the wcsorteo2026 prefix (bucket, Lambda, schedule) so they
+# do not collide with manually created wc2026-raffle-* resources.
+
+version = 0.1
+
+[default.global.parameters]
+stack_name = "wcsorteo2026"
+
+[default.build.parameters]
+cached = true
+parallel = true
+
+[default.validate.parameters]
+lint = true
+
+[default.deploy.parameters]
+capabilities = "CAPABILITY_IAM"
+confirm_changeset = true
+resolve_s3 = true
+s3_prefix = "wcsorteo2026"
+region = "us-east-1"
+tags = "PROJECT=wcsorteo2026"
+parameter_overrides = "ProjectTag=wcsorteo2026 AssetsBucketName=wcsorteo2026-assets AppSecretsName=wcsorteo2026/app-secrets AnalyticsTimezone=America/New_York FetchScheduleExpression='rate(5 minutes)' CreateSnapshotsTable=false"
+
+[default.sync.parameters]
+watch = true
+
+[default.local_start_api.parameters]
+warm_containers = "EAGER"
+
+[default.local_start_lambda.parameters]
+warm_containers = "EAGER"

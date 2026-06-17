@@ -12,10 +12,12 @@
   let { participant = null, team, powerRankingsData: prData = null }: Props = $props();
 
   const flagEntry = $derived(
-    participant || { api: team.name, team: team.name, flag: '🏳️' }
+    participant || { api: team.name ?? '', team: team.name ?? '', flag: '🏳️' }
   );
 
-  const teamName = $derived(participant ? participant.team : team.shortName || team.name);
+  const teamName = $derived(
+    participant ? participant.team : team.shortName || team.name || '-'
+  );
 </script>
 
 <div class="match-team">

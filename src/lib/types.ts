@@ -1,3 +1,5 @@
+export type { Match, MatchTeam } from '@wc2026/shared/match-types';
+
 export interface RaffleEntry {
   pick: number;
   name: string;
@@ -13,23 +15,6 @@ export interface Progress {
   gs: number;
   gd: number;
   active: boolean;
-}
-
-export interface MatchTeam {
-  name: string;
-  shortName?: string;
-}
-
-export interface Match {
-  homeTeam: MatchTeam;
-  awayTeam: MatchTeam;
-  status: string;
-  stage: string;
-  utcDate: string;
-  score: {
-    winner: string;
-    fullTime: { home: number; away: number };
-  };
 }
 
 export interface RankingEntry {

@@ -29,8 +29,8 @@
 
   {@const isLive = isLiveMatch(m)}
   {@const isDone = m.status === 'FINISHED'}
-  {@const homeParticipantPowerRankingsData = showMatchPR ? getPrData(homeParticipant || { api: m.homeTeam.name, team: m.homeTeam.name }, prSourceIdx) : null}
-  {@const awayParticipantPowerRankingsData = showMatchPR ? getPrData(awayParticipant || { api: m.awayTeam.name, team: m.awayTeam.name }, prSourceIdx) : null}
+  {@const homeParticipantPowerRankingsData = showMatchPR ? getPrData(homeParticipant || { api: m.homeTeam.name ?? '', team: m.homeTeam.name ?? '' }, prSourceIdx) : null}
+  {@const awayParticipantPowerRankingsData = showMatchPR ? getPrData(awayParticipant || { api: m.awayTeam.name ?? '', team: m.awayTeam.name ?? '' }, prSourceIdx) : null}
 
   <div class="match-card" class:live={isLive}>
     <div class="match-meta">

@@ -23,8 +23,8 @@ export function calcProgress(entry: RaffleEntry, all: Match[]): Progress {
   for (const m of done) {
     const isHome = sameTeam(m.homeTeam.name, entry.api);
     const ft = m.score.fullTime;
-    gs += isHome ? ft.home : ft.away;
-    gc += isHome ? ft.away : ft.home;
+    gs += isHome ? (ft.home ?? 0) : (ft.away ?? 0);
+    gc += isHome ? (ft.away ?? 0) : (ft.home ?? 0);
   }
   const gd = gs - gc;
 

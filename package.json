@@ -3,11 +3,22 @@
   "private": true,
   "version": "1.0.0",
   "type": "module",
+  "workspaces": [
+    "shared",
+    "lambda"
+  ],
   "scripts": {
     "dev": "vite dev",
     "build": "vite build",
     "preview": "vite preview",
-    "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json"
+    "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
+    "postinstall": "rm -rf lambda/_shared && cp -r shared lambda/_shared",
+    "sync:shared": "rm -rf lambda/_shared && cp -r shared lambda/_shared",
+    "shared:check": "tsc -p shared/tsconfig.json",
+    "lambda:check": "npm run sync:shared && tsc -p lambda/tsconfig.json",
+    "sam:build": "npm run sync:shared && sam build -t infra/template.yaml --config-file samconfig.toml --region us-east-1",
+    "sam:deploy": "sam deploy -t .aws-sam/build/template.yaml --config-file ../../infra/samconfig.toml --region us-east-1",
+    "sam:invoke": "sam local invoke FetchMatchesFunction -t .aws-sam/build/template.yaml --env-vars lambda/env.local.json"
   },
   "devDependencies": {
     "@sveltejs/adapter-static": "^3.0.8",
@@ -20,6 +31,7 @@
   },
   "dependencies": {
     "@fortawesome/fontawesome-free": "^7.2.0",
+    "@wc2026/shared": "file:./shared",
     "flag-icons": "^7.5.0"
   }
 }
