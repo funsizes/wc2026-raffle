@@ -68,7 +68,10 @@ export const enUS = {
   },
   leaderboard: {
     teams: '🏆 Teams ({count})',
-    goals: '{count} goals'
+    goals: '{count} goals',
+    viewGames: 'View team schedule',
+    noGames: 'No matches loaded yet.',
+    vs: 'vs {team}'
   },
   groups: {
     g1: "🏆 Luis' Group",
@@ -124,6 +127,7 @@ export const enUS = {
   },
   stage: {
     GROUP_STAGE: 'Group Stage',
+    groupLabel: 'Group {letter}',
     LAST_32: 'Round of 32',
     LAST_16: 'Round of 16',
     QUARTER_FINALS: 'Quarterfinals',

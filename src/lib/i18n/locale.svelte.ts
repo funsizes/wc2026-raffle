@@ -119,6 +119,13 @@ export function formatWeekdayDate(date: string): string {
   }).format(new Date(date + 'T12:00:00'));
 }
 
+export function formatMatchCalendarDate(isoDate: string): string {
+  return new Intl.DateTimeFormat(localeState.value ?? 'en-US', {
+    month: 'short',
+    day: 'numeric'
+  }).format(new Date(isoDate));
+}
+
 export function formatMonthDay(date: string): string {
   const [, month, day] = date.split('-');
   return (

@@ -14,6 +14,8 @@ export interface SlimMatch {
   utcDate: string;
   status: string;
   stage: string;
+  /** e.g. GROUP_A — present for group-stage matches when API provides it. */
+  group: string | null;
   /** Match clock minute; null for scheduled matches. */
   minute: number | null;
   /** Stoppage time added at end of half; null when not applicable. */

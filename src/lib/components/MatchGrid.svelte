@@ -2,7 +2,7 @@
   import { formatTime, t } from '$lib/i18n/locale.svelte';
   import { isShowMatchTimeEnabled } from '$lib/settings/gamemaster.svelte';
   import type { Match, RaffleEntry } from '$lib/types';
-  import { isLiveMatch } from '$lib/utils/matches';
+  import { getMatchStageLabel, isLiveMatch } from '$lib/utils/matches';
   import { getPrData } from '$lib/utils/rankings';
   import { findParticipant } from '$lib/utils/teams';
   import swordIcon from '$lib/assets/sword.png';
@@ -16,12 +16,6 @@
   }
 
   let { matches, raffle, showMatchPR, prSourceIdx }: Props = $props();
-
-  function stageLabel(stage: string): string {
-    const key = `stage.${stage}`;
-    const label = t(key);
-    return label === key ? stage : label;
-  }
 </script>
 
 {#each matches as m (m.utcDate + m.homeTeam.name + m.awayTeam.name)}
@@ -35,7 +29,7 @@
 
   <div class="match-card" class:live={isLive}>
     <div class="match-meta">
-      <span class="match-meta-stage">{stageLabel(m.stage)}</span>
+      <span class="match-meta-stage">{getMatchStageLabel(m)}</span>
 
       <span class="match-meta-center">
         {#if homeParticipant && awayParticipant}

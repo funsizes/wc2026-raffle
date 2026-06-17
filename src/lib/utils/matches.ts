@@ -1,4 +1,5 @@
 import type { Match } from '$lib/types';
+import { t } from '$lib/i18n/locale.svelte';
 
 const LEGACY_BUCKET = 'https://wc2026-raffle-assets.s3.us-east-1.amazonaws.com';
 const WCSORTEO2026_BUCKET = 'https://wcsorteo2026-assets.s3.us-east-1.amazonaws.com';
@@ -130,4 +131,24 @@ export function countLiveMatches(matches: Match[] | null): number {
 
 export function isLiveMatch(match: Match): boolean {
   return match.status === 'IN_PLAY' || match.status === 'PAUSED';
+}
+
+export function groupLetter(group: string | null | undefined): string | null {
+  if (!group) return null;
+
+  const match = /^GROUP_([A-Z]+)$/i.exec(group);
+  return match ? match[1] : null;
+}
+
+export function getMatchStageLabel(match: Pick<Match, 'stage' | 'group'>): string {
+  if (match.stage === 'GROUP_STAGE') {
+    const letter = groupLetter(match.group);
+
+    if (letter) return t('stage.groupLabel', { letter });
+  }
+
+  const key = `stage.${match.stage}`;
+  const label = t(key);
+
+  return label === key ? match.stage : label;
 }

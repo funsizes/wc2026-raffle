@@ -71,7 +71,10 @@ export const esUS: Messages = {
   },
   leaderboard: {
     teams: '🏆 Equipos ({count})',
-    goals: '{count} goles'
+    goals: '{count} goles',
+    viewGames: 'Ver calendario del equipo',
+    noGames: 'Aún no hay partidos cargados.',
+    vs: 'vs {team}'
   },
   groups: {
     g1: '🏆 Grupo Luis',
@@ -128,6 +131,7 @@ export const esUS: Messages = {
   },
   stage: {
     GROUP_STAGE: 'Fase de grupos',
+    groupLabel: 'Grupo {letter}',
     LAST_32: 'Dieciseisavos',
     LAST_16: 'Octavos de final',
     QUARTER_FINALS: 'Cuartos de final',
