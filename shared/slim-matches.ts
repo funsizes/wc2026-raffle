@@ -57,6 +57,7 @@ function slimMatch(match: unknown): SlimMatch | null {
     utcDate: m.utcDate,
     status: m.status,
     stage: m.stage,
+    group: typeof m.group === 'string' ? m.group : null,
     minute: slimClock(m.minute),
     injuryTime: slimClock(m.injuryTime),
     homeTeam,

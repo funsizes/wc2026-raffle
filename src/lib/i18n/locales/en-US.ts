@@ -127,6 +127,7 @@ export const enUS = {
   },
   stage: {
     GROUP_STAGE: 'Group Stage',
+    groupLabel: 'Group {letter}',
     LAST_32: 'Round of 32',
     LAST_16: 'Round of 16',
     QUARTER_FINALS: 'Quarterfinals',
