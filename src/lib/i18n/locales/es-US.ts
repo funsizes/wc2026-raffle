@@ -15,6 +15,12 @@ export const esUS: Messages = {
     matchesUrl: 'Fuente de partidos',
     matchesUrlFull: 'Completo',
     matchesUrlSlim: 'Reducido',
+    matchesBucket: 'Bucket de datos',
+    matchesBucketLegacy: 'Anterior',
+    matchesBucketWcsorteo2026: 'wcsorteo2026',
+    showMatchTime: 'Ver minuto del partido',
+    showMatchTimeOff: 'No',
+    showMatchTimeOn: 'Sí',
     done: 'Listo'
   },
   settings: {

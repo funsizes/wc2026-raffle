@@ -43,7 +43,7 @@ resolve_s3 = true
 s3_prefix = "wcsorteo2026"
 region = "us-east-1"
 tags = "PROJECT=wcsorteo2026"
-parameter_overrides = "ProjectTag=wcsorteo2026 AssetsBucketName=wcsorteo2026-assets AppSecretsName=wcsorteo2026/app-secrets AnalyticsTimezone=America/New_York FetchScheduleExpression='rate(5 minutes)' CreateSnapshotsTable=false"
+parameter_overrides = "ProjectTag=wcsorteo2026 AssetsBucketName=wcsorteo2026-assets AppSecretsName=wcsorteo2026/app-secrets AnalyticsTimezone=America/New_York FetchScheduleExpression='rate(1 minute)' CreateSnapshotsTable=false"
 
 [default.sync.parameters]
 watch = true

@@ -349,6 +349,22 @@ section {
   .mowner { font-size: 0.55rem; color: var(--gold); margin-top: 0.1rem; font-weight: 600; }
 }
 
+.match-score-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+
+  .match-time {
+    display: inline-flex;
+    gap: 0.2rem;
+    font-size: 0.5rem;
+    color:var(--gold);
+    font-family: var(--pixel);
+  }
+}
+
 .match-score {
   text-align: center;
   font-family: var(--pixel);
@@ -356,11 +372,6 @@ section {
   color: var(--text);
   min-width: 3.5rem;
   text-shadow: 2px 2px 0 rgba(0,0,0,.6);
-
-  &.match-time {
-    font-size: 0.75rem;
-    color:var(--gold);
-  }
 }
 .match-score.live-score { color: var(--green); text-shadow: 0 0 10px var(--green), 2px 2px 0 rgba(0,0,0,.6); }
 

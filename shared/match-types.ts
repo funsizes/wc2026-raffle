@@ -14,6 +14,10 @@ export interface SlimMatch {
   utcDate: string;
   status: string;
   stage: string;
+  /** Match clock minute; null for scheduled matches. */
+  minute: number | null;
+  /** Stoppage time added at end of half; null when not applicable. */
+  injuryTime: number | null;
   homeTeam: SlimTeam;
   awayTeam: SlimTeam;
   score: SlimScore;

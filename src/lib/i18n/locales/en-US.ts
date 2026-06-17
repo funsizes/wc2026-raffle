@@ -12,6 +12,12 @@ export const enUS = {
     matchesUrl: 'Match data source',
     matchesUrlFull: 'Full',
     matchesUrlSlim: 'Slim',
+    matchesBucket: 'Assets bucket',
+    matchesBucketLegacy: 'Legacy',
+    matchesBucketWcsorteo2026: 'wcsorteo2026',
+    showMatchTime: 'See match time',
+    showMatchTimeOff: 'Off',
+    showMatchTimeOn: 'On',
     done: 'Done'
   },
   settings: {

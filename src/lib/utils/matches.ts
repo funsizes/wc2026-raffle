@@ -1,11 +1,18 @@
 import type { Match } from '$lib/types';
 
-export const MATCHES_URL_FULL = 'https://wc2026-raffle-assets.s3.us-east-1.amazonaws.com/matches.json';
-export const MATCHES_URL_SLIM = 'https://wc2026-raffle-assets.s3.us-east-1.amazonaws.com/matches-slim.json';
+const LEGACY_BUCKET = 'https://wc2026-raffle-assets.s3.us-east-1.amazonaws.com';
+const WCSORTEO2026_BUCKET = 'https://wcsorteo2026-assets.s3.us-east-1.amazonaws.com';
+
+export const MATCHES_URL_FULL = `${LEGACY_BUCKET}/matches.json`;
+export const MATCHES_URL_SLIM = `${LEGACY_BUCKET}/matches-slim.json`;
+export const MATCHES_URL_FULL_WCSORTEO2026 = `${WCSORTEO2026_BUCKET}/matches.json`;
+export const MATCHES_URL_SLIM_WCSORTEO2026 = `${WCSORTEO2026_BUCKET}/matches-slim.json`;
 
 const MATCHES_SOURCE_STORAGE_KEY = 'wc2026_matches_source';
+const MATCHES_BUCKET_STORAGE_KEY = 'wc2026_matches_bucket';
 
 export type MatchesUrlOption = 'full' | 'slim';
+export type MatchesBucketOption = 'legacy' | 'wcsorteo2026';
 
 function resolveMatchesUrlOption(stored: string | null): MatchesUrlOption {
   if (stored === 'slim' || stored === 'full') {
@@ -13,6 +20,14 @@ function resolveMatchesUrlOption(stored: string | null): MatchesUrlOption {
   }
 
   return 'slim';
+}
+
+function resolveMatchesBucketOption(stored: string | null): MatchesBucketOption {
+  if (stored === 'wcsorteo2026' || stored === 'legacy') {
+    return stored;
+  }
+
+  return 'legacy';
 }
 
 export function getMatchesUrlOption(): MatchesUrlOption {
@@ -25,12 +40,29 @@ export function getMatchesUrlOption(): MatchesUrlOption {
   return resolveMatchesUrlOption(stored);
 }
 
+export function getMatchesBucketOption(): MatchesBucketOption {
+  if (typeof localStorage === 'undefined') return 'legacy';
+
+  return resolveMatchesBucketOption(localStorage.getItem(MATCHES_BUCKET_STORAGE_KEY));
+}
+
 export function getMatchesUrl(): string {
-  return getMatchesUrlOption() === 'slim' ? MATCHES_URL_SLIM : MATCHES_URL_FULL;
+  const bucket = getMatchesBucketOption();
+  const source = getMatchesUrlOption();
+
+  if (bucket === 'wcsorteo2026') {
+    return source === 'slim' ? MATCHES_URL_SLIM_WCSORTEO2026 : MATCHES_URL_FULL_WCSORTEO2026;
+  }
+
+  return source === 'slim' ? MATCHES_URL_SLIM : MATCHES_URL_FULL;
 }
 
 export function setMatchesUrlOption(option: MatchesUrlOption): void {
   localStorage.setItem(MATCHES_SOURCE_STORAGE_KEY, option);
+}
+
+export function setMatchesBucketOption(option: MatchesBucketOption): void {
+  localStorage.setItem(MATCHES_BUCKET_STORAGE_KEY, option);
 }
 
 export async function fetchMatches(): Promise<Match[] | null> {
