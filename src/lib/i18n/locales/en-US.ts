@@ -68,7 +68,10 @@ export const enUS = {
   },
   leaderboard: {
     teams: '🏆 Teams ({count})',
-    goals: '{count} goals'
+    goals: '{count} goals',
+    viewGames: 'View team schedule',
+    noGames: 'No matches loaded yet.',
+    vs: 'vs {team}'
   },
   groups: {
     g1: "🏆 Luis' Group",

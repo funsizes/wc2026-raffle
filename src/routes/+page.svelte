@@ -274,7 +274,7 @@
     {/if}
 
     <div class="leaderboard-container">
-      <Leaderboard entries={lb2} {prSourceIdx} {raffleGroup} {showAdminControls} />
+      <Leaderboard entries={lb2} {prSourceIdx} {raffleGroup} {allMatches} {showAdminControls} />
     </div>
   </div>
 

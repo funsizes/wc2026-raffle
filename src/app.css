@@ -498,6 +498,73 @@ section {
       border: none;
       padding: 0 0 0 0.65rem;
     }
+
+    .lb-games-btn-container {
+      margin-left: 0.4rem;
+    }
+
+    .lb-games-btn {
+      font-size: 0.8rem;
+      color: var(--muted);
+      cursor: pointer;
+      background: none;
+      border: none;
+
+      &:hover {
+        color: var(--gold);
+      }
+    }
+  }
+
+  .lb-games-panel {
+    margin-top: 0.55rem;
+    padding: 0.55rem 0.65rem;
+    border-top: 1px solid var(--border);
+    background: rgba(0, 0, 0, 0.18);
+  }
+
+  .lb-games-empty {
+    margin: 0;
+    font-size: 0.62rem;
+    color: var(--muted);
+  }
+
+  .lb-games-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+  }
+
+  .lb-games-item {
+    display: flex;
+    gap: 0.5rem;
+    align-items: baseline;
+    font-size: 0.62rem;
+  }
+
+  .lb-games-date {
+    flex-shrink: 0;
+    min-width: 3.5rem;
+    font-family: var(--pixel);
+    font-size: 0.48rem;
+    color: var(--gold);
+  }
+
+  .lb-games-detail {
+    color: var(--text);
+  }
+
+  .lb-games-time {
+    color: var(--muted);
+  }
+
+  .lb-games-score {
+    font-family: var(--pixel);
+    font-size: 0.52rem;
+    color: var(--green);
   }
 
   .lb-bottom-row {
