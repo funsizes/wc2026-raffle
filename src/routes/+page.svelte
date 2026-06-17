@@ -177,6 +177,16 @@
     <p class="group-selector">
       <GroupSelector bind:value={raffleGroup} />
     </p>
+
+    <div>
+      <button
+        type="button"
+        class="hist-group-btn"
+        onclick={openGameMaster}
+      >
+      {t('gameMaster.title')}
+      </button>
+    </div>
   {/if}
 </header>
 
