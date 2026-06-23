@@ -52,7 +52,6 @@
 
   const fullDate = $derived(date ? formatWeekdayDate(date) : '');
 
-  const groupLbl = $derived(t(`groups.${histGroup}`));
   const srcLbl = $derived(
     prSourceIdx === -1
       ? t('history.avgSources', { count: 14 })
@@ -114,7 +113,7 @@
   <div class="sc-card">
     <div class="sc-head">
       <div class="sc-title">{t('history.recapTitle')}</div>
-      <div class="sc-sub">{fullDate} · {groupLbl}</div>
+      <div class="sc-sub">{fullDate}</div>
     </div>
     <div class="sc-empty">{t('history.noTeamMatches')}</div>
   </div>
@@ -122,7 +121,7 @@
   <div class="sc-card">
     <div class="sc-head">
       <div class="sc-title">{t('history.recapTitle')}</div>
-      <div class="sc-sub">{fullDate} · {groupLbl}</div>
+      <div class="sc-sub">{fullDate}</div>
       <div class="sc-meta">{t('history.positionChange')} {vsLbl} · {t('pr.rankShort')}: {srcLbl}</div>
     </div>
     <div class="sc-col-heads">
@@ -167,7 +166,7 @@
         <div class="sc-num-cell sc-num-total sc-goals-total">{e.p.gs}</div>
         <div class="sc-num-cell sc-num-delta {deltaCls(mover.gsDelta)}">{gsDeltaStr}</div>
         <div class="sc-pr-cell">
-          {t('pr.rankShort')} <span class="sc-pr-num">{prData ? `#${Math.round(prData.display)}` : '—'}</span>
+          <span class="sc-pr-num">{prData ? `#${Math.round(prData.display)}` : '—'}</span>
         </div>
       </div>
     {/each}

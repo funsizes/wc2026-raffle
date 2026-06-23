@@ -160,7 +160,7 @@ export const enUS = {
     gdDelta: 'Δ',
     goalsTotal: 'G',
     goalsDelta: 'Δ',
-    prRank: 'PR RANK'
+    prRank: 'PR'
   },
   rankings: {
     source:

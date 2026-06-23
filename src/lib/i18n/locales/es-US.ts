@@ -164,7 +164,6 @@ export const esUS: Messages = {
     gdDelta: 'Δ',
     goalsTotal: 'G',
     goalsDelta: 'Δ',
-    prRank: 'RANK PR'
   },
   rankings: {
     source:

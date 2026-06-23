@@ -936,15 +936,22 @@ section {
 .sc-row:last-child { border-bottom: none; }
 .sc-row:nth-child(odd) { background: rgba(255,255,255,0.018); }
 .sc-rank-cell {
-  text-align: center; font-family: var(--pixel);
-  font-size: 0.5rem; color: var(--muted);
+  text-align: center;
+  font-family: var(--pixel);
+  font-size: 0.5rem;
+  color: var(--gold);
 }
 .sc-rank-cell.r1 { font-size: 1.1rem; line-height: 1; }
 .sc-rank-cell.r2 { font-size: 0.95rem; line-height: 1; }
 .sc-rank-cell.r3 { font-size: 0.85rem; line-height: 1; }
 .sc-flag-cell { text-align: center; }
 .sc-flag-cell .flag-img { height: 1rem; display: block; margin: 0 auto; }
-.sc-info-cell { display: flex; flex-direction: column; min-width: 0; }
+.sc-info-cell {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  padding-left: 0.1rem;
+}
 .sc-owner { font-size: 0.68rem; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .sc-team  { font-size: 0.52rem; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .sc-move-cell { text-align: center; font-family: var(--pixel); font-size: 0.44rem; white-space: nowrap; }
@@ -965,7 +972,7 @@ section {
 .sc-num-delta.sc-delta-neg { color: var(--red); }
 .sc-num-delta.sc-delta-flat { color: var(--muted); }
 .sc-pr-cell { text-align: right; font-size: 0.52rem; color: var(--muted); white-space: nowrap; }
-.sc-pr-num { color: var(--gold); font-family: var(--pixel); font-size: 0.44rem; }
+.sc-pr-num { font-family: var(--pixel); font-size: 0.44rem; }
 .sc-empty {
   text-align: center; padding: 3rem 1rem;
   font-size: 0.68rem; color: var(--muted); line-height: 2.2;
