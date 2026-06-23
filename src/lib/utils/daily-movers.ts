@@ -4,6 +4,7 @@ import {
   leaderboardAsOf,
   leaderboardAsOfDate
 } from './leaderboard-as-of';
+import { matchLocalDate } from './matches';
 import { teamsWithFinishedMatchOnDate, teamPlayedToday } from './snapshots';
 
 export type {
@@ -20,6 +21,7 @@ export {
   matchEffectiveEndMs,
   matchesFinishedBy,
   matchesFinishedOnOrBeforeDate,
+  hasPriorBaselineBeforeDate,
   playerRankSeriesForDay,
   RANK_SLICE_HOURS,
   RANK_SLICES_PER_DAY,
@@ -29,6 +31,7 @@ export {
 
 export interface DailyMover {
   entry: LeaderboardEntry;
+  rank: number;
   rankDelta: number;
   gdDelta: number;
 }
@@ -47,6 +50,11 @@ function prevDateKey(date: string): string {
   const d = new Date(date + 'T12:00:00');
   d.setDate(d.getDate() - 1);
   return d.toLocaleDateString('en-CA');
+}
+
+/** Calendar day before `date` (YYYY-MM-DD). */
+export function prevCalendarDate(date: string): string {
+  return prevDateKey(date);
 }
 
 function nextDateKey(date: string): string {
@@ -81,6 +89,7 @@ function computeMovers(
     if (!prior) return;
     list.push({
       entry,
+      rank: i + 1,
       rankDelta: prior.rank - (i + 1),
       gdDelta: entry.p.gd - prior.gd
     });
@@ -133,4 +142,17 @@ export function dailyMoversForDateRange(
   }
 
   return results;
+}
+
+/** Local dates (YYYY-MM-DD) that have at least one finished match, ascending. */
+export function finishedMatchDates(allMatches: Match[] | null): string[] {
+  if (!allMatches) return [];
+
+  const dates = new Set<string>();
+  for (const m of allMatches) {
+    if (m.status !== 'FINISHED') continue;
+    dates.add(matchLocalDate(m.utcDate));
+  }
+
+  return [...dates].sort();
 }
