@@ -76,6 +76,17 @@
   function goToNextDate() {
     if (safeIdx < dates.length - 1) histDateIdx = safeIdx + 1;
   }
+
+  function signedDelta(value: number): string {
+    if (value > 0) return `+${value}`;
+    return `${value}`;
+  }
+
+  function deltaCls(value: number): string {
+    if (value > 0) return 'sc-delta-pos';
+    if (value < 0) return 'sc-delta-neg';
+    return 'sc-delta-flat';
+  }
 </script>
 
 <div class="hist-controls">
@@ -116,7 +127,12 @@
     </div>
     <div class="sc-col-heads">
       <span>#</span><span></span><span>{t('history.player')}</span>
-      <span>{t('history.move')}</span><span>{t('history.gdGoals')}</span><span>{t('history.prRank')}</span>
+      <span>{t('history.move')}</span>
+      <span class="sc-col-num">{t('history.gdTotal')}</span>
+      <span class="sc-col-num">{t('history.gdDelta')}</span>
+      <span class="sc-col-num">{t('history.goalsTotal')}</span>
+      <span class="sc-col-num">{t('history.goalsDelta')}</span>
+      <span>{t('history.prRank')}</span>
     </div>
     {#each movers as mover (mover.entry.name + mover.entry.team)}
       {@const e = mover.entry}
@@ -132,6 +148,8 @@
       {@const gd = e.p.gd}
       {@const gdStr = gd > 0 ? `+${gd}` : `${gd}`}
       {@const gdCls = gd >= 0 ? 'sc-gd-pos' : 'sc-gd-neg'}
+      {@const gdDeltaStr = signedDelta(mover.gdDelta)}
+      {@const gsDeltaStr = signedDelta(mover.gsDelta)}
       {@const rankCls = MEDALS[mover.rank] ? `r${mover.rank}` : ''}
       {@const rankDisp = MEDALS[mover.rank] || `#${mover.rank}`}
       <div class="sc-row">
@@ -144,9 +162,10 @@
           <span class="sc-team">{e.team}</span>
         </div>
         <div class="sc-move-cell {moveCls}">{moveStr}</div>
-        <div class="sc-stats-cell">
-          <span class={gdCls}>GD {gdStr}</span><span class="sc-goals"> · {e.p.gs}⚽</span>
-        </div>
+        <div class="sc-num-cell sc-num-total {gdCls}">{gdStr}</div>
+        <div class="sc-num-cell sc-num-delta {deltaCls(mover.gdDelta)}">{gdDeltaStr}</div>
+        <div class="sc-num-cell sc-num-total sc-goals-total">{e.p.gs}</div>
+        <div class="sc-num-cell sc-num-delta {deltaCls(mover.gsDelta)}">{gsDeltaStr}</div>
         <div class="sc-pr-cell">
           {t('pr.rankShort')} <span class="sc-pr-num">{prData ? `#${Math.round(prData.display)}` : '—'}</span>
         </div>

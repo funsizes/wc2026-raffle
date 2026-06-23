@@ -160,7 +160,10 @@ export const esUS: Messages = {
     vsDate: 'vs {date}',
     player: 'JUGADOR',
     move: 'MOV',
-    gdGoals: 'DG · GOLES',
+    gdTotal: 'DG',
+    gdDelta: 'Δ',
+    goalsTotal: 'G',
+    goalsDelta: 'Δ',
     prRank: 'RANK PR'
   },
   rankings: {

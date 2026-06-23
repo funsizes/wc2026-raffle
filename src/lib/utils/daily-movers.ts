@@ -34,6 +34,7 @@ export interface DailyMover {
   rank: number;
   rankDelta: number;
   gdDelta: number;
+  gsDelta: number;
 }
 
 export interface DailyMoversResult {
@@ -67,10 +68,10 @@ function isToday(date: string, now: Date): boolean {
   return date === now.toLocaleDateString('en-CA');
 }
 
-function rankMap(entries: LeaderboardEntry[]): Map<string, { rank: number; gd: number }> {
-  const map = new Map<string, { rank: number; gd: number }>();
+function rankMap(entries: LeaderboardEntry[]): Map<string, { rank: number; gd: number; gs: number }> {
+  const map = new Map<string, { rank: number; gd: number; gs: number }>();
   entries.forEach((e, i) => {
-    map.set(e.name + '|' + e.team, { rank: i + 1, gd: e.p.gd });
+    map.set(e.name + '|' + e.team, { rank: i + 1, gd: e.p.gd, gs: e.p.gs });
   });
   return map;
 }
@@ -91,7 +92,8 @@ function computeMovers(
       entry,
       rank: i + 1,
       rankDelta: prior.rank - (i + 1),
-      gdDelta: entry.p.gd - prior.gd
+      gdDelta: entry.p.gd - prior.gd,
+      gsDelta: entry.p.gs - prior.gs
     });
   });
 

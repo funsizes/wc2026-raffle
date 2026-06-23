@@ -156,7 +156,10 @@ export const enUS = {
     vsDate: 'vs {date}',
     player: 'PLAYER',
     move: 'MOVE',
-    gdGoals: 'GD · GOALS',
+    gdTotal: 'GD',
+    gdDelta: 'Δ',
+    goalsTotal: 'G',
+    goalsDelta: 'Δ',
     prRank: 'PR RANK'
   },
   rankings: {
