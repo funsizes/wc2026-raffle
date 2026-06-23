@@ -267,7 +267,7 @@
   <div id="tab-leaderboard" class="tab-panel" class:active={activeTab === 'tab-leaderboard'}>
     <div class="sec-title">{t('leaderboard.teams', { count: activeRaffle.length })}</div>
 
-    <DailySummary entries={lb1} {allMatches} snapLabel="g1" />
+    <DailySummary raffle={activeRaffle} {allMatches} />
 
     {#if showAdminControls}
       <PowerRankingSourceSelector bind:value={prSourceIdx} />

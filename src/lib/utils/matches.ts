@@ -87,6 +87,10 @@ function localDateKey(d: Date): string {
   return d.toLocaleDateString('en-CA');
 }
 
+export function matchLocalDate(utcDate: string): string {
+  return localDateKey(new Date(utcDate));
+}
+
 export function filterTodayMatches(matches: Match[]): Match[] {
   const today = localDateKey(new Date());
 

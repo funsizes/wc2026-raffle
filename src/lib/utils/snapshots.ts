@@ -1,4 +1,5 @@
 import type { LeaderboardEntry, Match, RankDelta, Snapshot } from '$lib/types';
+import { matchLocalDate } from './matches';
 import { sameTeam } from './teams';
 
 export function dateStr(offsetDays = 0): string {
@@ -86,6 +87,23 @@ export function migrateSnapshots(): void {
       }
     }
   });
+}
+
+export function teamsWithFinishedMatchOnDate(
+  allMatches: Match[] | null,
+  date: string
+): Set<string> {
+  const playedOnDate = new Set<string>();
+  if (!allMatches) return playedOnDate;
+
+  allMatches.forEach((m) => {
+    if (m.status !== 'FINISHED') return;
+    if (matchLocalDate(m.utcDate) !== date) return;
+    if (m.homeTeam.name) playedOnDate.add(m.homeTeam.name);
+    if (m.awayTeam.name) playedOnDate.add(m.awayTeam.name);
+  });
+
+  return playedOnDate;
 }
 
 export function teamsPlayedToday(allMatches: Match[] | null): Set<string> {
