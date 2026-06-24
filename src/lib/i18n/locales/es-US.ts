@@ -147,9 +147,8 @@ export const esUS: Messages = {
     sinceFirstLoad: 'desde la primera carga de hoy'
   },
   history: {
-    noHistory: 'Aún no hay historial guardado.',
-    savesDaily: 'La página guarda una instantánea cada día que la visitas.',
-    checkTomorrow: '¡Vuelve mañana!',
+    noHistory: 'Aún no hay días de partidos para repasar.',
+    noFinishedMatches: 'El resumen aparece cuando entren los primeros resultados.',
     noData: 'No hay datos para esta fecha.',
     matchesLoading: 'Los partidos aún se están cargando…',
     checkBack: 'Vuelve en un momento.',
@@ -161,8 +160,10 @@ export const esUS: Messages = {
     vsDate: 'vs {date}',
     player: 'JUGADOR',
     move: 'MOV',
-    gdGoals: 'DG · GOLES',
-    prRank: 'RANK PR'
+    gdTotal: 'DG',
+    gdDelta: 'Δ',
+    goalsTotal: 'G',
+    goalsDelta: 'Δ',
   },
   rankings: {
     source:

@@ -143,9 +143,8 @@ export const enUS = {
     sinceFirstLoad: 'since first load today'
   },
   history: {
-    noHistory: 'No history saved yet.',
-    savesDaily: 'The page saves a snapshot each day you visit.',
-    checkTomorrow: 'Check back tomorrow!',
+    noHistory: 'No match days to recap yet.',
+    noFinishedMatches: 'Recap appears once the first results are in.',
     noData: 'No data for this date.',
     matchesLoading: 'Match data still loading…',
     checkBack: 'Check back in a moment.',
@@ -157,8 +156,11 @@ export const enUS = {
     vsDate: 'vs {date}',
     player: 'PLAYER',
     move: 'MOVE',
-    gdGoals: 'GD · GOALS',
-    prRank: 'PR RANK'
+    gdTotal: 'GD',
+    gdDelta: 'Δ',
+    goalsTotal: 'G',
+    goalsDelta: 'Δ',
+    prRank: 'PR'
   },
   rankings: {
     source:

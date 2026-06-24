@@ -34,10 +34,10 @@
 
   const TABS = $derived([
     { id: 'tab-leaderboard' as TabId, label: t('tabs.leaderboard') },
+    { id: 'tab-history' as TabId, label: t('tabs.history') },
     { id: 'tab-raffle' as TabId, label: t('tabs.raffle') },
     { id: 'tab-rules' as TabId, label: t('tabs.rules') },
     { id: 'tab-rankings' as TabId, label: t('tabs.rankings') },
-    { id: 'tab-history' as TabId, label: t('tabs.history') },
   ]);
 
   let allMatches = $state<Match[] | null>(null);
@@ -253,21 +253,19 @@
 
   <nav class="tab-bar">
     {#each TABS as tab}
-      {#if tab.id !== 'tab-history' || showAdminControls}
-        <button
-          type="button"
-          class="tab-btn"
-          class:active={activeTab === tab.id}
-          onclick={() => selectTab(tab.id)}>{tab.label}</button
-        >
-      {/if}
+      <button
+        type="button"
+        class="tab-btn"
+        class:active={activeTab === tab.id}
+        onclick={() => selectTab(tab.id)}>{tab.label}</button
+      >
     {/each}
   </nav>
 
   <div id="tab-leaderboard" class="tab-panel" class:active={activeTab === 'tab-leaderboard'}>
     <div class="sec-title">{t('leaderboard.teams', { count: activeRaffle.length })}</div>
 
-    <DailySummary entries={lb1} {allMatches} snapLabel="g1" />
+    <DailySummary raffle={activeRaffle} {allMatches} />
 
     {#if showAdminControls}
       <PowerRankingSourceSelector bind:value={prSourceIdx} />
@@ -291,11 +289,9 @@
   </div>
 
   <div id="tab-history" class="tab-panel" class:active={activeTab === 'tab-history'}>
-    {#if showAdminControls}
       <PowerRankingSourceSelector bind:value={prSourceIdx} />
 
       <HistoryTab {allMatches} {prSourceIdx} {raffleGroup} />
-    {/if}
   </div>
 </main>
 
