@@ -143,7 +143,8 @@ Default resource names use the `wcsorteo2026` prefix:
 | CloudFormation stack | `wcsorteo2026` |
 | S3 assets bucket | `wcsorteo2026-assets` |
 | Lambda function | `wcsorteo2026-fetch-matches` |
-| Schedule | every 5 minutes |
+| Step Functions scheduler | `wcsorteo2026-fetch-matches-scheduler` |
+| Schedule | EventBridge every 1 minute → Step Functions → Lambda every 20s (3×/min) |
 | Secrets Manager | `wcsorteo2026/app-secrets` |
 
 See `infra/template.yaml` for CORS origins, IAM policies, and optional DynamoDB snapshot table (`CreateSnapshotsTable=false` by default).
