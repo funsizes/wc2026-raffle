@@ -30,7 +30,7 @@ Parameters:
 
   FetchLambdaIntervalSeconds:
     Type: Number
-    Default: 20
+    Default: 30
     MinValue: 1
     MaxValue: 59
     Description: Seconds between Lambda invocations inside each state machine run
@@ -154,21 +154,9 @@ Resources:
             Next: WaitInterval1
           WaitInterval1:
             Type: Wait
-            Seconds: 20
+            Seconds: 30
             Next: InvokeFetch2
           InvokeFetch2:
-            Type: Task
-            Resource: arn:aws:states:::lambda:invoke
-            Parameters:
-              FunctionName: !GetAtt FetchMatchesFunction.Arn
-              InvocationType: Event
-            ResultPath: null
-            Next: WaitInterval2
-          WaitInterval2:
-            Type: Wait
-            Seconds: 20
-            Next: InvokeFetch3
-          InvokeFetch3:
             Type: Task
             Resource: arn:aws:states:::lambda:invoke
             Parameters:
