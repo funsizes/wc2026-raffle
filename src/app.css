@@ -65,6 +65,18 @@ header .group-selector {
   margin-top: 1rem;
 }
 
+.header-admin-actions {
+  margin-top: 0.75rem;
+}
+
+.header-refresh-countdown {
+  margin: 0.35rem 0 0;
+  font-family: var(--pixel);
+  font-size: 0.42rem;
+  color: var(--muted);
+  letter-spacing: 0.04em;
+}
+
 .group-selector-wrap {
   display: flex;
   flex-wrap: wrap;

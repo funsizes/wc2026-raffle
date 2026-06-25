@@ -40,7 +40,8 @@ export const enUS = {
   status: {
     autoRefresh: 'Auto-refreshes every {seconds} seconds',
     refreshing: 'Refreshing…',
-    lastUpdated: 'Last updated {time} · auto-refreshes every {seconds} s'
+    lastUpdated: 'Last updated {time} · auto-refreshes every {seconds} s',
+    nextRefreshIn: 'Next refresh in {seconds}s'
   },
   tabs: {
     leaderboard: '🏆 Leaderboard',

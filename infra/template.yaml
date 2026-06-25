@@ -26,7 +26,14 @@ Parameters:
   FetchScheduleExpression:
     Type: String
     Default: rate(1 minute)
-    Description: EventBridge schedule for match fetches
+    Description: EventBridge schedule that starts the fetch state machine (Lambda runs every 20s inside)
+
+  FetchLambdaIntervalSeconds:
+    Type: Number
+    Default: 20
+    MinValue: 1
+    MaxValue: 59
+    Description: Seconds between Lambda invocations inside each state machine run
 
   CreateSnapshotsTable:
     Type: String
@@ -67,12 +74,9 @@ Resources:
           - AllowedHeaders: ['*']
             AllowedMethods: [GET, HEAD]
             AllowedOrigins:
-              - https://funsizes.github.io
-              - https://dave9011.github.io
               - http://localhost:5173
               - http://127.0.0.1:5173
-              - http://192.168.1.156:5173
-              - http://192.168.50.166:5173
+              - http://192.168.1.66:5173
               - https://wcsorteo2026.com
               - https://www.wcsorteo2026.com
             ExposedHeaders:
@@ -131,15 +135,61 @@ Resources:
             BucketName: !Ref AssetsBucket
         - AWSSecretsManagerGetSecretValuePolicy:
             SecretArn: !Ref AppSecrets
+
+  FetchMatchesStateMachine:
+    Type: AWS::Serverless::StateMachine
+    Properties:
+      Name: wcsorteo2026-fetch-matches-scheduler
+      Definition:
+        Comment: !Sub 'Invoke fetch Lambda every ${FetchLambdaIntervalSeconds}s (EventBridge minimum is 1 minute)'
+        StartAt: InvokeFetch1
+        States:
+          InvokeFetch1:
+            Type: Task
+            Resource: arn:aws:states:::lambda:invoke
+            Parameters:
+              FunctionName: !GetAtt FetchMatchesFunction.Arn
+              InvocationType: Event
+            ResultPath: null
+            Next: WaitInterval1
+          WaitInterval1:
+            Type: Wait
+            Seconds: 20
+            Next: InvokeFetch2
+          InvokeFetch2:
+            Type: Task
+            Resource: arn:aws:states:::lambda:invoke
+            Parameters:
+              FunctionName: !GetAtt FetchMatchesFunction.Arn
+              InvocationType: Event
+            ResultPath: null
+            Next: WaitInterval2
+          WaitInterval2:
+            Type: Wait
+            Seconds: 20
+            Next: InvokeFetch3
+          InvokeFetch3:
+            Type: Task
+            Resource: arn:aws:states:::lambda:invoke
+            Parameters:
+              FunctionName: !GetAtt FetchMatchesFunction.Arn
+              InvocationType: Event
+            ResultPath: null
+            End: true
+      Policies:
+        - LambdaInvokePolicy:
+            FunctionName: !Ref FetchMatchesFunction
+      Tags:
+        PROJECT: !Ref ProjectTag
       Events:
         FetchSchedule:
           Type: ScheduleV2
           Properties:
-            Name: wcsorteo2026-fetch-matches-schedule
-            Description: Poll football-data.org and refresh S3 match objects
+            Name: wcsorteo2026-fetch-matches-sfn-schedule
+            Description: Start fetch state machine every minute (Lambda invoked every 20s inside)
             ScheduleExpression: !Ref FetchScheduleExpression
             ScheduleExpressionTimezone: America/New_York
-            StartDate: '2026-06-16T19:45:00.000Z'
+            StartDate: '2026-06-24T16:30:00.000Z'
             EndDate: '2026-07-21T23:59:00.000Z'
             State: ENABLED
 
@@ -194,9 +244,21 @@ Outputs:
     Description: Match fetch Lambda name
     Value: !Ref FetchMatchesFunction
 
+  FetchMatchesStateMachineArn:
+    Description: Step Functions state machine ARN for scheduled fetches
+    Value: !Ref FetchMatchesStateMachine
+
+  FetchMatchesStateMachineName:
+    Description: Step Functions state machine name
+    Value: !GetAtt FetchMatchesStateMachine.Name
+
   FetchScheduleExpression:
-    Description: EventBridge schedule expression
+    Description: EventBridge schedule expression (starts the state machine)
     Value: !Ref FetchScheduleExpression
+
+  FetchLambdaIntervalSeconds:
+    Description: Seconds between Lambda invocations inside each state machine run
+    Value: !Ref FetchLambdaIntervalSeconds
 
   SnapshotsTableName:
     Condition: CreateSnapshotsTable

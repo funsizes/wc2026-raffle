@@ -43,7 +43,8 @@ export const esUS: Messages = {
   status: {
     autoRefresh: 'Se actualiza cada {seconds} segundos',
     refreshing: 'Actualizando…',
-    lastUpdated: 'Última actualización {time} · se actualiza cada {seconds} s'
+    lastUpdated: 'Última actualización {time} · se actualiza cada {seconds} s',
+    nextRefreshIn: 'Próxima actualización en {seconds}s'
   },
   tabs: {
     leaderboard: '🏆 Clasificación',

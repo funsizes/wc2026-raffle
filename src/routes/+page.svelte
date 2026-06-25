@@ -49,6 +49,7 @@
 
   let isRefreshing = $state(false);
   let lastUpdateTime = $state<string | null>(null);
+  let secondsUntilRefresh = $state(MATCH_REFRESH_INTERVAL_SECONDS);
 
   let raffleGroup = $state<RaffleGroup>(groupQueryParam as unknown as RaffleGroup);
   let showAdminControls = $state(false);
@@ -87,6 +88,10 @@
       persistLeaderboard('g2', lb2);
     }
   });
+
+  function resetRefreshCountdown() {
+    secondsUntilRefresh = MATCH_REFRESH_INTERVAL_SECONDS;
+  }
 
   async function refresh() {
     isRefreshing = true;
@@ -133,9 +138,19 @@
 
   onMount(() => {
     migrateSnapshots();
-    refresh();
-    const interval = setInterval(refresh, MATCH_REFRESH_INTERVAL_SECONDS * 1000);
-    return () => clearInterval(interval);
+    resetRefreshCountdown();
+    void refresh();
+    const refreshInterval = setInterval(() => {
+      resetRefreshCountdown();
+      void refresh();
+    }, MATCH_REFRESH_INTERVAL_SECONDS * 1000);
+    const countdownInterval = setInterval(() => {
+      if (secondsUntilRefresh > 0) secondsUntilRefresh -= 1;
+    }, 1000);
+    return () => {
+      clearInterval(refreshInterval);
+      clearInterval(countdownInterval);
+    };
   });
 </script>
 
@@ -178,14 +193,21 @@
       <GroupSelector bind:value={raffleGroup} />
     </p>
 
-    <div>
+    <div class="header-admin-actions">
       <button
         type="button"
         class="hist-group-btn"
         onclick={openGameMaster}
       >
-      {t('gameMaster.title')}
+        {t('gameMaster.title')}
       </button>
+      <p class="header-refresh-countdown">
+        {#if isRefreshing}
+          {t('status.refreshing')}
+        {:else}
+          {t('status.nextRefreshIn', { seconds: secondsUntilRefresh })}
+        {/if}
+      </p>
     </div>
   {/if}
 </header>
