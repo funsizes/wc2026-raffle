@@ -10,6 +10,7 @@ export function sortLeaderboard(raffle: RaffleEntry[], all: Match[] | null): Lea
 
   entries.sort((a, b) => {
     if (b.p.score !== a.p.score) return b.p.score - a.p.score;
+    if (a.p.active !== b.p.active) return a.p.active ? -1 : 1;
     if (b.p.gd !== a.p.gd) return b.p.gd - a.p.gd;
     if (b.p.gs !== a.p.gs) return b.p.gs - a.p.gs;
     return a.name.localeCompare(b.name);

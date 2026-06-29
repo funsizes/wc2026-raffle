@@ -25,10 +25,24 @@
   function toggleGames(key: string) {
     openGamesKey = openGamesKey === key ? null : key;
   }
+
+  const aliveCount = $derived(entries.filter((e) => e.p.active).length);
+  const eliminatedIdx = $derived(
+    aliveCount > 0 ? entries.findIndex((e) => !e.p.active && e.p.score > 0) : -1
+  );
 </script>
 
 {#each entries as e, i (e.name + e.team)}
   {@const key = entryKey(e)}
+  {#if eliminatedIdx !== -1 && i === eliminatedIdx}
+    <div class="elim-divider" role="separator" aria-label="Eliminated teams">
+      <span class="elim-divider-skull">⚰️</span>
+      <div>
+        <div class="elim-divider-main">ELIMINATED</div>
+        <div class="elim-divider-sub">Better luck next time... see you in Cancún! 🌴</div>
+      </div>
+    </div>
+  {/if}
   <LeaderBoardEntry
     entry={e}
     rank={i + 1}

@@ -612,6 +612,38 @@ section {
   }
 }
 
+/* ── ELIMINATION DIVIDER ──────────────────────────── */
+.elim-divider {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin: 0.75rem 0;
+  padding: 0.55rem 0.875rem;
+  background: rgba(144, 48, 32, 0.12);
+  border: 2px solid var(--red);
+  border-left: 5px solid var(--red);
+  box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.4);
+}
+
+.elim-divider-skull {
+  font-size: 1.4rem;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.elim-divider-main {
+  font-family: var(--pixel);
+  font-size: 0.52rem;
+  color: #d06050;
+  letter-spacing: 0.12em;
+}
+
+.elim-divider-sub {
+  font-size: 0.7rem;
+  color: var(--muted);
+  margin-top: 0.2rem;
+}
+
 /* ── PICKS GRID ───────────────────────────────────── */
 .picks-grid {
   display: grid;
