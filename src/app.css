@@ -902,6 +902,7 @@ section {
 
 .mover-pill.mp-up   { border-color: var(--green); }
 .mover-pill.mp-down { border-color: var(--red); }
+.mover-pill.mp-out  { border-color: var(--red); background: rgba(144, 48, 32, 0.12); }
 .mover-pill .mflag-sm {
   line-height: 1;
   font-size: 1rem;
@@ -914,6 +915,7 @@ section {
 }
 .mover-rank.rd-up   { color: var(--green); }
 .mover-rank.rd-down { color: var(--red); }
+.mover-rank.rd-out  { color: #d06050; }
 .mover-gd   {
   font-size: 0.65rem;
   color: var(--muted);
@@ -979,6 +981,7 @@ section {
 }
 .sc-row:last-child { border-bottom: none; }
 .sc-row:nth-child(odd) { background: rgba(255,255,255,0.018); }
+.sc-row.sc-row-out { background: rgba(144, 48, 32, 0.12); }
 .sc-rank-cell {
   text-align: center;
   font-family: var(--pixel);
@@ -1002,6 +1005,7 @@ section {
 .sc-up   { color: var(--green); }
 .sc-down { color: var(--red); }
 .sc-same { color: var(--muted); }
+.sc-out  { color: #d06050; }
 .sc-num-cell {
   text-align: right;
   font-family: var(--pixel);

@@ -136,14 +136,23 @@
     {#each movers as mover (mover.entry.name + mover.entry.team)}
       {@const e = mover.entry}
       {@const prData = getPrData(e, prSourceIdx)}
-      {@const moveCls =
-        mover.rankDelta > 0 ? 'sc-up' : mover.rankDelta < 0 ? 'sc-down' : 'sc-same'}
-      {@const moveStr =
-        mover.rankDelta > 0
-          ? `▲${mover.rankDelta}`
+      {@const wentOut = mover.eliminatedToday && e.p.score < 7}
+      {@const moveCls = wentOut
+        ? 'sc-out'
+        : mover.rankDelta > 0
+          ? 'sc-up'
           : mover.rankDelta < 0
-            ? `▼${Math.abs(mover.rankDelta)}`
-            : '='}
+            ? 'sc-down'
+            : 'sc-same'}
+      {@const moveStr = wentOut
+        ? t('history.eliminated')
+        : mover.eliminatedToday
+          ? e.p.label
+          : mover.rankDelta > 0
+            ? `▲${mover.rankDelta}`
+            : mover.rankDelta < 0
+              ? `▼${Math.abs(mover.rankDelta)}`
+              : '='}
       {@const gd = e.p.gd}
       {@const gdStr = gd > 0 ? `+${gd}` : `${gd}`}
       {@const gdCls = gd >= 0 ? 'sc-gd-pos' : 'sc-gd-neg'}
@@ -151,7 +160,7 @@
       {@const gsDeltaStr = signedDelta(mover.gsDelta)}
       {@const rankCls = MEDALS[mover.rank] ? `r${mover.rank}` : ''}
       {@const rankDisp = MEDALS[mover.rank] || `#${mover.rank}`}
-      <div class="sc-row">
+      <div class="sc-row" class:sc-row-out={wentOut}>
         <div class="sc-rank-cell {rankCls}">{rankDisp}</div>
         <div class="sc-flag-cell">
           <Flag entry={e} icons />

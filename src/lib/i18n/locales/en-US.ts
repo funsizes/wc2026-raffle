@@ -141,7 +141,8 @@ export const enUS = {
     noGames: 'NO GAMES TODAY YET',
     movers: "TODAY'S MOVERS ({since})",
     sinceYesterday: 'vs yesterday',
-    sinceFirstLoad: 'since first load today'
+    sinceFirstLoad: 'since first load today',
+    eliminated: '☠️ GAME OVER'
   },
   history: {
     noHistory: 'No match days to recap yet.',
@@ -161,7 +162,8 @@ export const enUS = {
     gdDelta: 'Δ',
     goalsTotal: 'G',
     goalsDelta: 'Δ',
-    prRank: 'PR'
+    prRank: 'PR',
+    eliminated: 'ELIMINATED'
   },
   rankings: {
     source:

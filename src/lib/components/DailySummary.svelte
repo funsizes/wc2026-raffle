@@ -32,12 +32,20 @@
       {t('dailySummary.movers', { since: t('dailySummary.sinceYesterday') })}
     </p>
     <div class="mover-list">
-      {#each movers as { entry: e, rankDelta, gdDelta } (e.name + e.team)}
-        {@const pillCls = rankDelta > 0 ? 'mp-up' : rankDelta < 0 ? 'mp-down' : ''}
-        {@const rankStr =
-          rankDelta > 0 ? `▲${rankDelta}` : rankDelta < 0 ? `▼${Math.abs(rankDelta)}` : '='}
+      {#each movers as { entry: e, rankDelta, gdDelta, eliminatedToday } (e.name + e.team)}
+        {@const wentOut = eliminatedToday && e.p.score < 7}
+        {@const pillCls = wentOut ? 'mp-out' : rankDelta > 0 ? 'mp-up' : rankDelta < 0 ? 'mp-down' : ''}
+        {@const rankStr = wentOut
+          ? t('dailySummary.eliminated')
+          : eliminatedToday
+            ? e.p.label
+            : rankDelta > 0
+              ? `▲${rankDelta}`
+              : rankDelta < 0
+                ? `▼${Math.abs(rankDelta)}`
+                : '='}
 
-        {@const rankCls = rankDelta > 0 ? 'rd-up' : rankDelta < 0 ? 'rd-down' : 'rd-same'}
+        {@const rankCls = wentOut ? 'rd-out' : rankDelta > 0 ? 'rd-up' : rankDelta < 0 ? 'rd-down' : 'rd-same'}
         {@const gdStr =
           gdDelta > 0 ? `GD +${gdDelta}` : gdDelta < 0 ? `GD ${gdDelta}` : 'GD 0'}
 

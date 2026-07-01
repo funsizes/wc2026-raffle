@@ -145,7 +145,8 @@ export const esUS: Messages = {
     noGames: 'AÚN NO HAY PARTIDOS HOY',
     movers: 'MOVIMIENTOS DE HOY ({since})',
     sinceYesterday: 'vs ayer',
-    sinceFirstLoad: 'desde la primera carga de hoy'
+    sinceFirstLoad: 'desde la primera carga de hoy',
+    eliminated: '☠️ ELIMINADO'
   },
   history: {
     noHistory: 'Aún no hay días de partidos para repasar.',
@@ -165,6 +166,8 @@ export const esUS: Messages = {
     gdDelta: 'Δ',
     goalsTotal: 'G',
     goalsDelta: 'Δ',
+    prRank: 'PR',
+    eliminated: 'ELIMINADO'
   },
   rankings: {
     source:

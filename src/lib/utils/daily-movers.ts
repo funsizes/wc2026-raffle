@@ -35,6 +35,8 @@ export interface DailyMover {
   rankDelta: number;
   gdDelta: number;
   gsDelta: number;
+  /** True when this entry's team was knocked out (or finished the tournament) by today's result. */
+  eliminatedToday: boolean;
 }
 
 export interface DailyMoversResult {
@@ -93,7 +95,8 @@ function computeMovers(
       rank: i + 1,
       rankDelta: prior.rank - (i + 1),
       gdDelta: entry.p.gd - prior.gd,
-      gsDelta: entry.p.gs - prior.gs
+      gsDelta: entry.p.gs - prior.gs,
+      eliminatedToday: !entry.p.active
     });
   });
 
