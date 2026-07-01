@@ -1,10 +1,9 @@
 import type { LeaderboardEntry, Match, RaffleEntry } from '$lib/types';
 import { sortLeaderboard } from './leaderboard';
-import { matchLocalDate } from './matches';
+import { matchEffectiveEndMs, matchLocalDate } from './matches';
 import { dateStr } from './snapshots';
 
-/** Estimated elapsed time from kickoff until a result affects standings (minutes). */
-export const MATCH_RESULT_DURATION_MIN = 105;
+export { MATCH_RESULT_DURATION_MIN, matchEffectiveEndMs } from './matches';
 
 export const RANK_SLICE_HOURS = 2;
 export const RANK_SLICES_PER_DAY = 24 / RANK_SLICE_HOURS;
@@ -44,11 +43,6 @@ export function endOfLocalDayExclusive(date: string): Date {
   return new Date(startOfLocalDay(date).getTime() + 24 * 3_600_000);
 }
 
-/** When a finished match is treated as affecting standings (kickoff + estimated duration). */
-export function matchEffectiveEndMs(match: Match): number {
-  return new Date(match.utcDate).getTime() + MATCH_RESULT_DURATION_MIN * 60_000;
-}
-
 export function matchesFinishedBy(instant: Date, matches: Match[]): Match[] {
   const t = instant.getTime();
   return matches.filter(
@@ -72,7 +66,10 @@ export function leaderboardAsOf(
   matches: Match[],
   instant: Date
 ): LeaderboardEntry[] {
-  return sortLeaderboard(raffle, matchesFinishedBy(instant, matches));
+  // Pass the full schedule (not just matches finished by `instant`) so calcProgress can still
+  // see already-known future bracket matchups (e.g. a team already drawn into the next round)
+  // while only counting results up to `instant` toward score/goals.
+  return sortLeaderboard(raffle, matches, instant.getTime());
 }
 
 export function leaderboardAsOfDate(

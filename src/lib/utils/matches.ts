@@ -91,6 +91,14 @@ export function matchLocalDate(utcDate: string): string {
   return localDateKey(new Date(utcDate));
 }
 
+/** Estimated elapsed time from kickoff until a result affects standings (minutes). */
+export const MATCH_RESULT_DURATION_MIN = 105;
+
+/** When a finished match is treated as affecting standings (kickoff + estimated duration). */
+export function matchEffectiveEndMs(match: Match): number {
+  return new Date(match.utcDate).getTime() + MATCH_RESULT_DURATION_MIN * 60_000;
+}
+
 export function filterTodayMatches(matches: Match[]): Match[] {
   const today = localDateKey(new Date());
 

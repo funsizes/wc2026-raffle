@@ -2,10 +2,16 @@ import type { LeaderboardEntry, Match, RaffleEntry } from '$lib/types';
 import { calcProgress } from './progress';
 import { saveDailyHistory, saveSnapshotIfNew } from './snapshots';
 
-export function sortLeaderboard(raffle: RaffleEntry[], all: Match[] | null): LeaderboardEntry[] {
+export function sortLeaderboard(
+  raffle: RaffleEntry[],
+  all: Match[] | null,
+  asOfMs?: number
+): LeaderboardEntry[] {
   const entries: LeaderboardEntry[] = raffle.map((r) => ({
     ...r,
-    p: all ? calcProgress(r, all) : { score: 0, label: 'Pending', gs: 0, gd: 0, active: false }
+    p: all
+      ? calcProgress(r, all, asOfMs)
+      : { score: 0, label: 'Pending', gs: 0, gd: 0, active: false }
   }));
 
   entries.sort((a, b) => {

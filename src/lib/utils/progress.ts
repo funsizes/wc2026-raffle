@@ -1,6 +1,7 @@
 import { STAGE_ORDER } from '$lib/data/raffle';
 import { t } from '$lib/i18n/locale.svelte';
 import type { Match, Progress, RaffleEntry } from '$lib/types';
+import { matchEffectiveEndMs } from './matches';
 import { sameTeam } from './teams';
 
 export function didWin(rafApi: string, match: Match): boolean {
@@ -12,11 +13,19 @@ export function didWin(rafApi: string, match: Match): boolean {
   );
 }
 
-export function calcProgress(entry: RaffleEntry, all: Match[]): Progress {
+/**
+ * `all` must be the full match schedule (including not-yet-finished fixtures) so bracket
+ * placement (e.g. a scheduled Round of 32 match) can be detected even before it's played.
+ * `asOfMs`, when given, restricts which results count toward score/goals — used to compute
+ * historical/"as of" standings without losing visibility into already-known future matchups.
+ */
+export function calcProgress(entry: RaffleEntry, all: Match[], asOfMs?: number): Progress {
   const mine = all.filter(
     (m) => sameTeam(m.homeTeam.name, entry.api) || sameTeam(m.awayTeam.name, entry.api)
   );
-  const done = mine.filter((m) => m.status === 'FINISHED');
+  const isCountedFinish = (m: Match) =>
+    m.status === 'FINISHED' && (asOfMs === undefined || matchEffectiveEndMs(m) <= asOfMs);
+  const done = mine.filter(isCountedFinish);
 
   let gs = 0;
   let gc = 0;
@@ -39,7 +48,7 @@ export function calcProgress(entry: RaffleEntry, all: Match[]): Progress {
 
     if (stage === 'GROUP_STAGE') {
       const inKO = mine.some((m) => m.stage !== 'GROUP_STAGE');
-      const gsComplete = mine.filter((m) => m.stage === 'GROUP_STAGE').every((m) => m.status === 'FINISHED');
+      const gsComplete = mine.filter((m) => m.stage === 'GROUP_STAGE').every(isCountedFinish);
       const active = inKO || !gsComplete;
       return {
         score: inKO ? 2 : 1,
