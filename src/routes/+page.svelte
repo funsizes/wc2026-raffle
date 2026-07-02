@@ -21,8 +21,10 @@
       countLiveMatches,
       fetchMatches,
       filterTodayMatches,
-      getRecentMatches,
-      getTomorrowMatches,
+      getFutureMatches,
+      getPastMatches,
+      getTomorrowDateKey,
+      getYesterdayDateKey,
   } from '$lib/utils/matches';
   import { migrateSnapshots } from '$lib/utils/snapshots';
   import { onMount } from 'svelte';
@@ -67,16 +69,41 @@
   const activeRaffle = $derived(raffleGroup === 'g1' ? RAFFLE : RAFFLE2);
   const liveCount = $derived(countLiveMatches(allMatches));
   const todayMatches = $derived(allMatches ? filterTodayMatches(allMatches) : []);
-  const recentMatches = $derived(allMatches ? getRecentMatches(allMatches, 24) : []);
-  const tomorrowMatches = $derived(allMatches ? getTomorrowMatches(allMatches) : []);
+  const pastMatches = $derived(allMatches ? getPastMatches(allMatches) : []);
+  const futureMatches = $derived(allMatches ? getFutureMatches(allMatches) : []);
+  const yesterdayDateKey = $derived(getYesterdayDateKey());
+  const tomorrowDateKey = $derived(getTomorrowDateKey());
 
-  type MatchTabId = 'tab-recent' | 'tab-today' | 'tab-tomorrow';
+  type MatchTabId = 'tab-past' | 'tab-today' | 'tab-future';
+
+  let pastScrollTrigger = $state(0);
+  let futureScrollTrigger = $state(0);
 
   const MATCH_TABS = $derived([
-    { id: 'tab-recent' as MatchTabId, label: t('matchTabs.recent'), data: recentMatches },
+    { id: 'tab-past' as MatchTabId, label: t('matchTabs.past'), data: pastMatches },
     { id: 'tab-today' as MatchTabId, label: t('matchTabs.today'), data: todayMatches },
-    { id: 'tab-tomorrow' as MatchTabId, label: t('matchTabs.tomorrow'), data: tomorrowMatches }
+    { id: 'tab-future' as MatchTabId, label: t('matchTabs.future'), data: futureMatches }
   ]);
+
+  const matchGridScrollable = $derived(
+    activeMatchTab === 'tab-past' || activeMatchTab === 'tab-future'
+  );
+
+  const matchGridScrollAnchor = $derived(
+    activeMatchTab === 'tab-past'
+      ? yesterdayDateKey
+      : activeMatchTab === 'tab-future'
+        ? tomorrowDateKey
+        : null
+  );
+
+  const matchGridScrollTrigger = $derived(
+    activeMatchTab === 'tab-past'
+      ? pastScrollTrigger
+      : activeMatchTab === 'tab-future'
+        ? futureScrollTrigger
+        : 0
+  );
 
   // TODO: fix this later on
   const lb1 = $derived(sortLeaderboard(raffleGroup === 'g1' ? RAFFLE : RAFFLE2, allMatches));
@@ -109,6 +136,8 @@
 
   function selectMatchTab(id: MatchTabId) {
     activeMatchTab = id;
+    if (id === 'tab-past') pastScrollTrigger += 1;
+    if (id === 'tab-future') futureScrollTrigger += 1;
   }
 
   let titleClickTimes: number[] = [];
@@ -230,7 +259,7 @@
         <p style="font-size:.8rem;color:var(--muted)">
           {t('matches.loading')}
         </p>
-      {:else if todayMatches.length === 0 && recentMatches.length === 0}
+      {:else if todayMatches.length === 0 && pastMatches.length === 0 && futureMatches.length === 0}
         <p style="font-size:.8rem;color:var(--muted)">
           {t('matches.empty')}
         </p>
@@ -255,10 +284,13 @@
 
         <MatchGrid
           matches={MATCH_TABS.find((tab) => tab.id === activeMatchTab)?.data ?? []}
-            raffle={activeRaffle}
-            {showMatchPR}
-            {prSourceIdx}
-          />
+          raffle={activeRaffle}
+          {showMatchPR}
+          {prSourceIdx}
+          scrollable={matchGridScrollable}
+          scrollAnchorDate={matchGridScrollAnchor}
+          scrollTrigger={matchGridScrollTrigger}
+        />
 
         <div class="matches-grid-footer">
           <p class="matches-legend">

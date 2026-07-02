@@ -51,9 +51,9 @@ export const enUS = {
     history: '📅 Daily History'
   },
   matchTabs: {
-    recent: 'Recent',
+    past: 'Past',
     today: 'Today',
-    tomorrow: 'Tomorrow'
+    future: 'Future'
   },
   matches: {
     title: '📅 Matches',

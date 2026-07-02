@@ -54,9 +54,9 @@ export const esUS: Messages = {
     history: '📅 Historial diario'
   },
   matchTabs: {
-    recent: 'Recientes',
+    past: 'Pasados',
     today: 'Hoy',
-    tomorrow: 'Mañana'
+    future: 'Futuros'
   },
   matches: {
     title: '📅 Partidos',
@@ -165,6 +165,7 @@ export const esUS: Messages = {
     gdDelta: 'Δ',
     goalsTotal: 'G',
     goalsDelta: 'Δ',
+    prRank: 'PR'
   },
   rankings: {
     source:

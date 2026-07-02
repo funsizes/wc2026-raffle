@@ -99,31 +99,41 @@ export function filterTodayMatches(matches: Match[]): Match[] {
     .sort((a, b) => new Date(a.utcDate).getTime() - new Date(b.utcDate).getTime());
 }
 
-export function getTomorrowMatches(matches: Match[]): Match[] {
+export function getTomorrowDateKey(): string {
   const tomorrow = new Date();
   tomorrow.setDate(tomorrow.getDate() + 1);
-  const tomorrowKey = localDateKey(tomorrow);
+  return localDateKey(tomorrow);
+}
+
+export function getTomorrowMatches(matches: Match[]): Match[] {
+  const tomorrowKey = getTomorrowDateKey();
 
   return matches
     .filter((m) => localDateKey(new Date(m.utcDate)) === tomorrowKey)
     .sort((a, b) => new Date(a.utcDate).getTime() - new Date(b.utcDate).getTime());
 }
 
-export function getRecentMatches(matches: Match[], hours: number): Match[] {
-  const now = Date.now();
-  const today = localDateKey(new Date());
+export function getYesterdayDateKey(): string {
+  const yesterday = new Date();
+  yesterday.setDate(yesterday.getDate() - 1);
+  return localDateKey(yesterday);
+}
+
+/** All matches before today (local), oldest first. */
+export function getPastMatches(matches: Match[]): Match[] {
+  const todayKey = localDateKey(new Date());
 
   return matches
-    .filter((m) => {
-      const kickoff = new Date(m.utcDate).getTime();
-      const hoursAgo = (now - kickoff) / 3_600_000;
+    .filter((m) => localDateKey(new Date(m.utcDate)) < todayKey)
+    .sort((a, b) => new Date(a.utcDate).getTime() - new Date(b.utcDate).getTime());
+}
 
-      return (
-        hoursAgo >= 0 &&
-        hoursAgo < hours &&
-        localDateKey(new Date(m.utcDate)) !== today
-      );
-    })
+/** All matches after today (local), oldest first — tomorrow through the rest of the tournament. */
+export function getFutureMatches(matches: Match[]): Match[] {
+  const todayKey = localDateKey(new Date());
+
+  return matches
+    .filter((m) => localDateKey(new Date(m.utcDate)) > todayKey)
     .sort((a, b) => new Date(a.utcDate).getTime() - new Date(b.utcDate).getTime());
 }
 
