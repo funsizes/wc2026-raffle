@@ -11,9 +11,12 @@ export const MATCHES_URL_SLIM_WCSORTEO2026 = `${WCSORTEO2026_BUCKET}/matches-sli
 
 const MATCHES_SOURCE_STORAGE_KEY = 'wc2026_matches_source';
 const MATCHES_BUCKET_STORAGE_KEY = 'wc2026_matches_bucket';
+const MATCHES_BUCKET_MIGRATION_KEY = 'wc2026_matches_bucket_v2';
 
 export type MatchesUrlOption = 'full' | 'slim';
 export type MatchesBucketOption = 'legacy' | 'wcsorteo2026';
+
+const DEFAULT_MATCHES_BUCKET: MatchesBucketOption = 'wcsorteo2026';
 
 function resolveMatchesUrlOption(stored: string | null): MatchesUrlOption {
   if (stored === 'slim' || stored === 'full') {
@@ -28,7 +31,20 @@ function resolveMatchesBucketOption(stored: string | null): MatchesBucketOption 
     return stored;
   }
 
-  return 'legacy';
+  return DEFAULT_MATCHES_BUCKET;
+}
+
+/** One-time migration: move legacy default / explicit legacy users to wcsorteo2026. */
+export function migrateMatchesBucketOption(): void {
+  if (typeof localStorage === 'undefined') return;
+  if (localStorage.getItem(MATCHES_BUCKET_MIGRATION_KEY)) return;
+
+  const stored = localStorage.getItem(MATCHES_BUCKET_STORAGE_KEY);
+  if (stored !== 'wcsorteo2026') {
+    localStorage.setItem(MATCHES_BUCKET_STORAGE_KEY, 'wcsorteo2026');
+  }
+
+  localStorage.setItem(MATCHES_BUCKET_MIGRATION_KEY, '1');
 }
 
 export function getMatchesUrlOption(): MatchesUrlOption {
@@ -42,7 +58,7 @@ export function getMatchesUrlOption(): MatchesUrlOption {
 }
 
 export function getMatchesBucketOption(): MatchesBucketOption {
-  if (typeof localStorage === 'undefined') return 'legacy';
+  if (typeof localStorage === 'undefined') return DEFAULT_MATCHES_BUCKET;
 
   return resolveMatchesBucketOption(localStorage.getItem(MATCHES_BUCKET_STORAGE_KEY));
 }
