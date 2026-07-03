@@ -52,7 +52,7 @@ export const esUS: Messages = {
     rankings: '📊 Power Rankings',
     rules: '📋 Reglas',
     history: '📅 Historial diario',
-    bracket: '🏆 Llave'
+    bracket: '🏆 Bracket'
   },
   bracket: {
     loading: 'Cargando partidos — vuelve en un momento.',
