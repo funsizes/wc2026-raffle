@@ -54,7 +54,35 @@ export function childFlagAngle(num: number, slot: 0 | 1): number {
   return flagAngle(target);
 }
 
-export function connectorSegments(num: number): { fork1: string; fork2: string; bridge: string } {
+function splitQuadratic(
+  start: [number, number],
+  control: [number, number],
+  end: [number, number]
+): { bridge1: string; bridge2: string } {
+  const mid: [number, number] = [
+    0.25 * start[0] + 0.5 * control[0] + 0.25 * end[0],
+    0.25 * start[1] + 0.5 * control[1] + 0.25 * end[1]
+  ];
+  const ctrl1: [number, number] = [
+    0.5 * (start[0] + control[0]),
+    0.5 * (start[1] + control[1])
+  ];
+  const ctrl2: [number, number] = [
+    0.5 * (control[0] + end[0]),
+    0.5 * (control[1] + end[1])
+  ];
+  return {
+    bridge1: `M${start[0]} ${start[1]} Q${ctrl1[0]} ${ctrl1[1]} ${mid[0]} ${mid[1]}`,
+    bridge2: `M${mid[0]} ${mid[1]} Q${ctrl2[0]} ${ctrl2[1]} ${end[0]} ${end[1]}`
+  };
+}
+
+export function connectorSegments(num: number): {
+  fork1: string;
+  fork2: string;
+  bridge1: string;
+  bridge2: string;
+} {
   const lvl = levelOf(num);
   const Rc = RADIUS[lvl - 1];
   const Rp = RADIUS[lvl];
@@ -68,10 +96,12 @@ export function connectorSegments(num: number): { fork1: string; fork2: string; 
   const C2 = pt(Rc, c2.ang);
   const P = pt(Rp, ap);
   const ctrl: [number, number] = [2 * P[0] - 0.5 * (A1[0] + A2[0]), 2 * P[1] - 0.5 * (A1[1] + A2[1])];
+  const { bridge1, bridge2 } = splitQuadratic(A1, ctrl, A2);
   return {
     fork1: `M${C1[0]} ${C1[1]} L${A1[0]} ${A1[1]}`,
     fork2: `M${A2[0]} ${A2[1]} L${C2[0]} ${C2[1]}`,
-    bridge: `M${A1[0]} ${A1[1]} Q${ctrl[0]} ${ctrl[1]} ${A2[0]} ${A2[1]}`
+    bridge1,
+    bridge2
   };
 }
 

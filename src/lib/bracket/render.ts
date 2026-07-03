@@ -79,15 +79,8 @@ function forkState(
   return '';
 }
 
-function connClass(state: ConnForkState): string {
-  return state ? ` conn-${state}` : '';
-}
-
-function bridgeState(fork1: ConnForkState, fork2: ConnForkState): ConnForkState {
-  if (fork1 === 'live' || fork2 === 'live') return 'live';
-  if (fork1 === 'soon' || fork2 === 'soon') return 'soon';
-  if (fork1 === 'win' || fork2 === 'win') return 'win';
-  return '';
+function getConnectorForkStateClass(state: ConnForkState): string {
+  return state ? `conn-${state}` : '';
 }
 
 export interface BracketRenderOutput {
@@ -138,10 +131,17 @@ export function renderBracket(
       const segs = connectorSegments(num);
       const f1 = forkState(0, num, model, now);
       const f2 = forkState(1, num, model, now);
-      const bridge = bridgeState(f1, f2);
-      conns += `<path class="bracket-conn conn-fork1${connClass(f1)}" d="${segs.fork1}" ${gAttr}/>`;
-      conns += `<path class="bracket-conn conn-fork2${connClass(f2)}" d="${segs.fork2}" ${gAttr}/>`;
-      conns += `<path class="bracket-conn conn-bridge${connClass(bridge)}" d="${segs.bridge}" ${gAttr}/>`;
+
+      const connectorFork1StateClass = getConnectorForkStateClass(f1);
+      const connectorFork2StateClass = getConnectorForkStateClass(f2);
+
+      // add fork paths
+      conns += `<path class="bracket-conn conn-fork1 ${connectorFork1StateClass}" d="${segs.fork1}" ${gAttr}/>`;
+      conns += `<path class="bracket-conn conn-fork2 ${connectorFork2StateClass}" d="${segs.fork2}" ${gAttr}/>`;
+
+      // add fork bridge paths
+      conns += `<path class="bracket-conn conn-bridge1 ${connectorFork1StateClass}" d="${segs.bridge1}" ${gAttr}/>`;
+      conns += `<path class="bracket-conn conn-bridge2 ${connectorFork2StateClass}" d="${segs.bridge2}" ${gAttr}/>`;
     }
 
     if (num === ROOT) continue;
