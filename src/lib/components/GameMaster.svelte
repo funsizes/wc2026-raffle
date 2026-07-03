@@ -14,7 +14,7 @@
   let open = $state(false);
   let clearing = $state(false);
   let matchesSource = $state<MatchesUrlOption>('full');
-  let matchesBucket = $state<MatchesBucketOption>('legacy');
+  let matchesBucket = $state<MatchesBucketOption>('wcsorteo2026');
 
   $effect(() => {
     if (isGameMasterOpen()) {

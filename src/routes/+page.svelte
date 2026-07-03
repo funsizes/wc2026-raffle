@@ -24,6 +24,7 @@
       filterTodayMatches,
       getRecentMatches,
       getTomorrowMatches,
+      migrateMatchesBucketOption,
   } from '$lib/utils/matches';
   import { migrateSnapshots } from '$lib/utils/snapshots';
   import { onMount } from 'svelte';
@@ -39,13 +40,13 @@
     | 'tab-history'
     | 'tab-bracket';
 
-  const TABS = $derived([
+  const TABS: { id: TabId; label: string; adminOnly?: boolean }[] = $derived([
     { id: 'tab-leaderboard' as TabId, label: t('tabs.leaderboard') },
-    { id: 'tab-bracket' as TabId, label: t('tabs.bracket'), adminOnly: true },
+    { id: 'tab-bracket' as TabId, label: t('tabs.bracket') },
     { id: 'tab-history' as TabId, label: t('tabs.history') },
     { id: 'tab-raffle' as TabId, label: t('tabs.raffle') },
     { id: 'tab-rules' as TabId, label: t('tabs.rules') },
-    { id: 'tab-rankings' as TabId, label: t('tabs.rankings') }
+    { id: 'tab-rankings' as TabId, label: t('tabs.rankings') },
   ]);
 
   let allMatches = $state<Match[] | null>(null);
@@ -146,6 +147,7 @@
 
   onMount(() => {
     migrateSnapshots();
+    migrateMatchesBucketOption();
     resetRefreshCountdown();
     void refresh();
     const refreshInterval = setInterval(() => {
