@@ -4,6 +4,8 @@
   --cb-bg: #d7cfbe;
   --cb-ink: #1c1b18;
   --cb-line: #2a2823;
+  /* --cb-line-winner: #e58824; */
+  --cb-line-winner: #d6922d;
   --cb-muted: #9a948a;
   --cb-gold: #c8a24a;
   --cb-live: #d1493a;
@@ -51,7 +53,7 @@
 }
 
 .circular-bracket-stage .bracket-conn.conn-win {
-  stroke: var(--cb-gold);
+  stroke: var(--cb-line-winner);
   stroke-width: 2.6;
 }
 
@@ -132,7 +134,7 @@
 }
 
 .circular-bracket-stage .bracket-flag.win {
-  border-color: var(--cb-gold);
+  border-color: var(--cb-line-winner);
 }
 
 @keyframes cb-pop {
