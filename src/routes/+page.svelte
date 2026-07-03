@@ -41,7 +41,7 @@
 
   const TABS = $derived([
     { id: 'tab-leaderboard' as TabId, label: t('tabs.leaderboard') },
-    { id: 'tab-bracket' as TabId, label: t('tabs.bracket') },
+    { id: 'tab-bracket' as TabId, label: t('tabs.bracket'), adminOnly: true },
     { id: 'tab-history' as TabId, label: t('tabs.history') },
     { id: 'tab-raffle' as TabId, label: t('tabs.raffle') },
     { id: 'tab-rules' as TabId, label: t('tabs.rules') },
@@ -283,12 +283,14 @@
 
   <nav class="tab-bar">
     {#each TABS as tab}
-      <button
-        type="button"
-        class="tab-btn"
-        class:active={activeTab === tab.id}
-        onclick={() => selectTab(tab.id)}>{tab.label}</button
-      >
+      {#if !tab.adminOnly || showAdminControls}
+        <button
+          type="button"
+          class="tab-btn"
+          class:active={activeTab === tab.id}
+          onclick={() => selectTab(tab.id as TabId)}
+        >{tab.label}</button>
+      {/if}
     {/each}
   </nav>
 
