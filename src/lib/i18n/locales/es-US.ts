@@ -55,15 +55,12 @@ export const esUS: Messages = {
     bracket: '🏆 Llave'
   },
   bracket: {
-    title: 'Copa Mundial 2026',
-    subtitle: 'Llave de eliminatorias',
     loading: 'Cargando partidos — vuelve en un momento.',
     champion: 'Campeón',
     tbd: 'Por definir',
     notPlayed: 'Aún no se juega',
     startingSoon: 'Empieza pronto',
-    kickedOff: 'Inicio',
-    attribution: 'Llave circular'
+    kickedOff: 'Inicio'
   },
   matchTabs: {
     recent: 'Recientes',

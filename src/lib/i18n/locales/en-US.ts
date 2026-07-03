@@ -52,15 +52,12 @@ export const enUS = {
     bracket: '🏆 Bracket'
   },
   bracket: {
-    title: 'World Cup 2026',
-    subtitle: 'Knockout bracket',
     loading: 'Match data loading — check back shortly.',
     champion: 'Champion',
     tbd: 'TBD',
     notPlayed: 'Not played yet',
     startingSoon: 'Starting soon',
-    kickedOff: 'Kicked off',
-    attribution: 'Circular bracket'
+    kickedOff: 'Kicked off'
   },
   matchTabs: {
     recent: 'Recent',

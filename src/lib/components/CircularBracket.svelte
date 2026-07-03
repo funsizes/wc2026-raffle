@@ -191,11 +191,6 @@
 
 <div class="circular-bracket-root">
   <div class="circular-bracket">
-    <div class="circular-bracket-header">
-      <h2>{t("bracket.title")}</h2>
-      <p class="circular-bracket-sub">{t("bracket.subtitle")}</p>
-    </div>
-
     {#if matches === null}
       <p class="circular-bracket-loading">{t("bracket.loading")}</p>
     {:else if active}
@@ -228,10 +223,6 @@
         {/each}
       </div>
     {/if}
-
-    <p class="circular-bracket-footer">
-      {t("bracket.attribution")}
-    </p>
   </div>
 
   {#if tooltip.visible && tooltip.tip}
