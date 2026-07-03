@@ -41,7 +41,7 @@
 
   const TABS = $derived([
     { id: 'tab-leaderboard' as TabId, label: t('tabs.leaderboard') },
-    { id: 'tab-bracket' as TabId, label: t('tabs.bracket'), adminOnly: true },
+    { id: 'tab-bracket' as TabId, label: t('tabs.bracket') },
     { id: 'tab-history' as TabId, label: t('tabs.history') },
     { id: 'tab-raffle' as TabId, label: t('tabs.raffle') },
     { id: 'tab-rules' as TabId, label: t('tabs.rules') },
