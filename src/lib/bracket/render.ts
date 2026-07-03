@@ -97,7 +97,7 @@ export function renderBracket(
     const gAttr = `data-ground="${escapeAttr(model[num].ground)}"`;
     const tip = tipFor(model, num, now, labels);
     caps += `<path class="bracket-cap cap${nationClass(model[num].ground) ? ' ' + nationClass(model[num].ground) : ''}" d="${capsulePath(num)}" stroke-width="${CAP_W[lvl]}" ${gAttr} ${tipAttrs(tip, model[num].ground)}/>`;
-    if (lvl <= 4) conns += `<path class="bracket-conn conn" d="${connectorPath(num)}" ${gAttr}/>`;
+    if (lvl <= 4) conns += `<path class="bracket-conn" d="${connectorPath(num)}" ${gAttr}/>`;
 
     if (num === ROOT) continue;
 

@@ -41,7 +41,7 @@
   overflow: visible;
 }
 
-.circular-bracket-stage .conn {
+.circular-bracket-stage .bracket-conn {
   fill: none;
   stroke: var(--cb-line);
   stroke-width: 2.2;
@@ -127,7 +127,7 @@
   }
 }
 
-.circular-bracket-stage .conn,
+.circular-bracket-stage .bracket-conn,
 .circular-bracket-stage .dot,
 .circular-bracket-stage .center-line,
 .circular-bracket-stage .trophy {
