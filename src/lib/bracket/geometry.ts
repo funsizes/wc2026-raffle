@@ -122,8 +122,9 @@ export function capsulePath(num: number): string {
 }
 
 export function trophySvg(): string {
-  return `<g class="trophy" transform="translate(${CX},${CY})">
-    <path d="M-14,-38 L14,-38 L10,-18 L18,-18 C18,2 8,14 -2,18 L2,28 L-2,28 L-6,18 C-16,14 -26,2 -26,-18 L-18,-18 Z" fill="#c8a24a" stroke="#2a2823" stroke-width="1.5"/>
-    <rect x="-20" y="28" width="40" height="6" rx="2" fill="#c8a24a" stroke="#2a2823" stroke-width="1.5"/>
-  </g>`;
+  const size = 72;
+
+  return `<foreignObject class="trophy" x="${CX - size / 2}" y="${CY - size / 2}" width="${size}" height="${size}">
+    <div xmlns="http://www.w3.org/1999/xhtml" class="trophy-icon"><i class="fa-solid fa-trophy" aria-hidden="true"></i></div>
+  </foreignObject>`;
 }
