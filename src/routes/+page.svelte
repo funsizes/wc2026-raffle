@@ -1,5 +1,6 @@
 <script lang="ts">
   import { page } from '$app/stores';
+  import CircularBracket from '$lib/components/CircularBracket.svelte';
   import DailySummary from '$lib/components/DailySummary.svelte';
   import GroupSelector from '$lib/components/GroupSelector.svelte';
   import HistoryTab from '$lib/components/HistoryTab.svelte';
@@ -30,14 +31,21 @@
   // Automatically updates if the query string changes
   const groupQueryParam = $derived($page.url.searchParams.get('group') || 'g1');
 
-  type TabId = 'tab-leaderboard' | 'tab-raffle' | 'tab-rankings' | 'tab-rules' | 'tab-history';
+  type TabId =
+    | 'tab-leaderboard'
+    | 'tab-raffle'
+    | 'tab-rankings'
+    | 'tab-rules'
+    | 'tab-history'
+    | 'tab-bracket';
 
   const TABS = $derived([
     { id: 'tab-leaderboard' as TabId, label: t('tabs.leaderboard') },
+    { id: 'tab-bracket' as TabId, label: t('tabs.bracket'), adminOnly: true },
     { id: 'tab-history' as TabId, label: t('tabs.history') },
     { id: 'tab-raffle' as TabId, label: t('tabs.raffle') },
     { id: 'tab-rules' as TabId, label: t('tabs.rules') },
-    { id: 'tab-rankings' as TabId, label: t('tabs.rankings') },
+    { id: 'tab-rankings' as TabId, label: t('tabs.rankings') }
   ]);
 
   let allMatches = $state<Match[] | null>(null);
@@ -275,12 +283,14 @@
 
   <nav class="tab-bar">
     {#each TABS as tab}
-      <button
-        type="button"
-        class="tab-btn"
-        class:active={activeTab === tab.id}
-        onclick={() => selectTab(tab.id)}>{tab.label}</button
-      >
+      {#if !tab.adminOnly || showAdminControls}
+        <button
+          type="button"
+          class="tab-btn"
+          class:active={activeTab === tab.id}
+          onclick={() => selectTab(tab.id as TabId)}
+        >{tab.label}</button>
+      {/if}
     {/each}
   </nav>
 
@@ -314,6 +324,10 @@
       <PowerRankingSourceSelector bind:value={prSourceIdx} />
 
       <HistoryTab {allMatches} {prSourceIdx} {raffleGroup} />
+  </div>
+
+  <div id="tab-bracket" class="tab-panel" class:active={activeTab === 'tab-bracket'}>
+    <CircularBracket matches={allMatches} active={activeTab === 'tab-bracket'} />
   </div>
 </main>
 

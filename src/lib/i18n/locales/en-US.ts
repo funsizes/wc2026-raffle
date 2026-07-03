@@ -48,7 +48,16 @@ export const enUS = {
     raffle: '🎟 Raffle Draw',
     rankings: '📊 Power Rankings',
     rules: '📋 Rules',
-    history: '📅 Daily History'
+    history: '📅 Daily History',
+    bracket: '🏆 Bracket'
+  },
+  bracket: {
+    loading: 'Match data loading — check back shortly.',
+    champion: 'Champion',
+    tbd: 'TBD',
+    notPlayed: 'Not played yet',
+    startingSoon: 'Starting soon',
+    kickedOff: 'Kicked off'
   },
   matchTabs: {
     recent: 'Recent',

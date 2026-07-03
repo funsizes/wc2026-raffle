@@ -51,7 +51,16 @@ export const esUS: Messages = {
     raffle: '🎟 Sorteo',
     rankings: '📊 Power Rankings',
     rules: '📋 Reglas',
-    history: '📅 Historial diario'
+    history: '📅 Historial diario',
+    bracket: '🏆 Llave'
+  },
+  bracket: {
+    loading: 'Cargando partidos — vuelve en un momento.',
+    champion: 'Campeón',
+    tbd: 'Por definir',
+    notPlayed: 'Aún no se juega',
+    startingSoon: 'Empieza pronto',
+    kickedOff: 'Inicio'
   },
   matchTabs: {
     recent: 'Recientes',
