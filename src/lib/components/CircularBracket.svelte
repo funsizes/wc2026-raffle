@@ -157,8 +157,12 @@
     if (!el) return;
     ev.stopPropagation();
     cancelCapTip();
-    if (tooltip.visible) hideTip();
-    else showTip(el, ev);
+
+    const tip = readTip(el);
+
+    if (!tip) return;
+
+    showTip(el, ev);
   }
 
   $effect(() => {
@@ -174,7 +178,9 @@
       }
     };
 
-    const onDocClick = () => hideTip();
+    const onDocClick = () => {
+      hideTip();
+    };
     const onScroll = () => hideTip();
 
     window.addEventListener("resize", onResize);
