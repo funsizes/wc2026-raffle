@@ -219,7 +219,7 @@
 .circular-bracket-tooltip::after {
   content: '';
   position: absolute;
-  left: 50%;
+  left: calc(50% + var(--tt-shift, 0px));
   bottom: -5px;
   transform: translateX(-50%) rotate(45deg);
   width: 10px;

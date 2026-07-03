@@ -5,7 +5,7 @@
   import type { BracketFlag, BracketTip } from "$lib/bracket/types";
   import { t } from "$lib/i18n/locale.svelte";
   import type { Match } from "$lib/types";
-  import { untrack } from "svelte";
+  import { tick, untrack } from "svelte";
   import Flag from "./Flag.svelte";
   import "./CircularBracket.css";
 
@@ -18,7 +18,10 @@
 
   const CAP_TIP_DELAY = 600;
 
+  const TOOLTIP_MARGIN = 8;
+
   let stageEl = $state<HTMLDivElement | null>(null);
+  let tooltipEl = $state<HTMLDivElement | null>(null);
   let prevWinners = $state<Record<number, string>>({});
 
   let tooltip = $state<{
@@ -26,8 +29,9 @@
     below: boolean;
     left: number;
     top: number;
+    shift: number;
     tip: BracketTip | null;
-  }>({ visible: false, below: false, left: 0, top: 0, tip: null });
+  }>({ visible: false, below: false, left: 0, top: 0, shift: 0, tip: null });
 
   let capTipTimer: ReturnType<typeof setTimeout> | null = null;
   let capTipEv: PointerEvent | null = null;
@@ -92,25 +96,44 @@
     };
   }
 
-  function showTip(el: HTMLElement, ev: PointerEvent | MouseEvent) {
+  function clampTooltipPosition(anchorX: number) {
+    if (!tooltipEl) return;
+
+    const half = tooltipEl.offsetWidth / 2;
+    const clampedLeft = Math.min(
+      Math.max(anchorX, TOOLTIP_MARGIN + half),
+      window.innerWidth - TOOLTIP_MARGIN - half,
+    );
+
+    tooltip = {
+      ...tooltip,
+      left: clampedLeft,
+      shift: anchorX - clampedLeft,
+    };
+  }
+
+  async function showTip(el: HTMLElement, ev: PointerEvent | MouseEvent) {
     const tip = readTip(el);
     if (!tip) return;
 
     const isCap = el.classList.contains("cap");
     const r = isCap ? null : el.getBoundingClientRect();
-    const ax = isCap ? ev.clientX : r!.left + r!.width / 2;
+    const anchorX = isCap ? ev.clientX : r!.left + r!.width / 2;
     const top = isCap ? ev.clientY : r!.top;
     const bottom = isCap ? ev.clientY : r!.bottom;
-    const cx = Math.min(Math.max(ax, 8), window.innerWidth - 8);
     const flip = top < 90;
 
     tooltip = {
       visible: true,
       below: flip,
-      left: cx,
+      left: anchorX,
       top: flip ? bottom : top,
+      shift: 0,
       tip,
     };
+
+    await tick();
+    clampTooltipPosition(anchorX);
   }
 
   function onStagePointerOver(ev: PointerEvent) {
@@ -176,6 +199,9 @@
         stageDPR = dpr;
         return;
       }
+      if (tooltip.visible && tooltipEl) {
+        clampTooltipPosition(tooltip.left + tooltip.shift);
+      }
     };
 
     const onDocClick = () => {
@@ -236,8 +262,10 @@
       class="circular-bracket-tooltip"
       class:on={tooltip.visible}
       class:below={tooltip.below}
+      bind:this={tooltipEl}
       style:left="{tooltip.left}px"
       style:top="{tooltip.top}px"
+      style:--tt-shift="{tooltip.shift}px"
       role="tooltip"
     >
       {#if tooltip.tip.round}
