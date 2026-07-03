@@ -48,7 +48,19 @@ export const enUS = {
     raffle: '🎟 Raffle Draw',
     rankings: '📊 Power Rankings',
     rules: '📋 Rules',
-    history: '📅 Daily History'
+    history: '📅 Daily History',
+    bracket: '🏆 Bracket'
+  },
+  bracket: {
+    title: 'World Cup 2026',
+    subtitle: 'Knockout bracket',
+    loading: 'Match data loading — check back shortly.',
+    champion: 'Champion',
+    tbd: 'TBD',
+    notPlayed: 'Not played yet',
+    startingSoon: 'Starting soon',
+    kickedOff: 'Kicked off',
+    attribution: 'Circular bracket'
   },
   matchTabs: {
     recent: 'Recent',

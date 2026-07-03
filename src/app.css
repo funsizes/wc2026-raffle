@@ -742,14 +742,15 @@ section {
   padding: 1rem;
   border-top: 2px solid var(--border);
   letter-spacing: 0.06em;
-}
-.dot {
-  display: inline-block;
-  width: 6px; height: 6px;
-  background: var(--green);
-  box-shadow: 0 0 6px var(--green);
-  margin-right: 5px;
-  animation: pixelblink 2s step-start infinite;
+
+  .dot {
+    display: inline-block;
+    width: 6px; height: 6px;
+    background: var(--green);
+    box-shadow: 0 0 6px var(--green);
+    margin-right: 5px;
+    animation: pixelblink 2s step-start infinite;
+  }
 }
 
 /* ── RANKINGS TABLE ───────────────────────────────── */

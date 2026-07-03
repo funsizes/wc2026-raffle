@@ -51,7 +51,19 @@ export const esUS: Messages = {
     raffle: '🎟 Sorteo',
     rankings: '📊 Power Rankings',
     rules: '📋 Reglas',
-    history: '📅 Historial diario'
+    history: '📅 Historial diario',
+    bracket: '🏆 Llave'
+  },
+  bracket: {
+    title: 'Copa Mundial 2026',
+    subtitle: 'Llave de eliminatorias',
+    loading: 'Cargando partidos — vuelve en un momento.',
+    champion: 'Campeón',
+    tbd: 'Por definir',
+    notPlayed: 'Aún no se juega',
+    startingSoon: 'Empieza pronto',
+    kickedOff: 'Inicio',
+    attribution: 'Llave circular'
   },
   matchTabs: {
     recent: 'Recientes',
