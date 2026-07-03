@@ -54,7 +54,7 @@ export function childFlagAngle(num: number, slot: 0 | 1): number {
   return flagAngle(target);
 }
 
-export function connectorPath(num: number): string {
+export function connectorSegments(num: number): { fork1: string; fork2: string; bridge: string } {
   const lvl = levelOf(num);
   const Rc = RADIUS[lvl - 1];
   const Rp = RADIUS[lvl];
@@ -68,7 +68,11 @@ export function connectorPath(num: number): string {
   const C2 = pt(Rc, c2.ang);
   const P = pt(Rp, ap);
   const ctrl: [number, number] = [2 * P[0] - 0.5 * (A1[0] + A2[0]), 2 * P[1] - 0.5 * (A1[1] + A2[1])];
-  return `M${C1[0]} ${C1[1]} L${A1[0]} ${A1[1]} Q${ctrl[0]} ${ctrl[1]} ${A2[0]} ${A2[1]} L${C2[0]} ${C2[1]}`;
+  return {
+    fork1: `M${C1[0]} ${C1[1]} L${A1[0]} ${A1[1]}`,
+    fork2: `M${A2[0]} ${A2[1]} L${C2[0]} ${C2[1]}`,
+    bridge: `M${A1[0]} ${A1[1]} Q${ctrl[0]} ${ctrl[1]} ${A2[0]} ${A2[1]}`
+  };
 }
 
 export function capsulePath(num: number): string {

@@ -1,11 +1,11 @@
-import { NODE_NUMS, PARENT, ROOT, levelOf, nationClass, venueLabel } from './constants';
+import { CHILDREN, NODE_NUMS, PARENT, ROOT, R32SET, levelOf, nationClass, venueLabel } from './constants';
 import {
   CAP_W,
   FLAG_ORDER,
   RADIUS,
   angleOf,
   capsulePath,
-  connectorPath,
+  connectorSegments,
   flagAngle,
   pt,
   trophySvg
@@ -53,6 +53,43 @@ function tipAttrs(tip: BracketTip, ground: string): string {
   );
 }
 
+type ConnForkState = '' | 'live' | 'soon' | 'win' | 'out';
+
+function forkState(
+  side: 0 | 1,
+  num: number,
+  model: Record<number, BracketNode>,
+  now: number
+): ConnForkState {
+  const node = model[num];
+  const here = matchStatus(node, now);
+  if (here === 'live') return 'live';
+  if (here === 'soon') return 'soon';
+
+  if (!R32SET.has(num)) {
+    const childNum = CHILDREN[num][side];
+    const childHere = matchStatus(model[childNum], now);
+    if (childHere === 'live') return 'live';
+    if (childHere === 'soon') return 'soon';
+  }
+
+  const winner = node.winner;
+  const participant = node.participants[side];
+  if (winner && participant) return participant === winner ? 'win' : 'out';
+  return '';
+}
+
+function connClass(state: ConnForkState): string {
+  return state ? ` conn-${state}` : '';
+}
+
+function bridgeState(fork1: ConnForkState, fork2: ConnForkState): ConnForkState {
+  if (fork1 === 'live' || fork2 === 'live') return 'live';
+  if (fork1 === 'soon' || fork2 === 'soon') return 'soon';
+  if (fork1 === 'win' || fork2 === 'win') return 'win';
+  return '';
+}
+
 export interface BracketRenderOutput {
   svgHtml: string;
   flags: BracketFlag[];
@@ -97,7 +134,15 @@ export function renderBracket(
     const gAttr = `data-ground="${escapeAttr(model[num].ground)}"`;
     const tip = tipFor(model, num, now, labels);
     caps += `<path class="bracket-cap cap${nationClass(model[num].ground) ? ' ' + nationClass(model[num].ground) : ''}" d="${capsulePath(num)}" stroke-width="${CAP_W[lvl]}" ${gAttr} ${tipAttrs(tip, model[num].ground)}/>`;
-    if (lvl <= 4) conns += `<path class="bracket-conn" d="${connectorPath(num)}" ${gAttr}/>`;
+    if (lvl <= 4) {
+      const segs = connectorSegments(num);
+      const f1 = forkState(0, num, model, now);
+      const f2 = forkState(1, num, model, now);
+      const bridge = bridgeState(f1, f2);
+      conns += `<path class="bracket-conn conn-fork1${connClass(f1)}" d="${segs.fork1}" ${gAttr}/>`;
+      conns += `<path class="bracket-conn conn-fork2${connClass(f2)}" d="${segs.fork2}" ${gAttr}/>`;
+      conns += `<path class="bracket-conn conn-bridge${connClass(bridge)}" d="${segs.bridge}" ${gAttr}/>`;
+    }
 
     if (num === ROOT) continue;
 

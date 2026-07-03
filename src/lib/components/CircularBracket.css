@@ -47,6 +47,33 @@
   stroke-width: 2.2;
   stroke-linejoin: round;
   stroke-linecap: round;
+  transition: stroke 0.2s ease, opacity 0.2s ease;
+}
+
+.circular-bracket-stage .bracket-conn.conn-win {
+  stroke: var(--cb-gold);
+  stroke-width: 2.6;
+}
+
+.circular-bracket-stage .bracket-conn.conn-out {
+  stroke: var(--cb-line);
+  opacity: 0.2;
+}
+
+.circular-bracket-stage .bracket-conn.conn-soon {
+  stroke: var(--cb-gold);
+  opacity: 0.85;
+}
+
+.circular-bracket-stage .bracket-conn.conn-live {
+  stroke: var(--cb-live);
+  stroke-width: 2.6;
+  animation: cb-conn-live-pulse 1.7s ease-in-out infinite;
+}
+
+@keyframes cb-conn-live-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.55; }
 }
 
 .circular-bracket-stage .dot {
@@ -64,7 +91,7 @@
   border-radius: 50%;
   background: #fff;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.18);
-  border: 2px solid #fff;
+  border: 0.1rem solid #fff;
   aspect-ratio: 1 / 1;
   cursor: default;
   overflow: hidden;
@@ -96,7 +123,12 @@
 }
 
 .circular-bracket-stage .bracket-flag.eliminated {
-  filter: grayscale(0.7) opacity(0.78);
+  border-color: var(--cb-bg);
+  box-shadow: none;
+
+  .fi {
+    filter: grayscale(0.8) opacity(0.7);
+  }
 }
 
 .circular-bracket-stage .bracket-flag.win {
