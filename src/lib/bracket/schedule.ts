@@ -19,7 +19,7 @@ export const BRACKET_SLOTS = [
   { num: 90, kickoffMs: Date.parse('2026-07-04T17:00:00Z'), ground: 'Houston' },
   { num: 89, kickoffMs: Date.parse('2026-07-04T21:00:00Z'), ground: 'Philadelphia' },
   { num: 91, kickoffMs: Date.parse('2026-07-05T20:00:00Z'), ground: 'New York/New Jersey (East Rutherford)' },
-  { num: 92, kickoffMs: Date.parse('2026-07-06T00:00:00Z'), ground: 'Mexico City' },
+  { num: 92, kickoffMs: Date.parse('2026-07-06T01:00:00Z'), ground: 'Mexico City' },
   { num: 93, kickoffMs: Date.parse('2026-07-06T19:00:00Z'), ground: 'Dallas (Arlington)' },
   { num: 94, kickoffMs: Date.parse('2026-07-07T00:00:00Z'), ground: 'Seattle' },
   { num: 95, kickoffMs: Date.parse('2026-07-07T16:00:00Z'), ground: 'Atlanta' },
