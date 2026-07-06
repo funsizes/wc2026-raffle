@@ -1,5 +1,7 @@
 import type { Match } from '$lib/types';
 import { t } from '$lib/i18n/locale.svelte';
+import { MATCH_FETCH_RETRY } from '$lib/config';
+import { fetchWithExponentialBackoff } from './retry';
 
 const LEGACY_BUCKET = 'https://wc2026-raffle-assets.s3.us-east-1.amazonaws.com';
 const WCSORTEO2026_BUCKET = 'https://wcsorteo2026-assets.s3.us-east-1.amazonaws.com';
@@ -84,7 +86,11 @@ export function setMatchesBucketOption(option: MatchesBucketOption): void {
 
 export async function fetchMatches(): Promise<Match[] | null> {
   try {
-    const res = await fetch(getMatchesUrl(), { cache: 'no-store' });
+    const res = await fetchWithExponentialBackoff(
+      getMatchesUrl(),
+      { cache: 'no-store' },
+      MATCH_FETCH_RETRY
+    );
 
     if (!res.ok) throw new Error(String(res.status));
 
