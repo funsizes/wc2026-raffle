@@ -97,7 +97,6 @@
   aspect-ratio: 1 / 1;
   cursor: default;
   overflow: hidden;
-  display: grid;
   place-items: center;
   container-type: inline-size;
   transition: width 0.25s ease, height 0.25s ease, opacity 0.2s ease;
