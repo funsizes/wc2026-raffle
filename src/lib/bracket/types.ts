@@ -10,6 +10,8 @@ export interface FeedMatch {
   time?: string;
   ground?: string;
   status?: string;
+  minute?: number | null;
+  injuryTime?: number | null;
 }
 
 export interface BracketScore {
@@ -28,6 +30,8 @@ export interface BracketNode {
   time: string;
   ground: string;
   status?: string;
+  minute?: number | null;
+  injuryTime?: number | null;
 }
 
 export interface BracketFlag {

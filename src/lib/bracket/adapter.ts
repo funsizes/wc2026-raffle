@@ -29,7 +29,9 @@ export function matchesToFeed(matches: Match[] | null): Record<number, FeedMatch
       score: toBracketScore(match),
       utcDate: match.utcDate,
       ground: NUM_TO_GROUND.get(num) ?? '',
-      status: match.status
+      status: match.status,
+      minute: match.minute,
+      injuryTime: match.injuryTime
     };
   }
 

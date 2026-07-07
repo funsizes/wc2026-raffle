@@ -8,7 +8,7 @@
   --cb-line-winner: #d6922d;
   --cb-muted: #9a948a;
   --cb-gold: #c8a24a;
-  --cb-live: #d1493a;
+  --cb-live: #4a8c38;
   --cb-mx: #3d8b57;
   --cb-us: #5471a8;
   --cb-ca: #c0563c;
@@ -150,14 +150,15 @@
 
 .circular-bracket-stage .bracket-flag.live {
   border-color: var(--cb-live);
+  animation: cb-live-pulse 1.7s ease-in-out infinite;
 }
 
 @keyframes cb-live-pulse {
   0%, 100% {
-    box-shadow: 0 0 0 2px var(--cb-live), 0 0 5px 1px rgba(209, 73, 58, 0.3), 0 1px 3px rgba(0, 0, 0, 0.18);
+    box-shadow: 0 0 0 2px var(--cb-live), 0 0 5px 1px rgba(74, 140, 56, 0.3), 0 1px 3px rgba(0, 0, 0, 0.18);
   }
   50% {
-    box-shadow: 0 0 0 3px var(--cb-live), 0 0 12px 4px rgba(209, 73, 58, 0.55), 0 1px 3px rgba(0, 0, 0, 0.18);
+    box-shadow: 0 0 0 3px var(--cb-live), 0 0 12px 4px rgba(74, 140, 56, 0.55), 0 1px 3px rgba(0, 0, 0, 0.18);
   }
 }
 
@@ -267,7 +268,7 @@
 }
 
 .circular-bracket-tooltip .tt-score.live {
-  color: #ff7a68;
+  color: var(--cb-live);
 }
 
 .circular-bracket-tooltip .tt-score.live .live-dot {

@@ -10,7 +10,7 @@ import {
   pt,
   trophySvg
 } from './geometry';
-import { kickoffLabel, matchStatus, roundName, type RoundLabels } from './model';
+import { kickoffLabel, liveClockLabel, matchStatus, roundName, type RoundLabels } from './model';
 import type { BracketFlag, BracketNode, BracketTip } from './types';
 
 export type { RoundLabels } from './model';
@@ -34,12 +34,19 @@ function tipFor(
 ): BracketTip {
   const n = model[num];
   const teams = `${n.participants[0] || labels.tbd} vs ${n.participants[1] || labels.tbd}`;
+  const status = matchStatus(n, now);
+  const liveClock = status === 'live' ? liveClockLabel(n) : '';
   return {
     round: roundName(num, labels),
     teams,
     score: n.label,
-    when: n.label ? '' : kickoffLabel(n, labels.tbd),
-    status: matchStatus(n, now),
+    when:
+      status === 'live'
+        ? liveClock || kickoffLabel(n, labels.tbd)
+        : n.label
+          ? ''
+          : kickoffLabel(n, labels.tbd),
+    status,
     venue: venueLabel(n.ground)
   };
 }

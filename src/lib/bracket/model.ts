@@ -1,5 +1,5 @@
 import { CHILDREN, LIVE_MS, NODE_NUMS, PARENT, R32SET, SOON_MS, levelOf } from './constants';
-import { winnerIndex, scoreLabel, isFeedLive, feedHasScore } from './adapter';
+import { winnerIndex, scoreLabel, isFeedLive, isFeedFinished, feedHasScore } from './adapter';
 import type { BracketNode, FeedMatch } from './types';
 
 export interface RoundLabels {
@@ -27,8 +27,13 @@ export function buildModel(feed: Record<number, FeedMatch>): Record<number, Brac
 
   function winner(num: number): string | null {
     if (num in winners) return winners[num];
+    const feedEntry = feed[num];
+    if (!isFeedFinished(feedEntry)) {
+      winners[num] = null;
+      return null;
+    }
     const p = participants(num);
-    const sc = feed[num]?.score;
+    const sc = feedEntry?.score;
     const idx = winnerIndex(sc);
     let w: string | null = null;
     if (idx != null && p[idx]) w = p[idx];
@@ -49,7 +54,9 @@ export function buildModel(feed: Record<number, FeedMatch>): Record<number, Brac
       date: m.date ?? '',
       time: m.time ?? '',
       ground: m.ground ?? '',
-      status: m.status
+      status: m.status,
+      minute: m.minute,
+      injuryTime: m.injuryTime
     };
   }
 
@@ -91,10 +98,20 @@ export function kickoffLabel(node: Pick<BracketNode, 'utcDate' | 'date' | 'time'
   return `${day} · ${time}`;
 }
 
+export function liveClockLabel(node: Pick<BracketNode, 'minute' | 'injuryTime'>): string {
+  if (node.minute == null) return '';
+  if (node.injuryTime != null) return `${node.minute}+${node.injuryTime}'`;
+  return `${node.minute}'`;
+}
+
 export function matchStatus(node: BracketNode, now: number): '' | 'live' | 'soon' {
-  if (node.label || feedHasScore({ score: node.score } as FeedMatch)) return '';
   if (!node.participants[0] || !node.participants[1]) return '';
+
+  // Live games often already have partial scores — check status before score label.
   if (isFeedLive({ status: node.status } as FeedMatch)) return 'live';
+
+  if (isFeedFinished({ status: node.status } as FeedMatch)) return '';
+  if (node.label || feedHasScore({ score: node.score } as FeedMatch)) return '';
 
   const ms = kickoffMs(node);
   if (ms == null) return '';

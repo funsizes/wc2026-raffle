@@ -272,18 +272,20 @@
         <div class="tt-round">{tooltip.tip.round}</div>
       {/if}
       <div class="tt-teams">{tooltip.tip.teams}</div>
-      {#if tooltip.tip.score}
-        <div class="tt-score">{tooltip.tip.score}</div>
-      {:else if tooltip.tip.status === "live"}
+      {#if tooltip.tip.status === "live"}
         <div class="tt-score live">
           <span class="live-dot" aria-hidden="true"></span>
-          {t("matchStatus.live")}
+          {#if tooltip.tip.score}
+            {tooltip.tip.score}
+          {:else}
+            {t("matchStatus.live")}
+          {/if}
         </div>
         {#if tooltip.tip.when}
-          <div class="tt-soon">
-            {t("bracket.kickedOff")} · {tooltip.tip.when}
-          </div>
+          <div class="tt-soon">{tooltip.tip.when}</div>
         {/if}
+      {:else if tooltip.tip.score}
+        <div class="tt-score">{tooltip.tip.score}</div>
       {:else}
         <div class="tt-score pending">
           {tooltip.tip.when || t("bracket.notPlayed")}
