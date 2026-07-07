@@ -60,7 +60,9 @@ export const esUS: Messages = {
     tbd: 'Por definir',
     notPlayed: 'Aún no se juega',
     startingSoon: 'Empieza pronto',
-    kickedOff: 'Inicio'
+    kickedOff: 'Inicio',
+    credit: 'Crédito',
+    creditBy: 'diseño original por'
   },
   matchTabs: {
     recent: 'Recientes',

@@ -255,6 +255,15 @@
         {/each}
       </div>
     {/if}
+
+    <div class="circular-bracket-footer">
+      <p>
+        {t("bracket.credit")}:
+        <a href="https://www.instagram.com/p/DaJPx6Hkfi1" target="_blank">
+          {t("bracket.creditBy")} Emilio Sansolini
+        </a>
+      </p>
+    </div>
   </div>
 
   {#if tooltip.visible && tooltip.tip}

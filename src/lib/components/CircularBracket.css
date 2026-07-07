@@ -295,3 +295,15 @@
   font-size: 0.68rem;
   color: #cfc9bd;
 }
+
+.circular-bracket-footer {
+  margin-top: 1.5rem;
+  font-size: 0.55rem;
+  text-align: center;
+  color: var(--cb-line);
+}
+
+.circular-bracket-footer a {
+  color: var(--cb-us);
+  text-decoration: none;
+}

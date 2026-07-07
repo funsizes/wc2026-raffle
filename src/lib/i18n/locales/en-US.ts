@@ -57,7 +57,9 @@ export const enUS = {
     tbd: 'TBD',
     notPlayed: 'Not played yet',
     startingSoon: 'Starting soon',
-    kickedOff: 'Kicked off'
+    kickedOff: 'Kicked off',
+    credit: 'Credit',
+    creditBy: 'original design by'
   },
   matchTabs: {
     recent: 'Recent',
